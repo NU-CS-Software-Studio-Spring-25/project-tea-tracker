@@ -12,15 +12,19 @@ We’re active in a niche community of loose leaf tea lovers—where some of us 
 
 Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea journey over time!
 
+## Minimum (Viable) Valuable Product Features
+- Upload CSV/Excel files (4 fields, rank, name, price, category)
+- Frontend visualizations 
+ - Average price per category
+ - Average rank per category
+ - Average price for 'rank range' 
+
 ## Features (WIP)  
 - Upload CSV/Excel files  
 - Backend processing of tea ratings and attributes  
 - Frontend visualizations (graphs, trend lines, comparisons)  
 - Optional account login + saved profiles  
 - Feedback loop with early testers from the tea community
-
-## Minimum (Viable) Valuable Product Features
-- Upload CSV/Excel files (4 fields, rank, name, price, category)
-- Frontend visualizations (usage graphs, comparisons, price-averages)
+- Map of where tea is from 
  
 A fun way to blend data viz and a shared love of tea 🍵😸
