@@ -20,7 +20,7 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
 - Feedback loop with early testers from the tea community
 
 ## Minimum (Viable) Valuable Product Features
-- Upload CSV/Excel files
+- Upload CSV/Excel files (4 fields, rank, name, price, category)
 - Frontend visualizations (usage graphs, comparisons, price-averages)
  
 A fun way to blend data viz and a shared love of tea 🍵😸
