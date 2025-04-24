@@ -17,6 +17,10 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
 - Backend processing of tea ratings and attributes  
 - Frontend visualizations (graphs, trend lines, comparisons)  
 - Optional account login + saved profiles  
-- Feedback loop with early testers from the tea community  
+- Feedback loop with early testers from the tea community
+
+## Minimum (Viable) Valuable Product Features
+- Upload CSV/Excel files
+- Frontend visualizations (usage graphs, comparisons, price-averages)
  
 A fun way to blend data viz and a shared love of tea 🍵😸
