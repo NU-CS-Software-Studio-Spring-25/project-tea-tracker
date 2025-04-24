@@ -19,6 +19,8 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
  - Average rank per category
  - Average price for 'rank range' 
 
+Make entry with 4 fields, view that displays it, way to edit entry. 
+
 ## Features (WIP)  
 - Upload CSV/Excel files  
 - Backend processing of tea ratings and attributes  
