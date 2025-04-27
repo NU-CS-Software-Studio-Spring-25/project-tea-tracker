@@ -1,24 +1,53 @@
-# README
+# 🍵 Tea Tracker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails web app for tracking and visualizing tea consumption habits!
 
-Things you may want to cover:
+---
 
-* Ruby version
+## 🚀 Project Setup
 
-* System dependencies
+To get started:
 
-* Configuration
+1. **Install dependencies:**
+   - Ruby 3.x
+   - Rails 8.x
+   - PostgreSQL
 
-* Database creation
+2. **Install gems:**
+   ```bash
+   bundle install
+   ```
 
-* Database initialization
+3. **Set up the database:**
+   ```bash
+   rails db:create
+   rails db:migrate
+   rails db:seed
+   ```
 
-* How to run the test suite
+4. **Start the server:**
+   ```bash
+   rails server
+   ```
+   Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-* Services (job queues, cache servers, search engines, etc.)
+---
 
-* Deployment instructions
+## 📋 Current Setup
 
-* ...
+- Rails app created
+- Database migrated
+- 1 seeded user
+- 10 seeded teas
+
+---
+
+# ✅ How to Get Started Quickly
+
+```bash
+git clone <repo-url>
+cd project-tea-tracker/tea_tracker
+bundle install
+rails db:create db:migrate db:seed
+rails server
+```
