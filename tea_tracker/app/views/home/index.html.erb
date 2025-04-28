@@ -13,15 +13,16 @@
     </tr>
   </thead>
   <tbody>
-    <% @teas.each do |tea| %>
-      <tr>
-        <td><%= tea.name %></td>
-        <td><%= tea.rank %></td>
-        <td><%= tea.price %></td>
-        <td><%= tea.category %></td>
-      </tr>
-    <% end %>
-  </tbody>
+  <% @teas.each do |tea| %>
+    <tr>
+      <td><%= link_to tea.name, tea_path(tea) %></td>
+      <td><%= tea.rank %></td>
+      <td><%= tea.price %></td>
+      <td><%= tea.category %></td>
+    </tr>
+  <% end %>
+</tbody>
+
 </table>
 
 
