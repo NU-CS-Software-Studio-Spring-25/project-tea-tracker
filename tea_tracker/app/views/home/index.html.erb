@@ -1,0 +1,31 @@
+<h1>Welcome to Tea Tracker</h1>
+<p>Your app for tracking and visualizing tea consumption habits! </p>
+<p>Here you can track your tea consumption and manage your tea inventory.</p>
+
+<!-- Here are all the tea entries -->
+<table>
+  <thead>
+    <tr>
+      <th>Tea Name</th>
+      <th>Rank</th>
+      <th>Price</th>
+      <th>Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @teas.each do |tea| %>
+      <tr>
+        <td><%= tea.name %></td>
+        <td><%= tea.rank %></td>
+        <td><%= tea.price %></td>
+        <td><%= tea.category %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+
+
+
+<strong><p>Find this file in app/views/home/index.html.erb</p></strong>

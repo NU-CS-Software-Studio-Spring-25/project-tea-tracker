@@ -39,6 +39,7 @@ To get started:
 - Database migrated
 - 1 seeded user
 - 10 seeded teas
+- Web Page showing all teas for a user
 
 ---
 
