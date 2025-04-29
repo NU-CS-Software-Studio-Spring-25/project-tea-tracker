@@ -33,3 +33,5 @@ Make entry with 4 fields, view that displays it, way to edit entry.
 A fun way to blend data viz and a shared love of tea 🍵😸
 
 The app is deployed [here](https://tea-tracker-f25a3c23e82f.herokuapp.com/).
+
+Team Memebers: Brighton Sibanda, Erin Park, Ella Jones, Aiden Vandenbush
