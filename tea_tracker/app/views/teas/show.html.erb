@@ -30,7 +30,7 @@
       <p class="tea-info"><strong>Price Comparison:</strong> This tea's rank is <%= @price_rank_comparison %> the 3 teas closest in price to it.</p>
       <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
 
-      <!-- Back Button at Bottom Right -->
+
       <div class="d-flex justify-content-end mt-4">
         <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
       </div>

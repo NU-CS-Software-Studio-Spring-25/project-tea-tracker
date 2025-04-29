@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   root "home#index"
 
   # show page
-  resources :teas, only: [:show]
+  resources :teas, only: [:index, :new, :create, :show, :edit, :update, :destroy]
 
 
 end

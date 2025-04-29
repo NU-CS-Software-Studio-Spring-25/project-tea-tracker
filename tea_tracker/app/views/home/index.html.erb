@@ -2,6 +2,10 @@
 <p>Your app for tracking and visualizing tea consumption habits!</p>
 <p>Here you can track your tea consumption and manage your tea inventory.</p>
 
+<div class="mt-4">
+  <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
+</div>
+
 <!-- Here are all the tea entries -->
 <div class="table-responsive mt-4">
   <table class="table table-striped table-hover align-middle">
@@ -11,19 +15,22 @@
         <th>Rank</th>
         <th>Price</th>
         <th>Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @teas.each do |tea| %>
+      <tr>
+        <td><%= link_to tea.name, tea_path(tea), class: "text-decoration-none" %></td>
+        <td><%= tea.rank %></td>
+        <td>$<%= number_with_precision(tea.price, precision: 2) %></td>
+        <td><%= tea.category %></td>
       </tr>
-    </thead>
-    <tbody>
-      <% @teas.each do |tea| %>
-        <tr>
-          <td><%= link_to tea.name, tea_path(tea), class: "text-decoration-none" %></td>
-          <td><%= tea.rank %></td>
-          <td>$<%= number_with_precision(tea.price, precision: 2) %></td>
-          <td><%= tea.category %></td>
-        </tr>
-      <% end %>
-    </tbody>
+    <% end %>
+  </tbody>
+  
   </table>
 </div>
 
 <strong><p>Find this file in app/views/home/index.html.erb</p></strong>
+
+
