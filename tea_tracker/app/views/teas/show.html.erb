@@ -1,1 +1,13 @@
+<%= link_to "Back", :back %> <%# NOTE: BAD PRACTICE %>
+
 <h1><%= @tea.name %></h1>
+<h3>Rank: <%= @tea.rank %></h3>
+<h3>Price: $<%= @tea.price.nil? ? 'N/A' : @tea.price.round(2) %></h3>
+<h3>Category: <%= @tea.category %></h3>
+
+
+This tea's rank is <%=@category_rank_comparison%> the average tea in its category (<%= @tea.category %>).<br>
+
+This tea's rank is <%=@price_rank_comparison%> the 3 teas closest in price to it.<br>
+
+This tea's price is $<%=@rank_price_comparison%> the 3 teas closest in rank to it.
