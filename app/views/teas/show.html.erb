@@ -1,0 +1,42 @@
+<div class="container mt-5">
+
+  <!-- Tea Details Card -->
+  <div class="card tea-card">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0 tea-info"><%= @tea.name %></h2>
+    </div>
+    <div class="card-body">
+
+      <table class="table table-bordered table-hover align-middle">
+        <tbody>
+          <tr>
+            <th scope="row">Rank</th>
+            <td><%= @tea.rank %></td>
+          </tr>
+          <tr>
+            <th scope="row">Price</th>
+            <td>$<%= @tea.price.nil? ? 'N/A' : number_with_precision(@tea.price, precision: 2) %></td>
+          </tr>
+          <tr>
+            <th scope="row">Category</th>
+            <td><%= @tea.category %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr>
+
+      <p class="tea-info"><strong>Rank Comparison:</strong> This tea's rank is <%= @category_rank_comparison %> the average tea in its category (<%= @tea.category %>).</p>
+      <p class="tea-info"><strong>Price Comparison:</strong> This tea's rank is <%= @price_rank_comparison %> the 3 teas closest in price to it.</p>
+      <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
+
+
+      <div class="d-flex justify-content-end mt-4">
+        <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
+      </div>
+
+
+    </div>
+  </div>
+
+</div>
