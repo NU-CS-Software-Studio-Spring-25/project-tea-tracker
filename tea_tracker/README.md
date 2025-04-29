@@ -56,7 +56,10 @@ rails server
 # Heroku Setup
 Make sure you are in the tea_tracker folder, not the parent folder and then run
 ```
-git remote add https://git.heroku.com/tea-tracker.git
+git init
+git branch -m master main
+git checkout -b main
+git remote add heroku https://git.heroku.com/tea-tracker.git
 ```
 
 To check, run 
@@ -64,6 +67,13 @@ To check, run
 which should return (among others)
 ```heroku  https://git.heroku.com/tea-tracker.git (fetch)
 heroku  https://git.heroku.com/tea-tracker.git (push)```
+
+Run 
+```cd ..
+git remote -v```
+This should not have any heroku links in it. If it does, run:
+```git remote remove heroku```
+and then redo steps above.
 
 To push to site, run 
 ```git push heroku main```
