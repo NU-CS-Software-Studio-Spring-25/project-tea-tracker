@@ -71,9 +71,7 @@ heroku  https://git.heroku.com/tea-tracker.git (push)```
 Run 
 ```cd ..
 git remote -v```
-This should not have any heroku links in it. If it does, run:
-```git remote remove heroku```
-and then redo steps above.
+This should not have any heroku links in it. 
 
 To push to site, run 
 ```git push heroku main```
