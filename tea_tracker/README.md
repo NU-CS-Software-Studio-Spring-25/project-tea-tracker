@@ -34,12 +34,12 @@ To get started:
 ---
 
 ## 📋 Current Setup
-
 - Rails app created
 - Database migrated
-- 1 seeded user
-- 10 seeded teas
-- Web Page showing all teas for a user
+- 2 seeded users, each with personalized profiles
+- 14 seeded teas, linked to their respective users
+- User model includes secure authentication and custom fields (`bio`, `avatar_url`)
+- Backend fully supports multi-user tea tracking
 
 ---
 
