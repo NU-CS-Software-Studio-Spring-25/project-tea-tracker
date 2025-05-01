@@ -1,26 +1,75 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Clear existing records
+User.destroy_all
+Tea.destroy_all
 
-user = User.first || User.create!(username: "tealover02")
+# === User 1 ===
+user1 = User.create!(
+  username: "testuser",
+  password: "SecurePass1!",
+  bio: "I love exploring oolongs and pu’er teas.",
+  avatar_url: "https://example.com/avatar.jpg"
+)
 
-Tea.create!([
-    { name: "Gyokuro",           rank: 9, price: 42.00, category: "Green",  user: user },
-    { name: "Sencha",            rank: 8, price: 22.50, category: "Green",  user: user },
-    { name: "Matcha Uji",        rank: 10, price: 55.00, category: "Green", user: user },
-    { name: "Hōjicha",           rank: 7, price: 18.00, category: "Roasted Green", user: user },
+# Teas for user1
+user1.teas.create!([
+  {
+    name: "Da Hong Pao",
+    category: "Oolong",
+    rank: 9,
+    price: 38.00,
+    vendor: "Fang Shun",
+    known_for: "roasted oolong",
+    ship_from: "China",
+    popularity: 5,
+    shopping_platform: "Taobao",
+    product_url: "https://shop71393784.taobao.com/"
+  },
+  {
+    name: "Liu Bao",
+    category: "Heicha",
+    rank: 8,
+    price: 24.00,
+    vendor: "Geow Yong",
+    known_for: "heicha",
+    ship_from: "China",
+    popularity: 4,
+    shopping_platform: "Taobao",
+    product_url: "https://shop352670532.taobao.com/"
+  }
+])
 
-    { name: "Ostfriesen Mischung", rank: 8, price: 20.00, category: "Black", user: user },
-    { name: "Ronnefeldt Darjeeling", rank: 9, price: 28.00, category: "Black", user: user },
-    { name: "Schwarztee Assam", rank: 7, price: 25.00, category: "Black", user: user },
+# === User 2 ===
+user2 = User.create!(
+  username: "oolongfan",
+  password: "AnotherSecure1!",
+  bio: "Big fan of Taiwanese oolongs.",
+  avatar_url: "https://example.com/avatar2.jpg"
+)
 
-    { name: "Mariage Frères Marco Polo", rank: 10, price: 45.00, category: "Flavored Black", user: user },
-    { name: "Kusmi Tea Anastasia", rank: 8, price: 30.00, category: "Earl Grey", user: user },
-    { name: "Palais des Thés Thé du Hammam", rank: 9, price: 35.00, category: "Green", user: user }
+# Teas for user2
+user2.teas.create!([
+  {
+    name: "Ali Shan",
+    category: "Oolong",
+    rank: 9,
+    price: 40.00,
+    vendor: "Taiwan Tea Crafts",
+    known_for: "high-mountain oolong",
+    ship_from: "Taiwan",
+    popularity: 5,
+    shopping_platform: "TaiwanTeaCrafts",
+    product_url: "https://www.taiwanteacrafts.com"
+  },
+  {
+    name: "Dong Ding",
+    category: "Oolong",
+    rank: 8,
+    price: 32.00,
+    vendor: "Eco-Cha",
+    known_for: "traditional roasted oolong",
+    ship_from: "Taiwan",
+    popularity: 4,
+    shopping_platform: "EcoCha",
+    product_url: "https://eco-cha.com"
+  }
 ])
