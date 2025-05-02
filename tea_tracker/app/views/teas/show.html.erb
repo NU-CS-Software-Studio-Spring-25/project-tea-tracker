@@ -9,18 +9,31 @@
 
       <table class="table table-bordered table-hover align-middle">
         <tbody>
-          <tr>
-            <th scope="row">Rank</th>
-            <td><%= @tea.rank %></td>
-          </tr>
-          <tr>
-            <th scope="row">Price</th>
-            <td>$<%= @tea.price.nil? ? 'N/A' : number_with_precision(@tea.price, precision: 2) %></td>
-          </tr>
-          <tr>
-            <th scope="row">Category</th>
-            <td><%= @tea.category %></td>
-          </tr>
+        <tr>
+        <th scope="row">Vendor</th>
+        <td><%= @tea.vendor %></td>
+      </tr>
+      <tr>
+        <th scope="row">Known For</th>
+        <td><%= @tea.known_for %></td>
+      </tr>
+      <tr>
+        <th scope="row">Ships From</th>
+        <td><%= @tea.ship_from %></td>
+      </tr>
+      <tr>
+        <th scope="row">Popularity</th>
+        <td><%= @tea.popularity %></td>
+      </tr>
+      <tr>
+        <th scope="row">Platform</th>
+        <td><%= @tea.shopping_platform %></td>
+      </tr>
+      <tr>
+        <th scope="row">Product Link</th>
+        <td><%= link_to "Buy Now", @tea.product_url, target: "_blank", class: "btn btn-outline-success btn-sm" %></td>
+      </tr>
+      
         </tbody>
       </table>
 
