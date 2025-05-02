@@ -1,6 +1,46 @@
+require 'faker'
+
+
 # Clear existing records
 User.destroy_all
 Tea.destroy_all
+
+## Fake data generation
+# Clear existing data
+User.destroy_all
+Tea.destroy_all
+
+# Create fake users
+10.times do
+  User.create!(
+    username: Faker::Internet.unique.username,
+    password: "password123",
+    bio: Faker::Lorem.sentence,
+    avatar_url: Faker::Avatar.image
+  )
+end
+
+# Assign teas to random users
+users = User.all
+
+200.times do
+  Tea.create!(
+    name: Faker::Tea.variety,
+    category: Faker::Tea.type,
+    rank: rand(1..10),
+    price: Faker::Commerce.price(range: 2.0..10.0),
+    vendor: Faker::Company.name,
+    known_for: Faker::Marketing.buzzwords,
+    ship_from: Faker::Address.city,
+    popularity: rand(1..10),
+    shopping_platform: Faker::Company.name,
+    product_url: Faker::Internet.url,
+    user_id: users.sample.id
+  )
+end
+
+
+# Create specific users and teas for testing
 
 # === User 1 ===
 user1 = User.create!(

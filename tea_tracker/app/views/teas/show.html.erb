@@ -9,45 +9,50 @@
 
       <table class="table table-bordered table-hover align-middle">
         <tbody>
-        <tr>
-        <th scope="row">Vendor</th>
-        <td><%= @tea.vendor %></td>
-      </tr>
-      <tr>
-        <th scope="row">Known For</th>
-        <td><%= @tea.known_for %></td>
-      </tr>
-      <tr>
-        <th scope="row">Ships From</th>
-        <td><%= @tea.ship_from %></td>
-      </tr>
-      <tr>
-        <th scope="row">Popularity</th>
-        <td><%= @tea.popularity %></td>
-      </tr>
-      <tr>
-        <th scope="row">Platform</th>
-        <td><%= @tea.shopping_platform %></td>
-      </tr>
-      <tr>
-        <th scope="row">Product Link</th>
-        <td><%= link_to "Buy Now", @tea.product_url, target: "_blank", class: "btn btn-outline-success btn-sm" %></td>
-      </tr>
-      
+          <tr>
+            <th scope="row">Vendor</th>
+            <td><%= @tea.vendor %></td>
+          </tr>
+          <tr>
+            <th scope="row">Known For</th>
+            <td><%= @tea.known_for %></td>
+          </tr>
+          <tr>
+            <th scope="row">Ships From</th>
+            <td><%= @tea.ship_from %></td>
+          </tr>
+          <tr>
+            <th scope="row">Popularity</th>
+            <td><%= @tea.popularity %></td>
+          </tr>
+          <tr>
+            <th scope="row">Platform</th>
+            <td><%= @tea.shopping_platform %></td>
+          </tr>
+          <tr>
+            <th scope="row">Product Link</th>
+            <td><%= link_to "Buy Now", @tea.product_url, target: "_blank", class: "btn btn-outline-success btn-sm" %></td>
+          </tr>
         </tbody>
       </table>
 
       <hr>
 
-      <p class="tea-info"><strong>Rank Comparison:</strong> This tea's rank is <%= @category_rank_comparison %> the average tea in its category (<%= @tea.category %>).</p>
-      <p class="tea-info"><strong>Price Comparison:</strong> This tea's rank is <%= @price_rank_comparison %> the 3 teas closest in price to it.</p>
-      <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
+      <% if @category_rank_comparison.present? %>
+        <p class="tea-info"><strong>Rank Comparison:</strong> This tea's rank is <%= @category_rank_comparison %> the average tea in its category (<%= @tea.category %>).</p>
+      <% end %>
 
+      <% if @price_rank_comparison.present? %>
+        <p class="tea-info"><strong>Price Comparison:</strong> This tea's rank is <%= @price_rank_comparison %> the 3 teas closest in price to it.</p>
+      <% end %>
+
+      <% if @rank_price_comparison.present? %>
+        <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
+      <% end %>
 
       <div class="d-flex justify-content-end mt-4">
         <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
       </div>
-
 
     </div>
   </div>
