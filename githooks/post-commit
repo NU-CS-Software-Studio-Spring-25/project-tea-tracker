@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Get the latest commit message
+commit_msg=$(git log -1 --pretty=%B)
+
+# Check if it starts with "prod:"
+if [[ "$commit_msg" == prod:* ]]; then
+  echo "Detected prod: commit — updating Heroku..."
+
+  cd tea_tracker || exit 1
+  # Check if working directory is clean
+  git pull heroku main || { echo "Failed to pull latest changes."; exit 1; }
+
+  git add .
+  git commit -m "Auto-sync from Repo A commit: $commit_msg"
+  git push heroku main --force
+
+  echo "Heroku updated."
+else
+  echo "No prod: prefix, skipping Heroku update."
+fi
