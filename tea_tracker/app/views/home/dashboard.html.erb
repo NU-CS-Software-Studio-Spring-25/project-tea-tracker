@@ -1,41 +1,106 @@
-<h1 class="mt-5">Welcome to Tea Tracker</h1>
+<div class="tea-dashboard-header text-center">
+  <h1 class="tea-dashboard-title">🍵 Tea Tracker</h1>
+</div>
 
-<% if current_user %>
-  <p>You are logged in as <strong><%= current_user.username %></strong></p>
-  <% if current_user.avatar_url.present? %>
-    <img src="<%= current_user.avatar_url %>" class="rounded-circle" alt="Avatar" width="100">
-  <% end %>
-  <p><%= current_user.bio %></p>
+<div class="container">
+  <% if current_user %>
+    <div class="user-profile-card text-center">
+      <% if current_user.avatar_url.present? %>
+        <img src="<%= current_user.avatar_url %>" class="user-avatar" alt="Avatar">
+      <% else %>
+        <div class="user-avatar mx-auto d-flex align-items-center justify-content-center bg-light">
+          <span style="font-size: 2rem; color: var(--primary);">
+            <%= current_user.username[0].upcase %>
+          </span>
+        </div>
+      <% end %>
+      <h2 class="username-display"><%= current_user.username %></h2>
+      <p class="user-bio"><%= current_user.bio.present? ? current_user.bio : "Tea enthusiast" %></p>
+      <div class="d-flex justify-content-center gap-3">
+        <%= link_to new_tea_path, class: "action-button add-tea-btn" do %>
+          <span>➕</span> Add New Tea
+        <% end %>
+        <%= link_to logout_path, method: :delete, class: "action-button logout-btn" do %>
+          <span>🚪</span> Logout
+        <% end %>
+      </div>
+    </div>
 
-  <div class="mt-3 mb-4">
-    <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
-    <%= link_to "Logout", logout_path, method: :delete, class: "btn btn-outline-danger ms-2" %>
-  </div>
-<% else %>
-  <p><%= link_to "Login", new_session_path %> or <%= link_to "Sign Up", new_user_path %> to get started tracking your teas.</p>
-<% end %>
+    <h3 class="section-title text-center">Your Tea Collection</h3>
 
-<table class="table table-striped mt-4">
-  <thead class="table-dark">
-    <tr>
-      <th>Tea Name</th>
-      <th>Category</th>
-      <th>Price</th>
-      <th>Vendor</th>
-      <th>Ship From</th>
-      <th>Platform</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @teas.each do |tea| %>
-      <tr>
-        <td><%= link_to tea.name, tea_path(tea) %></td>
-        <td><%= tea.category %></td>
-        <td><%= number_to_currency(tea.price) %></td>
-        <td><%= tea.vendor %></td>
-        <td><%= tea.ship_from %></td>
-        <td><%= tea.shopping_platform %></td>
-      </tr>
+    <%= form_with url: root_path, method: :get, local: true, class: "filter-container" do %>
+      <div class="row g-3 align-items-center justify-content-center">
+        <div class="col-md-4 col-sm-6">
+          <%= select_tag :filter, options_for_select([["All Categories", ""]] + @categories.map { |c| [c.capitalize, c] }, selected: params[:filter]), class: "form-select filter-select w-100" %>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <%= select_tag :sort, options_for_select([
+            ["Sort by Price (Low to High)", "price_asc"],
+            ["Sort by Price (High to Low)", "price_desc"]
+          ], selected: params[:sort]), class: "form-select filter-select w-100" %>
+        </div>
+        <div class="col-auto">
+          <%= submit_tag "Apply Filters", class: "filter-button" %>
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
+
+    <% if @teas.any? %>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% @teas.each do |tea| %>
+          <div class="col">
+            <div class="tea-card">
+              <div class="tea-ribbon"><%= tea.category.upcase %></div>
+              <div class="tea-card-body">
+                <div class="tea-icon">
+                  <% case tea.category.downcase %>
+                  <% when "green" %>
+                    🍃
+                  <% when "black" %>
+                    🖤
+                  <% when "oolong" %>
+                    🔶
+                  <% when "white" %>
+                    ⚪
+                  <% when "herbal" %>
+                    🌿
+                  <% when "puerh" %>
+                    🧱
+                  <% else %>
+                    🫖
+                  <% end %>
+                </div>
+                <h5 class="card-title">
+                  <span class="tea-type-indicator tea-type-<%= tea.category.downcase %>"></span>
+                  <%= link_to tea.name, tea_path(tea), class: "text-decoration-none" %>
+                </h5>
+                <p><strong>Vendor:</strong> <%= tea.vendor %></p>
+                <p><strong>Ships from:</strong> <%= tea.ship_from %></p>
+                <p><strong>Platform:</strong> 🛍️ <%= tea.shopping_platform %></p>
+                <p><strong>Price:</strong> <span style="color: var(--accent); font-weight: 600;"><%= number_to_currency(tea.price) %></span></p>
+              </div>
+              <div class="tea-footer">
+                <%= link_to "View Details", tea_path(tea), class: "tea-detail-btn" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🍵</div>
+        <p>You haven't added any teas yet. Click "Add New Tea" to start your collection!</p>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="user-profile-card text-center" style="padding: 3rem;">
+      <div style="font-size: 5rem; margin-bottom: 1.5rem;">🍵</div>
+      <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Track Your Tea Journey</h2>
+      <p style="font-size: 1.1rem; margin-bottom: 2rem;">Keep track of your favorite teas, discover new flavors, and never lose track of where to buy them again!</p>
+      <div class="d-flex justify-content-center gap-3">
+        <%= link_to "Login", new_session_path, class: "action-button add-tea-btn" %>
+        <%= link_to "Sign Up", new_user_path, class: "action-button logout-btn", style: "background-color: white; color: var(--primary); border: 2px solid var(--primary);" %>
+      </div>
+    </div>
+  <% end %>
+</div>
