@@ -17,7 +17,8 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
 - Frontend visualizations 
  - Average price per category
  - Average rank per category
- - Average price for 'rank range' 
+ - Average price for 'rank range'
+ - User login/sign up
 
 Make entry with 4 fields, view that displays it, way to edit entry. 
 
