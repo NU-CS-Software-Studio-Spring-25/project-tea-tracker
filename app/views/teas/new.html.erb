@@ -1,27 +1,56 @@
 <h1>Create New Tea</h1>
 
 <%= form_with model: @tea, local: true do |form| %>
-    <div class="form-group">
-        <%= form.label :name %>
-        <%= form.text_field :name, class: "form-control" %>
-    </div>
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
 
-    <div class="form-group">
-        <%= form.label :rank %>
-        <%= form.number_field :rank, class: "form-control" %>
-    </div>
+  <div class="form-group">
+    <%= form.label :category %>
+    <%= form.text_field :category, class: "form-control" %>
+  </div>
 
-    <div class="form-group">
-        <%= form.label :price %>
-        <%= form.number_field :price, step: 0.01, class: "form-control" %>
-    </div>
+  <div class="form-group">
+    <%= form.label :rank %>
+    <%= form.number_field :rank, step: 1, class: "form-control" %>
+  </div>
 
-    <div class="form-group">
-        <%= form.label :category %>
-        <%= form.text_field :category, class: "form-control" %>
-    </div>
+  <div class="form-group">
+    <%= form.label :price %>
+    <%= form.number_field :price, step: 0.01, class: "form-control" %>
+  </div>
 
-    <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
-    <%= form.submit "Create Tea", class: "btn btn-primary my-1" %> 
+  <div class="form-group">
+    <%= form.label :vendor %>
+    <%= form.text_field :vendor, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :known_for %>
+    <%= form.text_field :known_for, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :ship_from %>
+    <%= form.text_field :ship_from, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :popularity %>
+    <%= form.number_field :popularity, step: 1, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :shopping_platform %>
+    <%= form.text_field :shopping_platform, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :product_url %>
+    <%= form.url_field :product_url, class: "form-control" %>
+  </div>
+
+  <%= link_to "Back", root_path, class: "btn btn-secondary mt-3" %>
+  <%= form.submit "Create Tea", class: "btn btn-primary mt-3" %> 
 <% end %>
-

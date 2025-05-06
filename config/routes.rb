@@ -17,5 +17,10 @@ Rails.application.routes.draw do
   # show page
   resources :teas, only: [:index, :new, :create, :show, :edit, :update, :destroy]
 
+  # user authentication
+  resources :users, only: [:new, :create, :show]
+  resources :sessions, only: [:new, :create, :destroy]
+  delete "/logout", to: "sessions#destroy", as: :logout
+  get '/logout', to: 'sessions#destroy'
 
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_170855) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_031527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,13 +22,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_170855) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "vendor"
+    t.string "known_for"
+    t.string "ship_from"
+    t.integer "popularity"
+    t.string "shopping_platform"
+    t.string "product_url"
     t.index ["user_id"], name: "index_teas_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "username", limit: 10
+    t.string "username", limit: 50
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "bio", limit: 500
+    t.string "avatar_url", limit: 255
+    t.string "password_digest"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

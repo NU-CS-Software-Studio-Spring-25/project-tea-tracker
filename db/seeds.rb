@@ -1,26 +1,115 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require 'faker'
 
-user = User.first || User.create!(username: "tealover02")
 
-Tea.create!([
-    { name: "Gyokuro",           rank: 9, price: 42.00, category: "Green",  user: user },
-    { name: "Sencha",            rank: 8, price: 22.50, category: "Green",  user: user },
-    { name: "Matcha Uji",        rank: 10, price: 55.00, category: "Green", user: user },
-    { name: "Hōjicha",           rank: 7, price: 18.00, category: "Roasted Green", user: user },
+# Clear existing records
+User.destroy_all
+Tea.destroy_all
 
-    { name: "Ostfriesen Mischung", rank: 8, price: 20.00, category: "Black", user: user },
-    { name: "Ronnefeldt Darjeeling", rank: 9, price: 28.00, category: "Black", user: user },
-    { name: "Schwarztee Assam", rank: 7, price: 25.00, category: "Black", user: user },
+## Fake data generation
+# Clear existing data
+User.destroy_all
+Tea.destroy_all
 
-    { name: "Mariage Frères Marco Polo", rank: 10, price: 45.00, category: "Flavored Black", user: user },
-    { name: "Kusmi Tea Anastasia", rank: 8, price: 30.00, category: "Earl Grey", user: user },
-    { name: "Palais des Thés Thé du Hammam", rank: 9, price: 35.00, category: "Green", user: user }
+# Create fake users
+10.times do
+  User.create!(
+    username: Faker::Internet.unique.username,
+    password: "password123",
+    bio: Faker::Lorem.sentence,
+    avatar_url: Faker::Avatar.image
+  )
+end
+
+# Assign teas to random users
+users = User.all
+
+200.times do
+  Tea.create!(
+    name: Faker::Tea.variety,
+    category: Faker::Tea.type,
+    rank: rand(1..10),
+    price: Faker::Commerce.price(range: 2.0..10.0),
+    vendor: Faker::Company.name,
+    known_for: Faker::Marketing.buzzwords,
+    ship_from: Faker::Address.city,
+    popularity: rand(1..10),
+    shopping_platform: Faker::Company.name,
+    product_url: Faker::Internet.url,
+    user_id: users.sample.id
+  )
+end
+
+
+# Create specific users and teas for testing
+
+# === User 1 ===
+user1 = User.create!(
+  username: "testuser",
+  password: "SecurePass1!",
+  bio: "I love exploring oolongs and pu’er teas.",
+  avatar_url: "https://example.com/avatar.jpg"
+)
+
+# Teas for user1
+user1.teas.create!([
+  {
+    name: "Da Hong Pao",
+    category: "Oolong",
+    rank: 9,
+    price: 38.00,
+    vendor: "Fang Shun",
+    known_for: "roasted oolong",
+    ship_from: "China",
+    popularity: 5,
+    shopping_platform: "Taobao",
+    product_url: "https://shop71393784.taobao.com/"
+  },
+  {
+    name: "Liu Bao",
+    category: "Heicha",
+    rank: 8,
+    price: 24.00,
+    vendor: "Geow Yong",
+    known_for: "heicha",
+    ship_from: "China",
+    popularity: 4,
+    shopping_platform: "Taobao",
+    product_url: "https://shop352670532.taobao.com/"
+  }
+])
+
+# === User 2 ===
+user2 = User.create!(
+  username: "oolongfan",
+  password: "AnotherSecure1!",
+  bio: "Big fan of Taiwanese oolongs.",
+  avatar_url: "https://example.com/avatar2.jpg"
+)
+
+# Teas for user2
+user2.teas.create!([
+  {
+    name: "Ali Shan",
+    category: "Oolong",
+    rank: 9,
+    price: 40.00,
+    vendor: "Taiwan Tea Crafts",
+    known_for: "high-mountain oolong",
+    ship_from: "Taiwan",
+    popularity: 5,
+    shopping_platform: "TaiwanTeaCrafts",
+    product_url: "https://www.taiwanteacrafts.com"
+  },
+  {
+    name: "Dong Ding",
+    category: "Oolong",
+    rank: 8,
+    price: 32.00,
+    vendor: "Eco-Cha",
+    known_for: "traditional roasted oolong",
+    ship_from: "Taiwan",
+    popularity: 4,
+    shopping_platform: "EcoCha",
+    product_url: "https://eco-cha.com"
+  }
 ])
