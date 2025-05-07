@@ -1,0 +1,30 @@
+<h1 class="mt-5">All Teas</h1>
+
+<table class="table table-striped mt-4">
+  <thead class="table-dark">
+    <tr>
+      <th>Tea Name</th>
+      <th>Category</th>
+      <th>Price</th>
+      <th>Vendor</th>
+      <th>Ship From</th>
+      <th>Platform</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @teas.each do |tea| %>
+      <tr>
+        <td><%= link_to tea.name, tea_path(tea) %></td>
+        <td><%= tea.category %></td>
+        <td><%= number_to_currency(tea.price) %></td>
+        <td><%= tea.vendor %></td>
+        <td><%= tea.ship_from %></td>
+        <td><%= tea.shopping_platform %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="mt-4">
+  <%= link_to "Back to Dashboard", root_path, class: "btn btn-secondary" %>
+</div>

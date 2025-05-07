@@ -75,6 +75,30 @@ user1.teas.create!([
     popularity: 4,
     shopping_platform: "Taobao",
     product_url: "https://shop352670532.taobao.com/"
+  },
+  {
+    name: "Ali Shan",
+    category: "Oolong",
+    rank: 9,
+    price: 40.00,
+    vendor: "Taiwan Tea Crafts",
+    known_for: "high-mountain oolong",
+    ship_from: "Taiwan",
+    popularity: 5,
+    shopping_platform: "TaiwanTeaCrafts",
+    product_url: "https://www.taiwanteacrafts.com"
+  },
+  {
+    name: "Dong Ding",
+    category: "Oolong",
+    rank: 8,
+    price: 32.00,
+    vendor: "Eco-Cha",
+    known_for: "traditional roasted oolong",
+    ship_from: "Taiwan",
+    popularity: 4,
+    shopping_platform: "EcoCha",
+    product_url: "https://eco-cha.com"
   }
 ])
 

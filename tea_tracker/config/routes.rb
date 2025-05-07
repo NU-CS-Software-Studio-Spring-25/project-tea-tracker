@@ -11,16 +11,14 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
-  root "home#index"
+  root "home#dashboard"
 
   # show page
-  resources :teas, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+  resources :teas, only: [ :index, :show, :new, :create ]
 
   # user authentication
-  resources :users, only: [:new, :create, :show]
-  resources :sessions, only: [:new, :create, :destroy]
+  resources :users, only: [ :new, :create, :show ]
+  resources :sessions, only: [ :new, :create, :destroy ]
   delete "/logout", to: "sessions#destroy", as: :logout
-  get '/logout', to: 'sessions#destroy'
-
+  get "/logout", to: "sessions#destroy"
 end
