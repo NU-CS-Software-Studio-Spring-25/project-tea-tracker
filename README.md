@@ -98,7 +98,7 @@ To push data from db/seeds.rb to remote
 heroku run rake db:seed -a tea-tracker
 ```
 
-# Troubleshooting
+## Troubleshooting
 If `heroku psql` gives you the error of `SSL error: certificate verify failed`, run the following:
 
 ```
@@ -106,3 +106,38 @@ cd ~/.postgresql
 rm root.crt
 ```
 This may cause issues if with other Postgres databases, but works for the connection.
+
+# Heroku Post-Commit Hook Setup
+Make sure you are in the root directory (`project-tea-tracker`).
+There's a folder called `githooks` that should have a script called `post-commit` in it. If there isn't, mention it in Slack because we need to put it back. 
+
+Run the following to setup the hooks script:
+```
+chmod +x setup_hooks.sh
+./setup_hooks.sh
+```
+
+Run the following to check if it worked:
+```
+git config core.hooksPath
+```
+It should return 
+```
+githooks
+```
+
+Now, if you preface a commit with `prod:` (all lowercase right now but might change later), it will deploy to Heroku. The result will look like this:
+```
+git commit -m "prod: test"
+
+Detected prod: commit — updating Heroku...
+From https://git.heroku.com/tea-tracker
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[main 2db32f6] Auto-sync from Repo A commit: prod: test
+ 1 file changed, 2 insertions(+)
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+...
+```
+Note: this will run when you COMMIT, not when you PUSH. So if you redact a commit/go back and forth there may be some messiness in the git history of Heroku, but since we're not explicitly looking there, this should be fine. It is also force pushing every time which is bad practice but will not fail (TODO: look into --force-with-lease).
