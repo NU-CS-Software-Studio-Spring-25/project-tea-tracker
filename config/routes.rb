@@ -13,8 +13,9 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#dashboard"
 
-  # show page
-  resources :teas, only: [ :index, :show, :new, :create ]
+  # Tea resources with all CRUD actions
+  resources :teas
+  resources :entries
 
   # user authentication
   resources :users, only: [ :new, :create, :show ]

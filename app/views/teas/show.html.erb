@@ -50,7 +50,8 @@
         <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
       <% end %>
 
-      <div class="d-flex justify-content-end mt-4">
+      <div class="d-flex justify-content-between mt-4">
+        <%= link_to "Edit", edit_tea_path(@tea), class: "btn btn-primary" %>
         <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
       </div>
 

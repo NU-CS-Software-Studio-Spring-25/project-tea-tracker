@@ -89,14 +89,15 @@ for Windows: look [here](https://devcenter.heroku.com/articles/heroku-cli)
 This will take you to heroku's login page, which is required for authentication.
 
 
+To push data from db/seeds.rb to remote (make sure you are in normal cli)
+```
+heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker
+```
+
 Then, to connect to the database:
 ```heroku psql -a tea-tracker```
-which is just a psql instance where you can run Postgres commands.
-
-To push data from db/seeds.rb to remote 
-```
-heroku run rake db:seed -a tea-tracker
-```
+which is just a psql instance where you can run Postgresql commands.
+You can run `\dt` to see all tables or `SELECT * FROM users;` or `SELECT * FROM teas;` to see if the data is properly migrated. 
 
 ## Troubleshooting
 If `heroku psql` gives you the error of `SSL error: certificate verify failed`, run the following:
@@ -141,3 +142,5 @@ Counting objects: 100% (5/5), done.
 ...
 ```
 Note: this will run when you COMMIT, not when you PUSH. So if you redact a commit/go back and forth there may be some messiness in the git history of Heroku, but since we're not explicitly looking there, this should be fine. It is also force pushing every time which is bad practice but will not fail (TODO: look into --force-with-lease).
+
+NOTE: this does not work with github desktop. ask me how I know...

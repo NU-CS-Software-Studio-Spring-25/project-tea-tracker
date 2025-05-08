@@ -1,4 +1,4 @@
-<h1 class="mt-5">All Teas</h1>
+<h1 class="mt-5">My Tea Collection</h1>
 
 <table class="table table-striped mt-4">
   <thead class="table-dark">
@@ -9,10 +9,13 @@
       <th>Vendor</th>
       <th>Ship From</th>
       <th>Platform</th>
+      <th>My Rating</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @teas.each do |tea| %>
+      <% entry = @entries[tea.id] %>
       <tr>
         <td><%= link_to tea.name, tea_path(tea) %></td>
         <td><%= tea.category %></td>
@@ -20,11 +23,17 @@
         <td><%= tea.vendor %></td>
         <td><%= tea.ship_from %></td>
         <td><%= tea.shopping_platform %></td>
+        <td><%= entry&.rank %></td>
+        <td>
+          <%= link_to "Edit", edit_tea_path(tea), class: "btn btn-sm btn-primary" %>
+          <%= link_to "Delete", tea_path(tea), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "btn btn-sm btn-danger" %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <div class="mt-4">
+  <%= link_to "Add New Tea", new_tea_path, class: "btn btn-primary" %>
   <%= link_to "Back to Dashboard", root_path, class: "btn btn-secondary" %>
 </div>

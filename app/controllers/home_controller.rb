@@ -15,7 +15,8 @@ class HomeController < ApplicationController
     @tea_type_counts = @teas.group(:category).count
     @average_tea_cost = @teas.average(:price).to_f
     @popular_ship_from = @teas.group(:ship_from).count.sort_by { |_location, count| -count }.first(5).to_h
-    @top_ranked_tea = @teas.order(rank: :desc).first
+    @top_entry = current_user.entries.order(rank: :desc).first
+    @top_ranked_tea = @top_entry&.tea
     @total_teas = @teas.count
     @most_expensive_tea = @teas.order(price: :desc).first
     @least_popular_tea = @teas.order(:popularity).first
