@@ -4,11 +4,7 @@ require 'faker'
 # Clear existing records
 User.destroy_all
 Tea.destroy_all
-
-## Fake data generation
-# Clear existing data
-User.destroy_all
-Tea.destroy_all
+Entry.destroy_all
 
 # Create fake users
 10.times do
@@ -27,7 +23,6 @@ users = User.all
   Tea.create!(
     name: Faker::Tea.variety,
     category: Faker::Tea.type,
-    rank: rand(1..10),
     price: Faker::Commerce.price(range: 2.0..10.0),
     vendor: Faker::Company.name,
     known_for: Faker::Marketing.buzzwords,
@@ -35,11 +30,18 @@ users = User.all
     popularity: rand(1..10),
     shopping_platform: Faker::Company.name,
     product_url: Faker::Internet.url,
-    user_id: users.sample.id
+    
   )
 end
 
-
+teas = Tea.all
+200.times do
+  Entry.create!(
+    rank: rand(1..10),
+    user_id: users.sample.id,
+    tea_id: teas.sample.id
+  )
+end
 # Create specific users and teas for testing
 
 # === User 1 ===
@@ -51,11 +53,19 @@ user1 = User.create!(
 )
 
 # Teas for user1
-user1.teas.create!([
+user2 = User.create!(
+  username: "oolongfan",
+  password: "AnotherSecure1!",
+  bio: "Big fan of Taiwanese oolongs.",
+  avatar_url: "https://example.com/avatar2.jpg"
+)
+
+# === Add entries for specific users ===
+
+sample_teas = [
   {
     name: "Da Hong Pao",
     category: "Oolong",
-    rank: 9,
     price: 38.00,
     vendor: "Fang Shun",
     known_for: "roasted oolong",
@@ -67,7 +77,6 @@ user1.teas.create!([
   {
     name: "Liu Bao",
     category: "Heicha",
-    rank: 8,
     price: 24.00,
     vendor: "Geow Yong",
     known_for: "heicha",
@@ -79,7 +88,6 @@ user1.teas.create!([
   {
     name: "Ali Shan",
     category: "Oolong",
-    rank: 9,
     price: 40.00,
     vendor: "Taiwan Tea Crafts",
     known_for: "high-mountain oolong",
@@ -91,7 +99,6 @@ user1.teas.create!([
   {
     name: "Dong Ding",
     category: "Oolong",
-    rank: 8,
     price: 32.00,
     vendor: "Eco-Cha",
     known_for: "traditional roasted oolong",
@@ -100,40 +107,15 @@ user1.teas.create!([
     shopping_platform: "EcoCha",
     product_url: "https://eco-cha.com"
   }
-])
+]
 
-# === User 2 ===
-user2 = User.create!(
-  username: "oolongfan",
-  password: "AnotherSecure1!",
-  bio: "Big fan of Taiwanese oolongs.",
-  avatar_url: "https://example.com/avatar2.jpg"
-)
+sample_teas.each_with_index do |tea_data, index|
+  tea = Tea.create!(tea_data)
+  Entry.create!(user: user1, tea: tea, rank: 9 - index)
+end
 
-# Teas for user2
-user2.teas.create!([
-  {
-    name: "Ali Shan",
-    category: "Oolong",
-    rank: 9,
-    price: 40.00,
-    vendor: "Taiwan Tea Crafts",
-    known_for: "high-mountain oolong",
-    ship_from: "Taiwan",
-    popularity: 5,
-    shopping_platform: "TaiwanTeaCrafts",
-    product_url: "https://www.taiwanteacrafts.com"
-  },
-  {
-    name: "Dong Ding",
-    category: "Oolong",
-    rank: 8,
-    price: 32.00,
-    vendor: "Eco-Cha",
-    known_for: "traditional roasted oolong",
-    ship_from: "Taiwan",
-    popularity: 4,
-    shopping_platform: "EcoCha",
-    product_url: "https://eco-cha.com"
-  }
-])
+# Add same two teas to user2
+["Ali Shan", "Dong Ding"].each_with_index do |name, i|
+  tea = Tea.find_by(name: name)
+  Entry.create!(user: user2, tea: tea, rank: 9 - i)
+end

@@ -1,4 +1,5 @@
 class Tea < ApplicationRecord
-  belongs_to :user
-  validates :name, :rank, :price, :category, presence: true
+  has_many :entries
+  has_many :users, through: :entries
+  validates :name, :price, :category, presence: true
 end

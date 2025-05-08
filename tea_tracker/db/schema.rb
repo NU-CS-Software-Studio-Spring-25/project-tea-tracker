@@ -10,16 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_031527) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_163000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "entries", force: :cascade do |t|
+    t.integer "rank"
+    t.bigint "user_id", null: false
+    t.bigint "tea_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tea_id"], name: "index_entries_on_tea_id"
+    t.index ["user_id"], name: "index_entries_on_user_id"
+  end
+
   create_table "teas", force: :cascade do |t|
     t.string "name"
-    t.integer "rank"
     t.decimal "price"
     t.string "category"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "vendor"
@@ -28,7 +36,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_031527) do
     t.integer "popularity"
     t.string "shopping_platform"
     t.string "product_url"
-    t.index ["user_id"], name: "index_teas_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -41,5 +48,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_031527) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "teas", "users"
+  add_foreign_key "entries", "teas"
+  add_foreign_key "entries", "users"
 end

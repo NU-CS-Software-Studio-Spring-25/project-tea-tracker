@@ -16,6 +16,9 @@ if [[ "$commit_msg" == prod:* ]]; then
   git push heroku main --force
 
   echo "Heroku updated."
+  heroku pg:reset --confirm tea-tracker
+  heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker || { echo "Failed to update data."; exit 1; }
+  echo "Data updated."
 else
   echo "No prod: prefix, skipping Heroku update."
 fi
