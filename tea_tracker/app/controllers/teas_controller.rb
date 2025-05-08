@@ -49,11 +49,16 @@ class TeasController < ApplicationController
         return
       end
 
-      if @tea.update(tea_params)
-        redirect_to tea_path(@tea), notice: "Tea updated successfully."
-      else
-        render :edit, status: :unprocessable_entity
+      ActiveRecord::Base.transaction do
+        if @tea.update(tea_params)
+          @entry.update!(rank: params[:tea][:rank])
+          redirect_to tea_path(@tea), notice: "Tea updated successfully."
+        else
+          render :edit, status: :unprocessable_entity
+        end
       end
+    rescue ActiveRecord::RecordInvalid
+      render :edit, status: :unprocessable_entity
     end
 
     def destroy
