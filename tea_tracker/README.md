@@ -127,18 +127,28 @@ It should return
 githooks
 ```
 
-Now, if you preface a commit with `prod:` (all lowercase right now but might change later), it will deploy to Heroku. The result will look like this:
+Now, if you commit, it will deploy to Heroku. If you are not logged in, it will skip. The result will look like this (TODO: check why it's always resetting db):
 ```
-git commit -m "prod: test"
+git commit -m "test"
 
-Detected prod: commit — updating Heroku...
+Updating Heroku...
 From https://git.heroku.com/tea-tracker
  * branch            main       -> FETCH_HEAD
 Already up to date.
-[main 2db32f6] Auto-sync from Repo A commit: prod: test
- 1 file changed, 2 insertions(+)
-Enumerating objects: 5, done.
-Counting objects: 100% (5/5), done.
+On branch main
+Your branch is up to date with 'heroku/main'.
+
+nothing to commit, working tree clean
+Everything up-to-date
+Heroku updated.
+Logged in to Heroku, proceeding with database update.
+Pushing tea_tracker_development to postgresql-aerodynamic-93675
+ ›   Error: Remote database is not empty. Please create a new database or use heroku pg:reset
+Failed to push data to Heroku. Resetting the database and retrying.
+Resetting postgresql-aerodynamic-93675... done
+Pushing tea_tracker_development to postgresql-aerodynamic-93675
+pg_dump: last built-in OID is 16383
+pg_dump: reading extensions
 ...
 ```
 Note: this will run when you COMMIT, not when you PUSH. So if you redact a commit/go back and forth there may be some messiness in the git history of Heroku, but since we're not explicitly looking there, this should be fine. It is also force pushing every time which is bad practice but will not fail (TODO: look into --force-with-lease).
