@@ -69,7 +69,7 @@
               <div class="d-flex justify-content-between">
                 <div>
                   <small class="text-muted">Rank:</small>
-                  <p class="mb-0"><%= tea.rank || "N/A" %></p>
+                  <p class="mb-0"><%= current_user.entries.find_by(tea: tea)&.rank || "N/A" %></p>
                 </div>
                 <div>
                   <small class="text-muted">Price:</small>

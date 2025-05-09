@@ -1,4 +1,3 @@
-
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Tea Categories</h1>
@@ -26,8 +25,12 @@
                   <h5 class="card-title"><%= tea.name %></h5>
                   <p class="card-text text-muted"><%= tea.vendor %></p>
                   <div class="d-flex justify-content-between">
-                    <span>Rank: <%= tea.rank || "N/A" %></span>
-                    <span><%= number_to_currency(tea.price) || "N/A" %></span>
+                    <span>
+                      Rank: <%= @entries[tea.id]&.rank || "N/A" %>
+                    </span>
+                    <span>
+                      <%= number_to_currency(tea.price) || "N/A" %>
+                    </span>
                   </div>
                 </div>
                 <div class="card-footer bg-white border-top-0">

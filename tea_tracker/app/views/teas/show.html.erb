@@ -18,7 +18,7 @@
                 <div class="d-flex justify-content-between mb-3">
                   <div class="text-center">
                     <h6 class="text-muted mb-1">Rank</h6>
-                    <h4><%= @tea.rank || "N/A" %></h4>
+                    <h4><%= @entry&.rank || "N/A" %></h4>
                   </div>
                   <div class="text-center">
                     <h6 class="text-muted mb-1">Price</h6>
@@ -30,11 +30,11 @@
                   </div>
                 </div>
                 
-                <% if @tea.rank && @category_avg_rank %>
+                <% if @entry&.rank && @category_avg_rank %>
                   <div class="progress mb-2" style="height: 8px;">
                     <div class="progress-bar bg-<%= tea_category_color(@tea.category) %>" role="progressbar" 
-                         style="width: <%= (@tea.rank.to_f / 100) * 100 %>%;" 
-                         aria-valuenow="<%= @tea.rank %>" aria-valuemin="0" aria-valuemax="100">
+                         style="width: <%= (@entry&.rank.to_f / 100) * 100 %>%;" 
+                         aria-valuenow="<%= @entry&.rank %>" aria-valuemin="0" aria-valuemax="100">
                     </div>
                   </div>
                   <p class="text-muted small text-center">

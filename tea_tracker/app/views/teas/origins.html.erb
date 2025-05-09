@@ -29,7 +29,7 @@
                   </p>
                   <p class="card-text text-muted"><%= tea.vendor %></p>
                   <div class="d-flex justify-content-between">
-                    <span>Rank: <%= tea.rank || "N/A" %></span>
+                    <span>Rank: <%= @entries[tea.id]&.rank || "N/A" %></span>
                     <span><%= number_to_currency(tea.price) || "N/A" %></span>
                   </div>
                 </div>

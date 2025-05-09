@@ -6,7 +6,8 @@ class TeasController < ApplicationController
   before_action :set_tea, only: [:show, :edit, :update, :destroy]
 
   def index
-    @teas = current_user.teas
+    @teas = current_user.teas.includes(:entries)
+    @entries = current_user.entries.index_by(&:tea_id)
     @tea_categories = @teas.pluck(:category).uniq
     
     # Apply filters
@@ -25,7 +26,7 @@ class TeasController < ApplicationController
     when "name_asc"
       @teas = @teas.order(name: :asc)
     when "rank_desc"
-      @teas = @teas.order(rank: :desc)
+      @teas = @teas.joins(:entries).where(entries: { user_id: current_user.id }).order("entries.rank DESC")
     when "price_asc"
       @teas = @teas.order(price: :asc)
     when "price_desc"
@@ -44,13 +45,15 @@ class TeasController < ApplicationController
 
   def show
     # Calculate category average rank for comparison
-    @category_avg_rank = current_user.teas
-                                    .where(category: @tea.category)
-                                    .where.not(id: @tea.id)
-                                    .average(:rank).to_f
-    
-    if @tea.rank.present? && @category_avg_rank > 0
-      if @tea.rank > @category_avg_rank
+    @category_avg_rank = Entry.joins(:tea)
+                          .where(user: current_user)
+                          .where(teas: { category: @tea.category })
+                          .where.not(tea_id: @tea.id)
+                          .average(:rank).to_f
+
+    @entry = current_user.entries.find_by(tea: @tea)
+    if @entry&.rank.present? && @category_avg_rank > 0
+      if @entry.rank > @category_avg_rank
         @category_rank_comparison = "This tea's rank is higher than the average tea in its category (#{@category_avg_rank.round(1)})."
       else
         @category_rank_comparison = "This tea's rank is lower than the average tea in its category (#{@category_avg_rank.round(1)})."
@@ -58,16 +61,17 @@ class TeasController < ApplicationController
     end
     
     # Price comparison with similar ranked teas
-    if @tea.rank.present? && @tea.price.present?
-      similar_ranked_teas = current_user.teas
-                                       .where.not(id: @tea.id)
-                                       .where.not(rank: nil)
-                                       .where.not(price: nil)
-                                       .order(Arel.sql("ABS(rank - #{@tea.rank})"))
-                                       .limit(3)
-      
-      if similar_ranked_teas.any?
-        avg_price = similar_ranked_teas.average(:price).to_f
+    if @entry&.rank.present? && @tea.price.present?
+      similar_entry_ids = Entry.where(user: current_user)
+                             .where.not(tea_id: @tea.id)
+                             .where.not(rank: nil)
+                             .order(Arel.sql("ABS(rank - #{ActiveRecord::Base.connection.quote(@entry.rank)})"))
+                             .limit(3)
+                             .pluck(:tea_id)
+
+      similar_teas = Tea.where(id: similar_entry_ids).where.not(price: nil)
+      if similar_teas.any?
+        avg_price = similar_teas.average(:price).to_f
         
         if @tea.price > avg_price
           @price_rank_comparison = "This tea's rank is higher than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
@@ -78,18 +82,21 @@ class TeasController < ApplicationController
     end
     
     # Rank comparison with similar priced teas
-    if @tea.price.present? && @tea.rank.present?
-      similar_priced_teas = current_user.teas
-                                       .where.not(id: @tea.id)
-                                       .where.not(price: nil)
-                                       .where.not(rank: nil)
-                                       .order(Arel.sql("ABS(price - #{@tea.price})"))
-                                       .limit(3)
-      
-      if similar_priced_teas.any?
-        avg_rank = similar_priced_teas.average(:rank).to_f
-        
-        if @tea.rank > avg_rank
+    if @tea.price.present? && @entry&.rank.present?
+      similar_teas = current_user.teas.where.not(id: @tea.id)
+                                    .where.not(price: nil)
+
+      similar_tea_ids = similar_teas
+                          .order(Arel.sql("ABS(price - #{ActiveRecord::Base.connection.quote(@tea.price)})"))
+                          .limit(3)
+                          .pluck(:id)
+
+      similar_entries = Entry.where(user: current_user, tea_id: similar_tea_ids).where.not(rank: nil)
+
+      if similar_entries.any?
+        avg_rank = similar_entries.average(:rank).to_f
+
+        if @entry.rank > avg_rank
           @rank_price_comparison = "higher than"
         else
           @rank_price_comparison = "lower than"
@@ -103,13 +110,20 @@ class TeasController < ApplicationController
   end
 
   def create
-    @tea = current_user.teas.new(tea_params)
+    @tea = Tea.new(tea_params)
     
-    if @tea.save
-      redirect_to @tea, notice: "Tea was successfully created."
-    else
-      render :new
+    ActiveRecord::Base.transaction do
+      if @tea.save
+        @entry = Entry.create!(tea: @tea, user: current_user, rank: params[:tea][:rank])
+        redirect_to tea_path(@tea), notice: "Tea was successfully created."
+      else
+        flash.now[:alert] = "There was an error creating the tea."
+        render :new, status: :unprocessable_entity
+      end
     end
+  rescue ActiveRecord::RecordInvalid
+    flash.now[:alert] = "There was an error creating the tea."
+    render :new, status: :unprocessable_entity
   end
 
   def edit
@@ -154,7 +168,8 @@ class TeasController < ApplicationController
   def categories
     @categories = current_user.teas.pluck(:category).uniq
     @teas_by_category = {}
-    
+    @entries = current_user.entries.index_by(&:tea_id) # ✅ Add this line
+  
     @categories.each do |category|
       @teas_by_category[category] = current_user.teas.where(category: category)
     end
@@ -163,11 +178,13 @@ class TeasController < ApplicationController
   def origins
     @origins = current_user.teas.pluck(:ship_from).uniq
     @teas_by_origin = {}
-    
+    @entries = current_user.entries.index_by(&:tea_id)  # ✅ Add this line
+  
     @origins.each do |origin|
       @teas_by_origin[origin] = current_user.teas.where(ship_from: origin)
     end
   end
+  
 
   private
   
@@ -176,9 +193,7 @@ class TeasController < ApplicationController
   end
   
   def tea_params
-    params.require(:tea).permit(:name, :category, :rank, :price, :vendor, 
-                               :known_for, :ship_from, :popularity, 
-                               :shopping_platform, :product_url)
+    params.require(:tea).permit(:name, :price, :category, :vendor, :known_for, :ship_from, :popularity, :shopping_platform, :product_url)
   end
   
   def require_login

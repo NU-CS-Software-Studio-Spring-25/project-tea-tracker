@@ -138,10 +138,10 @@
               <p class="text-muted mb-2"><%= @top_ranked_tea.category %></p>
               <div class="d-flex justify-content-center align-items-center mb-3">
                 <% (1..5).each do |i| %>
-                  <i class="bi <%= i <= (@top_ranked_tea.rank.to_f/20).ceil ? 'bi-star-fill' : 'bi-star' %> text-warning mx-1" style="font-size: 1.5rem;"></i>
+                  <i class="bi <%= i <= (@top_entry.rank.to_f / 20).ceil ? 'bi-star-fill' : 'bi-star' %> ...
                 <% end %>
               </div>
-              <p class="mb-0">Rank: <%= @top_ranked_tea.rank %>/100</p>
+              <p class="mb-0">Rank: <%= @top_entry.rank %>/100</p>
               <%= link_to "View Details", tea_path(@top_ranked_tea), class: "btn btn-sm btn-outline-secondary mt-3" %>
             <% else %>
               <p class="text-muted">No ranked teas yet.</p>
