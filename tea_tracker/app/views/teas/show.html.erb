@@ -1,60 +1,138 @@
-<div class="container mt-5">
-
-  <!-- Tea Details Card -->
-  <div class="card tea-card">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0 tea-info"><%= @tea.name %></h2>
-    </div>
-    <div class="card-body">
-
-      <table class="table table-bordered table-hover align-middle">
-        <tbody>
-          <tr>
-            <th scope="row">Vendor</th>
-            <td><%= @tea.vendor %></td>
-          </tr>
-          <tr>
-            <th scope="row">Known For</th>
-            <td><%= @tea.known_for %></td>
-          </tr>
-          <tr>
-            <th scope="row">Ships From</th>
-            <td><%= @tea.ship_from %></td>
-          </tr>
-          <tr>
-            <th scope="row">Popularity</th>
-            <td><%= @tea.popularity %></td>
-          </tr>
-          <tr>
-            <th scope="row">Platform</th>
-            <td><%= @tea.shopping_platform %></td>
-          </tr>
-          <tr>
-            <th scope="row">Product Link</th>
-            <td><%= link_to "Buy Now", @tea.product_url, target: "_blank", class: "btn btn-outline-success btn-sm" %></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <hr>
-
-      <% if @category_rank_comparison.present? %>
-        <p class="tea-info"><strong>Rank Comparison:</strong> This tea's rank is <%= @category_rank_comparison %> the average tea in its category (<%= @tea.category %>).</p>
-      <% end %>
-
-      <% if @price_rank_comparison.present? %>
-        <p class="tea-info"><strong>Price Comparison:</strong> This tea's rank is <%= @price_rank_comparison %> the 3 teas closest in price to it.</p>
-      <% end %>
-
-      <% if @rank_price_comparison.present? %>
-        <p class="tea-info"><strong>Rank-Price Comparison:</strong> This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank to it.</p>
-      <% end %>
-
-      <div class="d-flex justify-content-end mt-4">
-        <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
+<!-- app/views/teas/show.html.erb -->
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <!-- Tea Details Card -->
+      <div class="card shadow tea-detail-card">
+        <div class="card-header bg-<%= tea_category_color(@tea.category) %> text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><%= @tea.name %></h2>
+            <span class="badge bg-white text-<%= tea_category_color(@tea.category) %> fs-6"><%= @tea.category %></span>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="tea-stats p-3 border rounded">
+                <div class="d-flex justify-content-between mb-3">
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Rank</h6>
+                    <h4><%= @tea.rank || "N/A" %></h4>
+                  </div>
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Price</h6>
+                    <h4><%= number_to_currency(@tea.price) || "N/A" %></h4>
+                  </div>
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Popularity</h6>
+                    <h4><%= @tea.popularity || "N/A" %></h4>
+                  </div>
+                </div>
+                
+                <% if @tea.rank && @category_avg_rank %>
+                  <div class="progress mb-2" style="height: 8px;">
+                    <div class="progress-bar bg-<%= tea_category_color(@tea.category) %>" role="progressbar" 
+                         style="width: <%= (@tea.rank.to_f / 100) * 100 %>%;" 
+                         aria-valuenow="<%= @tea.rank %>" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                  </div>
+                  <p class="text-muted small text-center">
+                    <%= @category_rank_comparison %>
+                  </p>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <th scope="row" class="text-muted">Vendor</th>
+                    <td><%= @tea.vendor %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="text-muted">Origin</th>
+                    <td><%= @tea.ship_from %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="text-muted">Known For</th>
+                    <td><%= @tea.known_for %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="text-muted">Platform</th>
+                    <td><%= @tea.shopping_platform %></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <% if @tea.product_url.present? %>
+                <div class="d-grid">
+                  <%= link_to "Buy More", @tea.product_url, target: "_blank", class: "btn btn-success" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          
+          <!-- Comparisons Section -->
+          <div class="comparisons-section mt-4">
+            <h4 class="border-bottom pb-2 mb-3">Tea Insights</h4>
+            
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title">Category Comparison</h6>
+                    <p class="card-text">
+                      <% if @category_rank_comparison.present? %>
+                        <%= @category_rank_comparison %>
+                      <% else %>
+                        No comparison data available.
+                      <% end %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title">Price Comparison</h6>
+                    <p class="card-text">
+                      <% if @price_rank_comparison.present? %>
+                        <%= @price_rank_comparison %>
+                      <% else %>
+                        No comparison data available.
+                      <% end %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title">Rank-Price Comparison</h6>
+                    <p class="card-text">
+                      <% if @rank_price_comparison.present? %>
+                        This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank.
+                      <% else %>
+                        No comparison data available.
+                      <% end %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex justify-content-between mt-4">
+            
+            <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
+          </div>
+        </div>
       </div>
-
     </div>
   </div>
-
 </div>

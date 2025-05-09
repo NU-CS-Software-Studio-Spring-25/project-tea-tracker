@@ -28,3 +28,57 @@
     color: white;
     border-radius: 5px;
 }
+
+/* Dashboard Cards */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Tea Cards */
+.tea-card {
+border: none;
+border-radius: 10px;
+overflow: hidden;
+}
+
+.tea-card .card-header {
+border-bottom: none;
+}
+
+/* Tea Detail Page */
+.tea-detail-card {
+border: none;
+border-radius: 15px;
+overflow: hidden;
+}
+
+.tea-stats {
+background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Progress Bars */
+.progress {
+border-radius: 10px;
+overflow: hidden;
+}
+
+/* Custom Badges */
+.badge {
+font-weight: 500;
+padding: 0.5em 0.8em;
+}
+
+/* Animations */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.card, .list-group-item {
+animation: fadeIn 0.3s ease-out forwards;
+}

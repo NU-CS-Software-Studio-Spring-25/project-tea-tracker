@@ -21,6 +21,33 @@ class HomeController < ApplicationController
     @least_popular_tea = @teas.order(:popularity).first
   end
 
+  def analytics
+    @teas = current_user.teas
+    @total_teas = @teas.count
+    @tea_categories = @teas.pluck(:category).uniq
+    @avg_rank = @teas.average(:rank).to_f
+    @total_value = @teas.sum(:price)
+    
+    # Calculate average rank by category
+    @category_avg_ranks = {}
+    @tea_categories.each do |category|
+      @category_avg_ranks[category] = @teas.where(category: category).average(:rank).to_f
+    end
+    
+    # Get vendor statistics
+    @vendors = @teas.pluck(:vendor).uniq
+    @vendor_tea_counts = @teas.group(:vendor).count
+    @vendor_avg_prices = {}
+    @vendors.each do |vendor|
+      @vendor_avg_prices[vendor] = @teas.where(vendor: vendor).average(:price).to_f
+    end
+    
+    # Get origin statistics
+    @origins = @teas.pluck(:ship_from).uniq
+    @origin_tea_counts = @teas.group(:ship_from).count
+    render 'analytics/index'
+  end
+
   private
 
   def require_login
