@@ -1,4 +1,4 @@
-<h1>Create New Tea</h1>
+<h1>Edit Tea</h1>
 
 <%= form_with model: @tea, local: true do |form| %>
   <div class="form-group">
@@ -48,9 +48,9 @@
 
   <div class="form-group">
     <%= form.label :rank, "Your Rating" %>
-    <%= form.number_field :rank, step: 1, class: "form-control" %>
+    <%= form.number_field :rank, value: @entry.rank, step: 1, class: "form-control" %>
   </div>
 
-  <%= link_to "Back", root_path, class: "btn btn-secondary mt-3" %>
-  <%= form.submit "Create Tea", class: "btn btn-primary mt-3" %> 
-<% end %>
+  <%= link_to "Back", tea_path(@tea), class: "btn btn-secondary mt-3" %>
+  <%= form.submit "Update Tea", class: "btn btn-primary mt-3" %>
+<% end %> 
