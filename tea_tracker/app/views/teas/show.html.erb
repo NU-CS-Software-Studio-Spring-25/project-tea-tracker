@@ -128,8 +128,9 @@
           
           <!-- Action Buttons -->
           <div class="d-flex justify-content-between mt-4">
-            
+            <%= link_to "Edit", edit_tea_path(@tea), class: "btn btn-primary" %>
             <%= link_to "Back", request.referer || root_path, class: "btn btn-secondary back-button" %>
+            <%= link_to "Back to Dashboard", root_path, class: "btn btn-secondary back-button" %>
           </div>
         </div>
       </div>

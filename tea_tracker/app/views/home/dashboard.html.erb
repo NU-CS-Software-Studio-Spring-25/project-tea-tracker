@@ -1,253 +1,272 @@
-
 <h1 class="mt-5 text-center">Welcome to Tea Tracker</h1>
-  <% if current_user %>
-  <div class="container-fluid py-4">
-    <!-- User Profile Section -->
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body text-center">
-            <% if current_user.avatar_url.present? %>
-              <img src="<%= current_user.avatar_url %>" class="rounded-circle mb-3" alt="Avatar" width="120">
-            <% end %>
-            <h2 class="mb-1"><%= current_user.username %>'s Tea Collection</h2>
-            <p class="text-muted"><%= current_user.bio %></p>
+<% if current_user %>
+<div class="container-fluid py-4">
+  <!-- User Profile Section -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <% if current_user.avatar_url.present? %>
+            <img src="<%= current_user.avatar_url %>" class="rounded-circle mb-3" alt="Avatar" width="120">
+          <% end %>
+          <h2 class="mb-1"><%= current_user.username %>'s Tea Collection</h2>
+          <p class="text-muted"><%= current_user.bio %></p>
+          
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
+            <%= link_to "View Collection", teas_path, class: "btn btn-primary" %>
+            <%= link_to "Tea Analytics", tea_analytics_path, class: "btn btn-info" %>
+            <%= link_to "Logout", logout_path, method: :delete, class: "btn btn-outline-danger" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tea Collection Summary -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h3 class="border-bottom pb-2 mb-3">Your Tea Collection at a Glance</h3>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-success text-white h-100">
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-0"><%= @total_teas %></h1>
+          <p class="mb-0">Unique Teas</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-primary text-white h-100">
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-0"><%= @tea_type_counts.keys.count %></h1>
+          <p class="mb-0">Tea Categories</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-warning text-white h-100">
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-0"><%= number_to_currency(@average_tea_cost) %></h1>
+          <p class="mb-0">Avg. Cost</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-info text-white h-100">
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-0"><%= @popular_ship_from.keys.count %></h1>
+          <p class="mb-0">Origins</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tea Highlights -->
+  <div class="row mb-4 tea-highlights-row">
+    <div class="col-md-12">
+      <h3 class="border-bottom pb-2 mb-3">Tea Highlights</h3>
+    </div>
+  
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 tea-highlight-card">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">Top Ranked Tea</h5>
+        </div>
+        <div class="card-body d-flex flex-column align-items-center justify-content-between">
+          <% if @top_ranked_tea %>
+            <div class="text-center mb-3">
+              <h4 class="mb-1"><%= @top_ranked_tea.name %></h4>
+              <p class="text-muted mb-3"><%= @top_ranked_tea.category %></p>
+            </div>
             
-            <div class="d-flex justify-content-center gap-2 mt-3">
-              <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
-              <%= link_to "View Collection", teas_path, class: "btn btn-primary" %>
-              <%= link_to "Tea Analytics", tea_analytics_path, class: "btn btn-info" %>
-              <%= link_to "Logout", logout_path, method: :delete, class: "btn btn-outline-danger" %>
+            <div class="tea-rating my-3">
+              <div class="progress mb-2" style="height: 8px; width: 150px;">
+                <div class="progress-bar bg-success" role="progressbar" 
+                     style="width: <%= (@top_entry.rank.to_f) %>%;" 
+                     aria-valuenow="<%= @top_entry.rank %>" aria-valuemin="0" aria-valuemax="100">
+                </div>
+              </div>
+              <p class="text-center">Rank: <%= @top_entry.rank %>/100</p>
             </div>
-          </div>
+            
+            <div class="mt-auto">
+              <%= link_to "View Details", tea_path(@top_ranked_tea), class: "btn btn-sm btn-outline-secondary" %>
+            </div>
+          <% else %>
+            <p class="text-muted">No ranked teas yet.</p>
+          <% end %>
         </div>
       </div>
     </div>
-    
-    <!-- Tea Collection Summary -->
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <h3 class="border-bottom pb-2 mb-3">Your Tea Collection at a Glance</h3>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="card bg-success text-white h-100">
-          <div class="card-body text-center">
-            <h1 class="display-4 mb-0"><%= @total_teas %></h1>
-            <p class="mb-0">Unique Teas</p>
-          </div>
+  
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 tea-highlight-card">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">Premium Selection</h5>
         </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="card bg-primary text-white h-100">
-          <div class="card-body text-center">
-            <h1 class="display-4 mb-0"><%= @tea_type_counts.keys.count %></h1>
-            <p class="mb-0">Tea Categories</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="card bg-warning text-white h-100">
-          <div class="card-body text-center">
-            <h1 class="display-4 mb-0"><%= number_to_currency(@average_tea_cost) %></h1>
-            <p class="mb-0">Avg. Cost</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="card bg-info text-white h-100">
-          <div class="card-body text-center">
-            <h1 class="display-4 mb-0"><%= @popular_ship_from.keys.count %></h1>
-            <p class="mb-0">Origins</p>
-          </div>
+        <div class="card-body d-flex flex-column align-items-center justify-content-between">
+          <% if @most_expensive_tea %>
+            <div class="text-center mb-3">
+              <h4 class="mb-1"><%= @most_expensive_tea.name %></h4>
+              <p class="text-muted mb-3"><%= @most_expensive_tea.category %></p>
+            </div>
+            
+            <div class="my-3">
+              <h3 class="text-danger mb-2"><%= number_to_currency(@most_expensive_tea.price) %></h3>
+              <p class="text-center">From <%= @most_expensive_tea.vendor %></p>
+            </div>
+            
+            <div class="mt-auto">
+              <%= link_to "View Details", tea_path(@most_expensive_tea), class: "btn btn-sm btn-outline-danger" %>
+            </div>
+          <% else %>
+            <p class="text-muted">No teas with a price yet.</p>
+          <% end %>
         </div>
       </div>
     </div>
-    
-    <!-- Tea Categories Breakdown -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Tea Categories</h5>
-          </div>
-          <div class="card-body">
-            <% @tea_type_counts.each do |category, count| %>
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3 text-end" style="width: 100px;">
-                  <strong><%= category %></strong>
-                </div>
-                <div class="progress flex-grow-1" style="height: 25px;">
-                  <div class="progress-bar bg-success" role="progressbar" 
-                      style="width: <%= (count.to_f / @tea_type_counts.values.sum) * 100 %>%;" 
-                      aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= @tea_type_counts.values.sum %>">
-                    <%= count %> (<%= ((count.to_f / @tea_type_counts.values.sum) * 100).round(1) %>%)
-                  </div>
+  
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 tea-highlight-card">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">Hidden Gem</h5>
+        </div>
+        <div class="card-body d-flex flex-column align-items-center justify-content-between">
+          <% if @least_popular_tea %>
+            <div class="text-center mb-3">
+              <h4 class="mb-1"><%= @least_popular_tea.name %></h4>
+              <p class="text-muted mb-3"><%= @least_popular_tea.category %></p>
+            </div>
+            
+            <div class="my-3">
+              <div class="progress mb-2" style="height: 8px; width: 150px;">
+                <div class="progress-bar bg-dark" role="progressbar" 
+                    style="width: <%= (@least_popular_tea.popularity.to_f) %>%;" 
+                    aria-valuenow="<%= @least_popular_tea.popularity %>" aria-valuemin="0" aria-valuemax="100">
                 </div>
               </div>
-            <% end %>
-            <div class="text-end mt-3">
-              <%= link_to "View by Category", categories_path, class: "btn btn-sm btn-outline-success" %>
+              <p class="text-center">Popularity: <%= @least_popular_tea.popularity %>/100</p>
+              <p class="small text-center">Known for: <%= @least_popular_tea.known_for %></p>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Tea Origins</h5>
-          </div>
-          <div class="card-body">
-            <div class="list-group">
-              <% @popular_ship_from.each do |location, count| %>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <i class="bi bi-geo-alt me-2"></i>
-                    <%= location %>
-                  </div>
-                  <span class="badge bg-primary rounded-pill"><%= count %> teas</span>
-                </div>
-              <% end %>
+            
+            <div class="mt-auto">
+              <%= link_to "View Details", tea_path(@least_popular_tea), class: "btn btn-sm btn-outline-dark" %>
             </div>
-            <div class="text-end mt-3">
-              <%= link_to "View by Origin", origins_path, class: "btn btn-sm btn-outline-primary" %>
-            </div>
-          </div>
+          <% else %>
+            <p class="text-muted">No teas with a popularity score yet.</p>
+          <% end %>
         </div>
       </div>
     </div>
-    
-    <!-- Tea Highlights -->
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <h3 class="border-bottom pb-2 mb-3">Tea Highlights</h3>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0">Top Ranked Tea</h5>
-          </div>
-          <div class="card-body text-center">
-            <% if @top_ranked_tea %>
-              <h4><%= @top_ranked_tea.name %></h4>
-              <p class="text-muted mb-2"><%= @top_ranked_tea.category %></p>
-              <div class="d-flex justify-content-center align-items-center mb-3">
-                <% (1..5).each do |i| %>
-                  <i class="bi <%= i <= (@top_entry.rank.to_f / 20).ceil ? 'bi-star-fill' : 'bi-star' %> ...
-                <% end %>
-              </div>
-              <p class="mb-0">Rank: <%= @top_entry.rank %>/100</p>
-              <%= link_to "View Details", tea_path(@top_ranked_tea), class: "btn btn-sm btn-outline-secondary mt-3" %>
-            <% else %>
-              <p class="text-muted">No ranked teas yet.</p>
-            <% end %>
-          </div>
+  </div>
+  
+  <!-- Additional Tea Stats -->
+  <div class="row mb-4">
+
+    <div class="col-md-6">
+      <div class="card text-center shadow-sm h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Most Expensive Tea</h5>
         </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">Premium Selection</h5>
-          </div>
-          <div class="card-body text-center">
-            <% if @most_expensive_tea %>
-              <h4><%= @most_expensive_tea.name %></h4>
-              <p class="text-muted mb-2"><%= @most_expensive_tea.category %></p>
-              <h3 class="text-danger mb-3"><%= number_to_currency(@most_expensive_tea.price) %></h3>
-              <p class="mb-0">From <%= @most_expensive_tea.vendor %></p>
-              <%= link_to "View Details", tea_path(@most_expensive_tea), class: "btn btn-sm btn-outline-danger mt-3" %>
-            <% else %>
-              <p class="text-muted">No teas with a price yet.</p>
-            <% end %>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Hidden Gem</h5>
-          </div>
-          <div class="card-body text-center">
-            <% if @least_popular_tea %>
-              <h4><%= @least_popular_tea.name %></h4>
-              <p class="text-muted mb-2"><%= @least_popular_tea.category %></p>
-              <div class="d-flex justify-content-center align-items-center mb-3">
-                <div class="progress w-75">
-                  <div class="progress-bar bg-dark" role="progressbar" 
-                      style="width: <%= (@least_popular_tea.popularity.to_f / 100) * 100 %>%;" 
-                      aria-valuenow="<%= @least_popular_tea.popularity %>" aria-valuemin="0" aria-valuemax="100">
-                  </div>
-                </div>
-                <span class="ms-2"><%= @least_popular_tea.popularity %>/100</span>
-              </div>
-              <p class="mb-0">Known for: <%= @least_popular_tea.known_for %></p>
-              <%= link_to "View Details", tea_path(@least_popular_tea), class: "btn btn-sm btn-outline-dark mt-3" %>
-            <% else %>
-              <p class="text-muted">No teas with a popularity score yet.</p>
-            <% end %>
-          </div>
+        <div class="card-body">
+          <% most_expensive = @teas.order(price: :desc).first %>
+          <% if most_expensive %>
+            <h4 class="mb-2"><%= most_expensive.name %></h4>
+            <p class="text-muted mb-3"><%= most_expensive.category %></p>
+            <h3 class="text-success mb-0">
+              <%= number_to_currency(most_expensive.price) %>
+            </h3>
+          <% else %>
+            <p class="text-muted">No teas available</p>
+          <% end %>
         </div>
       </div>
     </div>
-    
-    <!-- Price Range Analysis -->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card shadow-sm">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Price Range Analysis</h5>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-8">
-                <!-- This would be a chart in a real implementation -->
-                <div class="price-distribution-chart" style="height: 250px;">
-                  <!-- Placeholder for chart -->
-                  <div class="text-center py-5">
-                    <p class="text-muted">Price distribution chart would appear here</p>
-                    <p class="small">This would show the distribution of tea prices in your collection</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="price-stats p-3 border rounded h-100">
-                  <h6 class="border-bottom pb-2">Price Statistics</h6>
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Lowest Price:</span>
-                    <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
-                  </div>
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Highest Price:</span>
-                    <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
-                  </div>
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Average Price:</span>
-                    <strong><%= number_to_currency(@average_tea_cost) %></strong>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <span>Total Value:</span>
-                    <strong><%= number_to_currency(@teas.sum(:price)) %></strong>
-                  </div>
-                </div>
+
+    <div class="col-md-6">
+      <div class="card text-center shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Least Popular Tea</h5>
+        </div>
+        <div class="card-body">
+          <% least_popular = @teas.order(popularity: :asc).first %>
+          <% if least_popular %>
+            <h4 class="mb-2"><%= least_popular.name %></h4>
+            <p class="text-muted mb-3"><%= least_popular.category %></p>
+            <div class="progress mb-2" style="height: 8px; width: 150px; margin: 0 auto;">
+              <div class="progress-bar bg-primary" role="progressbar" 
+                  style="width: <%= (least_popular.popularity.to_f) %>%;" 
+                  aria-valuenow="<%= least_popular.popularity %>" aria-valuemin="0" aria-valuemax="100">
               </div>
             </div>
-          </div>
+            <p>Popularity Score: <%= least_popular.popularity %>/100</p>
+          <% else %>
+            <p class="text-muted">No teas available</p>
+          <% end %>
         </div>
       </div>
-    </div>
-    
-    <div class="text-center mt-4">
-      <%= link_to "View All Teas", teas_path, class: "btn btn-primary btn-lg" %>
     </div>
   </div>
 
-  <% else %>
+  <!-- Price Range Analysis -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h3 class="border-bottom pb-2 mb-3">Price Range Analysis</h3>
+    </div>
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">Price Distribution</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              <!-- This would be a chart in a real implementation -->
+              <div class="price-distribution-chart border rounded p-3 d-flex align-items-center justify-content-center" style="height: 250px;">
+                <!-- Placeholder for chart -->
+                <div class="text-center d-flex flex-column justify-content-center h-100">
+                  <p class="text-muted mb-1">Price distribution chart would appear here</p>
+                  <p class="small">This would show the distribution of tea prices in your collection</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="price-stats p-3 border rounded h-100">
+                <h6 class="border-bottom pb-2 mb-3">Price Statistics</h6>
+                <div class="d-flex justify-content-between mb-3">
+                  <span>Lowest Price:</span>
+                  <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <span>Highest Price:</span>
+                  <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <span>Average Price:</span>
+                  <strong><%= number_to_currency(@average_tea_cost) %></strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Total Value:</span>
+                  <strong><%= number_to_currency(@teas.sum(:price)) %></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="text-center mt-4 mb-5">
+    <%= link_to "View All Teas", teas_path, class: "btn btn-primary btn-lg px-4" %>
+  </div>
+</div>
+
+<% else %>
   <p class="text-center"><%= link_to "Login", new_session_path %> or <%= link_to "Sign Up", new_user_path %> to get started tracking your teas.</p>
 <% end %>
