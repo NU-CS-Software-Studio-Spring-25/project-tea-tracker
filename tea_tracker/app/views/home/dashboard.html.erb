@@ -11,7 +11,7 @@
           <% end %>
           <h2 class="mb-1"><%= current_user.username %>'s Tea Collection</h2>
           <p class="text-muted"><%= current_user.bio %></p>
-          
+
           <div class="d-flex justify-content-center gap-2 mt-3">
             <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
             <%= link_to "View Collection", teas_path, class: "btn btn-primary" %>
@@ -22,13 +22,66 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- Tea Categories Breakdown -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Tea Categories</h5>
+        </div>
+        <div class="card-body">
+          <% @tea_type_counts.each do |category, count| %>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3 text-end" style="width: 100px;">
+                <strong><%= category %></strong>
+              </div>
+              <div class="progress flex-grow-1" style="height: 25px;">
+                <div class="progress-bar bg-success" role="progressbar"
+                     style="width: <%= (count.to_f / @tea_type_counts.values.sum) * 100 %>%;"
+                     aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= @tea_type_counts.values.sum %>">
+                  <%= count %> (<%= ((count.to_f / @tea_type_counts.values.sum) * 100).round(1) %>%)
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <div class="text-end mt-3">
+            <%= link_to "View by Category", categories_path, class: "btn btn-sm btn-outline-success" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Tea Origins</h5>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <% @popular_ship_from.each do |location, count| %>
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="bi bi-geo-alt me-2"></i>
+                  <%= location %>
+                </div>
+                <span class="badge bg-primary rounded-pill"><%= count %> teas</span>
+              </div>
+            <% end %>
+          </div>
+          <div class="text-end mt-3">
+            <%= link_to "View by Origin", origins_path, class: "btn btn-sm btn-outline-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Tea Collection Summary -->
   <div class="row mb-4">
     <div class="col-md-12">
       <h3 class="border-bottom pb-2 mb-3">Your Tea Collection at a Glance</h3>
     </div>
-    
+
     <div class="col-md-3">
       <div class="card bg-success text-white h-100">
         <div class="card-body text-center">
@@ -37,7 +90,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
       <div class="card bg-primary text-white h-100">
         <div class="card-body text-center">
@@ -46,7 +99,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
       <div class="card bg-warning text-white h-100">
         <div class="card-body text-center">
@@ -55,7 +108,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
       <div class="card bg-info text-white h-100">
         <div class="card-body text-center">
@@ -65,13 +118,14 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Tea Highlights -->
   <div class="row mb-4 tea-highlights-row">
     <div class="col-md-12">
       <h3 class="border-bottom pb-2 mb-3">Tea Highlights</h3>
     </div>
-  
+
+    <!-- Top Ranked Tea -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100 tea-highlight-card">
         <div class="card-header bg-secondary text-white">
@@ -83,17 +137,17 @@
               <h4 class="mb-1"><%= @top_ranked_tea.name %></h4>
               <p class="text-muted mb-3"><%= @top_ranked_tea.category %></p>
             </div>
-            
+
             <div class="tea-rating my-3">
               <div class="progress mb-2" style="height: 8px; width: 150px;">
-                <div class="progress-bar bg-success" role="progressbar" 
+                <div class="progress-bar bg-success" role="progressbar"
                      style="width: <%= (@top_entry.rank.to_f) %>%;" 
                      aria-valuenow="<%= @top_entry.rank %>" aria-valuemin="0" aria-valuemax="100">
                 </div>
               </div>
               <p class="text-center">Rank: <%= @top_entry.rank %>/100</p>
             </div>
-            
+
             <div class="mt-auto">
               <%= link_to "View Details", tea_path(@top_ranked_tea), class: "btn btn-sm btn-outline-secondary" %>
             </div>
@@ -103,7 +157,8 @@
         </div>
       </div>
     </div>
-  
+
+    <!-- Premium Selection -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100 tea-highlight-card">
         <div class="card-header bg-danger text-white">
@@ -115,12 +170,12 @@
               <h4 class="mb-1"><%= @most_expensive_tea.name %></h4>
               <p class="text-muted mb-3"><%= @most_expensive_tea.category %></p>
             </div>
-            
+
             <div class="my-3">
               <h3 class="text-danger mb-2"><%= number_to_currency(@most_expensive_tea.price) %></h3>
               <p class="text-center">From <%= @most_expensive_tea.vendor %></p>
             </div>
-            
+
             <div class="mt-auto">
               <%= link_to "View Details", tea_path(@most_expensive_tea), class: "btn btn-sm btn-outline-danger" %>
             </div>
@@ -130,7 +185,8 @@
         </div>
       </div>
     </div>
-  
+
+    <!-- Hidden Gem -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100 tea-highlight-card">
         <div class="card-header bg-dark text-white">
@@ -142,18 +198,18 @@
               <h4 class="mb-1"><%= @least_popular_tea.name %></h4>
               <p class="text-muted mb-3"><%= @least_popular_tea.category %></p>
             </div>
-            
+
             <div class="my-3">
               <div class="progress mb-2" style="height: 8px; width: 150px;">
-                <div class="progress-bar bg-dark" role="progressbar" 
-                    style="width: <%= (@least_popular_tea.popularity.to_f) %>%;" 
-                    aria-valuenow="<%= @least_popular_tea.popularity %>" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar bg-dark" role="progressbar"
+                     style="width: <%= (@least_popular_tea.popularity.to_f) %>%;" 
+                     aria-valuenow="<%= @least_popular_tea.popularity %>" aria-valuemin="0" aria-valuemax="100">
                 </div>
               </div>
               <p class="text-center">Popularity: <%= @least_popular_tea.popularity %>/100</p>
               <p class="small text-center">Known for: <%= @least_popular_tea.known_for %></p>
             </div>
-            
+
             <div class="mt-auto">
               <%= link_to "View Details", tea_path(@least_popular_tea), class: "btn btn-sm btn-outline-dark" %>
             </div>
@@ -164,7 +220,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Additional Tea Stats -->
   <div class="row mb-4">
 
@@ -199,9 +255,9 @@
             <h4 class="mb-2"><%= least_popular.name %></h4>
             <p class="text-muted mb-3"><%= least_popular.category %></p>
             <div class="progress mb-2" style="height: 8px; width: 150px; margin: 0 auto;">
-              <div class="progress-bar bg-primary" role="progressbar" 
-                  style="width: <%= (least_popular.popularity.to_f) %>%;" 
-                  aria-valuenow="<%= least_popular.popularity %>" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar bg-primary" role="progressbar"
+                   style="width: <%= (least_popular.popularity.to_f) %>%;" 
+                   aria-valuenow="<%= least_popular.popularity %>" aria-valuemin="0" aria-valuemax="100">
               </div>
             </div>
             <p>Popularity Score: <%= least_popular.popularity %>/100</p>
@@ -213,60 +269,227 @@
     </div>
   </div>
 
-  <!-- Price Range Analysis -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h3 class="border-bottom pb-2 mb-3">Price Range Analysis</h3>
-    </div>
-    <div class="col-md-12">
-      <div class="card shadow-sm">
-        <div class="card-header bg-info text-white">
-          <h5 class="mb-0">Price Distribution</h5>
+<!-- === Your Price Distribution ================================ -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-info text-white">
+    <h5 class="mb-0">Your Price Distribution</h5>
+  </div>
+
+  <div class="card-body p-3">
+    <div class="row">
+      <div class="col-md-8">
+
+        <!-- color picker -->
+<div class="text-end mb-2">
+  <label for="colorSelect" class="form-label me-2">Color:</label>
+  <select id="colorSelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
+    <option value="pink"   selected>Pink</option>
+    <option value="green">Green</option>
+    <option value="blue">Blue</option>
+    <option value="yellow">Yellow</option>
+  </select>
+</div>
+
+<div class="border rounded p-3" style="height:400px;">
+  <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
+</div>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-8">
-              <!-- This would be a chart in a real implementation -->
-              <div class="price-distribution-chart border rounded p-3 d-flex align-items-center justify-content-center" style="height: 250px;">
-                <!-- Placeholder for chart -->
-                <div class="text-center d-flex flex-column justify-content-center h-100">
-                  <p class="text-muted mb-1">Price distribution chart would appear here</p>
-                  <p class="small">This would show the distribution of tea prices in your collection</p>
-                </div>
-              </div>
+        <div class="col-md-4">
+          <div class="price-stats p-3 border rounded h-100">
+            <h6 class="border-bottom pb-2 mb-3">Your Price Statistics</h6>
+            <div class="d-flex justify-content-between mb-3">
+              <span>Lowest Price:</span>
+              <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
             </div>
-            <div class="col-md-4">
-              <div class="price-stats p-3 border rounded h-100">
-                <h6 class="border-bottom pb-2 mb-3">Price Statistics</h6>
-                <div class="d-flex justify-content-between mb-3">
-                  <span>Lowest Price:</span>
-                  <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                  <span>Highest Price:</span>
-                  <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                  <span>Average Price:</span>
-                  <strong><%= number_to_currency(@average_tea_cost) %></strong>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <span>Total Value:</span>
-                  <strong><%= number_to_currency(@teas.sum(:price)) %></strong>
-                </div>
-              </div>
+            <div class="d-flex justify-content-between mb-3">
+              <span>Highest Price:</span>
+              <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <span>Average Price:</span>
+              <strong><%= number_to_currency(@average_tea_cost) %></strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Total Value:</span>
+              <strong><%= number_to_currency(@teas.sum(:price)) %></strong>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <div class="text-center mt-4 mb-5">
     <%= link_to "View All Teas", teas_path, class: "btn btn-primary btn-lg px-4" %>
   </div>
 </div>
 
 <% else %>
-  <p class="text-center"><%= link_to "Login", new_session_path %> or <%= link_to "Sign Up", new_user_path %> to get started tracking your teas.</p>
+  <p class="text-center">
+    <%= link_to "Login", new_session_path %> or
+    <%= link_to "Sign Up", new_user_path %> to get started tracking your teas.
+  </p>
 <% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const teaData = <%= @user_teas.to_json.html_safe %>; // [["Name", price, grams]]
+  if (!teaData.length) return;
+
+  let mode = 'perGram';
+  let selectedColor = 'pink';
+
+  function getPriceValue(price, grams) {
+    return grams > 0 ? parseFloat((price / grams).toFixed(4)) : null;
+  }
+
+  function getHistogramData() {
+    const values = teaData.map(([_, price, grams]) => getPriceValue(price, grams)).filter(v => v !== null);
+
+    const binSize = 0.10;
+    const min = 0;
+    const max = Math.max(...values);
+    const roundedMax = Math.ceil(max); // for axis
+
+    const bins = [];
+    const binCounts = [];
+
+    for (let b = min; b < roundedMax; b += binSize) {
+      bins.push(b + binSize / 2); // bin center
+      binCounts.push(0);
+    }
+
+    teaData.forEach(([_, price, grams]) => {
+      const val = getPriceValue(price, grams);
+      if (val === null) return;
+      const i = Math.floor((val - min) / binSize);
+      if (i >= 0 && i < binCounts.length) {
+        binCounts[i]++;
+      }
+    });
+
+    const histogramData = bins.map((x, i) => ({
+      x,
+      y: binCounts[i]
+    }));
+
+    return { histogramData, bins, binSize, values, roundedMax };
+  }
+
+  function getSmoothedLine(values, minX, maxX, resolution = 200) {
+    const kernel = x => {
+      const bw = 0.05;
+      return values.reduce((sum, v) => {
+        const z = (x - v) / bw;
+        return sum + Math.exp(-0.5 * z * z);
+      }, 0) / (values.length * bw * Math.sqrt(2 * Math.PI));
+    };
+
+    const xPoints = [], yPoints = [];
+    for (let i = 0; i < resolution; i++) {
+      const x = minX + ((maxX - minX) * i) / (resolution - 1);
+      xPoints.push(x);
+      yPoints.push(kernel(x));
+    }
+
+    const yMax = Math.max(...yPoints);
+    const scaledY = yPoints.map(y => y * (10 / yMax)); // scale to match bar height
+
+    return xPoints.map((x, i) => ({ x, y: scaledY[i] }));
+  }
+
+  const pastels = {
+    pink: 'rgba(255,179,198,0.6)',
+    green: 'rgba(181,234,215,0.6)',
+    blue: 'rgba(179,199,255,0.6)',
+    yellow: 'rgba(255,241,179,0.6)'
+  };
+
+  const ctx = document.getElementById('priceChart').getContext('2d');
+  let chart;
+
+  function renderChart() {
+    const { histogramData, bins, binSize, values, roundedMax } = getHistogramData();
+    const maxY = Math.ceil(Math.max(...histogramData.map(d => d.y)) / 5) * 5;
+
+    const datasets = [{
+      type: 'bar',
+      data: histogramData,
+      backgroundColor: pastels[selectedColor],
+      borderColor: pastels[selectedColor].replace('0.6', '1'),
+      borderWidth: 1,
+      barPercentage: 1.0,
+      categoryPercentage: 1.0
+    }];
+
+    const smooth = getSmoothedLine(values, 0, roundedMax);
+    datasets.push({
+      type: 'line',
+      data: smooth,
+      borderColor: pastels[selectedColor].replace('0.6', '1'),
+      borderWidth: 2,
+      fill: false,
+      tension: 0.4,
+      pointRadius: 0,
+      order: 1
+    });
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: { datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            min: 0,
+            max: roundedMax,
+            offset: false,
+            title: {
+              display: true,
+              text: 'Price per Gram ($/g)'
+            },
+            ticks: {
+              stepSize: 0.10,
+              callback: val => `$${val.toFixed(2)}`
+            },
+            grid: {
+              drawTicks: true,
+              drawOnChartArea: true,
+              tickLength: 8,
+              borderDash: []
+            }
+          },
+          y: {
+            beginAtZero: true,
+            suggestedMax: maxY,
+            title: {
+              display: true,
+              text: 'Number of Teas'
+            },
+            ticks: {
+              stepSize: 5,
+              callback: val => val
+            }
+          }
+        }
+      }
+    });
+  }
+
+  document.getElementById('colorSelect').addEventListener('change', e => {
+    selectedColor = e.target.value;
+    renderChart();
+  });
+
+  // ✅ Initial render on page load
+  renderChart();
+});
+</script>
