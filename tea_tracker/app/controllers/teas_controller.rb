@@ -1,4 +1,3 @@
-
 class TeasController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
@@ -9,6 +8,7 @@ class TeasController < ApplicationController
     @teas = current_user.teas.includes(:entries)
     @entries = current_user.entries.index_by(&:tea_id)
     @tea_categories = @teas.pluck(:category).uniq
+    
     
     # Apply filters
     if params[:category].present?
@@ -185,6 +185,17 @@ class TeasController < ApplicationController
     end
   end
   
+  def count
+    @total_teas = current_user.teas.count
+    @teas_by_category = current_user.teas.group(:category).count
+    @teas_by_origin = current_user.teas.group(:ship_from).count
+    
+    render json: {
+      total: @total_teas,
+      by_category: @teas_by_category,
+      by_origin: @teas_by_origin
+    }
+  end
 
   private
   

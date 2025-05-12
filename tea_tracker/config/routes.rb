@@ -14,7 +14,11 @@ Rails.application.routes.draw do
   root "home#dashboard"
 
   # Tea resources with all CRUD actions
-  resources :teas
+  resources :teas do
+    collection do
+      get :count
+    end
+  end
   resources :entries
 
   # user authentication
