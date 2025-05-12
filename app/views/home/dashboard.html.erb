@@ -278,47 +278,31 @@
   <div class="card-body p-3">
     <div class="row">
       <div class="col-md-8">
+    <div class="mb-3">
+      <!-- category picker -->
+      <label for="categorySelect" class="form-label me-2">Select a Tea Category:</label>
+      <select id="categorySelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
+         <option value=""   selected>All</option>
+        <% @tea_categories.each do |category| %>
+          <option value="<%= category %>"><%= category %></option>
+        <% end %>
+      </select>
 
-        <!-- color picker -->
-<div class="text-end mb-2">
-  <label for="colorSelect" class="form-label me-2">Color:</label>
-  <select id="colorSelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
-    <option value="pink"   selected>Pink</option>
-    <option value="green">Green</option>
-    <option value="blue">Blue</option>
-    <option value="yellow">Yellow</option>
-  </select>
-</div>
-
-<div class="border rounded p-3" style="height:400px;">
-  <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
-</div>
-        </div>
+      <!-- color picker -->
+      <label for="colorSelect" class="form-label me-2">Color:</label>
+      <select id="colorSelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
+        <option value="pink"   selected>Pink</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+      </select>
+    </div>
+    <div class="border rounded p-3" style="height:400px;">
+      <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
+    </div>
+      </div>
         <div class="col-md-4">
-          <div class="price-stats p-3 border rounded h-100">
-            <h6 class="border-bottom pb-2 mb-3">Your Price Statistics</h6>
-            <div class="d-flex justify-content-between mb-3">
-              <span>Lowest Price:</span>
-              <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
-            </div>
-            <div class="d-flex justify-content-between mb-3">
-              <span>Highest Price:</span>
-              <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
-            </div>
-            <div class="d-flex justify-content-between mb-3">
-              <span>Average Price:</span>
-              <strong><%= number_to_currency(@average_tea_cost) %></strong>
-            </div>
-            <div class="d-flex justify-content-between mb-3">
-              <span>Total Amount:</span>
-              <strong><%= @teas.sum(:grams) %>g</strong>
-            </div>
-            <%# commenting this out bc i'm not exposing myself in front of class
-             <div class="d-flex justify-content-between">
-              <span>Total Value:</span>
-              <strong><%= number_to_currency(@teas.sum { |tea| tea.price * (tea.grams || 50) }) %></strong>
-            </div> 
-          </div>
+          <%= render partial: 'price_statistics' %>
         </div>
       </div>
     </div>
@@ -343,13 +327,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let mode = 'perGram';
   let selectedColor = 'pink';
+  let selectedCategory = '';
 
   function getPriceValue(price, grams) {
     return parseFloat(price); // Just use the raw price, no need to divide by grams
   }
 
   function getHistogramData() {
-    const values = teaData.map(([_, price, grams]) => getPriceValue(price, grams)).filter(v => v !== null);
+    const data = selectedCategory !== '' 
+    ? teaData.filter(item => item[3] === selectedCategory) 
+    : teaData;
+    const values = data.map(([_, price, grams, category]) => getPriceValue(price, grams)).filter(v => v !== null);
 
     const binSize = 0.1;
     const min = 0;
@@ -364,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
       binCounts.push(0);
     }
 
-    teaData.forEach(([_, price, grams]) => {
+    data.forEach(([_, price, grams]) => {
       const val = getPriceValue(price, grams);
       if (val === null) return;
       const i = Math.floor((val - min) / binSize);
@@ -372,7 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
         binCounts[i]++;
       }
     });
-    console.log('Bin counts:', binCounts);
 
     const histogramData = bins.map((x, i) => ({
       x,
@@ -492,6 +479,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('colorSelect').addEventListener('change', e => {
     selectedColor = e.target.value;
+    renderChart();
+  });
+
+  document.getElementById('categorySelect').addEventListener('change', e => {
+    selectedCategory = e.target.value;
     renderChart();
   });
 
