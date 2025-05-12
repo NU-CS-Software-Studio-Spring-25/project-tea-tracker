@@ -1,0 +1,37 @@
+<h1>My Tea Rankings</h1>
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @entries.order(:position).each do |entry| %>
+        <tr>
+          <td><%= entry.rank %></td>
+          <td><%= entry.tea.name %></td>
+          <td><%= entry.tea.category %></td>
+          <td>$<%= entry.tea.price %>/g</td>
+          <td>
+            <div class="btn-group">
+              <%= button_to move_up_entry_path(entry), method: :post, class: "btn btn-sm btn-outline-secondary", disabled: entry.rank == 1 do %>
+                <i class="bi bi-arrow-up"></i>
+              <% end %>
+              <%= button_to move_down_entry_path(entry), method: :post, class: "btn btn-sm btn-outline-secondary", disabled: entry.rank == @entries.count do %>
+                <i class="bi bi-arrow-down"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= link_to "Add New Tea", new_tea_path, class: "btn btn-primary" %> 

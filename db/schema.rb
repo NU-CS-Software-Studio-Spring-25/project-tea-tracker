@@ -20,6 +20,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_201808) do
     t.bigint "tea_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position", default: 0, null: false
+    t.index ["position"], name: "index_entries_on_position"
     t.index ["tea_id"], name: "index_entries_on_tea_id"
     t.index ["user_id"], name: "index_entries_on_user_id"
   end
@@ -32,10 +34,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_201808) do
     t.datetime "updated_at", null: false
     t.string "vendor"
     t.string "known_for"
-    t.string "ship_from"
+    t.string "region"
     t.integer "popularity"
     t.string "shopping_platform"
     t.string "product_url"
+    t.string "price_mode"
+    t.decimal "total_price", precision: 10, scale: 2
+    t.decimal "weight", precision: 10, scale: 2
+    t.integer "year"
+    t.string "ship_from"
     t.integer "grams"
   end
 
