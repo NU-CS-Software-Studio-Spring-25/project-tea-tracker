@@ -19,6 +19,9 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
  - Average rank per category
  - Average price for 'rank range'
  - User login/sign up
+ - A single user dashboard
+ - View tea categories and origins
+ - View high level tea highlight stats such as highest priced, avg prices, unique teas etc.
 
 Make entry with 4 fields, view that displays it, way to edit entry. 
 
