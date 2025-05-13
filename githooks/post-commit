@@ -15,10 +15,15 @@ git push heroku main --force
 
 echo "Heroku updated."
 
+echo "Updating from seed..."
+bundle install
+rails db:create
+rails db:migrate
+rails db:seed
+
 # Check if the user is logged in to Heroku
 if heroku auth:whoami > /dev/null 2>&1; then
     echo "Logged in to Heroku, proceeding with database update."
-
     # Try pushing the database
     if ! heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker; then
         echo "Failed to push data to Heroku. Resetting the database and retrying."
