@@ -1,0 +1,24 @@
+<div class="price-stats p-3 border rounded h-100">
+<h6 class="border-bottom pb-2 mb-3">Your Price Statistics</h6>
+<div class="d-flex justify-content-between mb-3">
+    <span>Lowest Price:</span>
+    <strong><%= number_to_currency(@teas.minimum(:price)) %></strong>
+</div>
+<div class="d-flex justify-content-between mb-3">
+    <span>Highest Price:</span>
+    <strong><%= number_to_currency(@teas.maximum(:price)) %></strong>
+</div>
+<div class="d-flex justify-content-between mb-3">
+    <span>Average Price:</span>
+    <strong><%= number_to_currency(@average_tea_cost) %></strong>
+</div>
+<div class="d-flex justify-content-between mb-3">
+    <span>Total Amount:</span>
+    <strong><%= @teas.sum(:grams) %>g</strong>
+</div>
+<%# commenting this out bc i'm not exposing myself in front of class
+    <div class="d-flex justify-content-between">
+    <span>Total Value:</span>
+    <strong><%= number_to_currency(@teas.sum { |tea| tea.price * (tea.grams || 50) }) </strong>
+</div> %>
+</div>

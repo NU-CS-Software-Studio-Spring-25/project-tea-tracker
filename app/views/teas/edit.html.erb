@@ -1,0 +1,104 @@
+<h1>Edit Tea</h1>
+
+<%= form_with model: @tea, local: true do |form| %>
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :category %>
+    <%= form.text_field :category, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <%= form.label :price, "Price per Gram ($/g)" %>
+        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price" %>
+      </div>
+      <div class="col">
+        <%= form.label :total_price, "Total Price ($)" %>
+        <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price" %>
+      </div>
+      <div class="col">
+        <%= form.label :weight, "Weight (g)" %>
+        <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :vendor %>
+    <%= form.text_field :vendor, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :known_for %>
+    <%= form.text_field :known_for, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :year %>
+    <%= form.number_field :year, step: 1, class: "form-control", placeholder: "Leave blank if unknown" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :region %>
+    <%= form.text_field :region, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :ship_from %>
+    <%= form.text_field :ship_from, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :popularity %>
+    <%= form.number_field :popularity, step: 1, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :shopping_platform %>
+    <%= form.text_field :shopping_platform, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :product_url %>
+    <%= form.url_field :product_url, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :rank, "Rank" %>
+    <div class="form-control-plaintext"><%= @entry.rank %></div>
+  </div>
+
+  <%= link_to "Back", tea_path(@tea), class: "btn btn-secondary mt-3" %>
+  <%= form.submit "Update Tea", class: "btn btn-primary mt-3" %>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const directPriceInput = document.getElementById('direct-price');
+  const totalPriceInput = document.getElementById('total-price');
+  const weightInput = document.getElementById('weight');
+
+  function calculatePricePerGram() {
+    const totalPrice = parseFloat(totalPriceInput.value) || 0;
+    const weight = parseFloat(weightInput.value) || 0;
+    if (weight > 0) {
+      const pricePerGram = totalPrice / weight;
+      directPriceInput.value = pricePerGram.toFixed(2);
+    }
+  }
+
+  function clearTotalAndWeight() {
+    totalPriceInput.value = '';
+    weightInput.value = '';
+  }
+
+  totalPriceInput.addEventListener('input', calculatePricePerGram);
+  weightInput.addEventListener('input', calculatePricePerGram);
+  directPriceInput.addEventListener('input', clearTotalAndWeight);
+});
+</script> 

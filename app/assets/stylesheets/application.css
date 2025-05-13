@@ -1,0 +1,256 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+
+
+/* Global Variables */
+:root {
+    --tea-primary: #4CAF50;
+    --tea-primary-dark: #388E3C;
+    --tea-primary-light: #A5D6A7;
+    --tea-secondary: #2196F3;
+    --tea-accent: #FF9800;
+    --tea-text: #333333;
+    --tea-text-light: #757575;
+    --tea-background: #FFFFFF;
+    --tea-card-bg: #F9F9F9;
+    --tea-border: #E0E0E0;
+    --tea-success: #4CAF50;
+    --tea-info: #2196F3;
+    --tea-warning: #FF9800;
+    --tea-danger: #F44336;
+}
+
+
+
+/* Typography */
+body {
+    color: var(--tea-text);
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.text-muted {
+    color: var(--tea-text-light) !important;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-header {
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    background-color: transparent;
+    border-top: 1px solid var(--tea-border);
+    padding: 1rem 1.5rem;
+}
+
+/* Tea Cards */
+.tea-card {
+    height: 100%;
+}
+
+.tea-card .card-header {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Tea Detail Card */
+.tea-detail-card {
+    border-radius: 15px;
+}
+
+.tea-stats {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--tea-primary);
+    border-color: var(--tea-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--tea-primary-dark);
+    border-color: var(--tea-primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--tea-primary);
+    border-color: var(--tea-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--tea-primary);
+    border-color: var(--tea-primary);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.back-button {
+    background-color: #6c757d;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    color: white;
+    border-radius: 8px;
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 6px;
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--tea-border);
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--tea-primary-light);
+    box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
+}
+
+.form-select {
+    border-radius: 8px;
+    border: 1px solid var(--tea-border);
+    padding: 0.75rem 1rem;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card,
+.list-group-item {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Dashboard Cards */
+.bg-success {
+    background-color: var(--tea-success) !important;
+}
+
+.bg-primary {
+    background-color: var(--tea-secondary) !important;
+}
+
+.bg-warning {
+    background-color: var(--tea-warning) !important;
+}
+
+.bg-info {
+    background-color: var(--tea-info) !important;
+}
+
+.bg-danger {
+    background-color: var(--tea-danger) !important;
+}
+
+/* Utility Classes */
+.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.rounded-circle {
+    border-radius: 50% !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+
+
+
+
+
