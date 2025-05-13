@@ -143,7 +143,7 @@ end
 
 # Add CSV teas for user3
 csv_teas = [
-  { name: "Wild Laocong Shuixian", category: "Oolong", price: 0.96, vendor: "Daxue Jiadao", year: 2017, ship_from: "China", known_for: "Shui Xian", grams: 16 },
+  { name: "Wild Laocong Shuixian", category: "Oolong", price: 0.97, vendor: "Daxue Jiadao", year: 2017, ship_from: "China", known_for: "Shui Xian", grams: 16 },
   { name: "Longjing #108", category: "White", price: 2.0, vendor: "One River Tea", year: 2024, ship_from: "Hangzhou", known_for: "Mingqian Dragonwell", grams: 9 },
   { name: "Yongchun Shuixian Kaishan", category: "Oolong", price: 1.51, vendor: "Daxue Jiadao", year: 2023, ship_from: "China", known_for: "Shui Xian", grams: 50 },
   { name: "Yongchun Laocong Shuixian Bainian", category: "Oolong", price: 1.26, vendor: "Daxue Jiadao", year: 2022, ship_from: "China", known_for: "Yongchun Shui Xian", grams: 8 },
