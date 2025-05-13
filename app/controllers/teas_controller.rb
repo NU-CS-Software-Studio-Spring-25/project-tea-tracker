@@ -45,18 +45,20 @@ class TeasController < ApplicationController
 
   def show
     # Calculate category average rank for comparison
-    @category_avg_rank = Entry.joins(:tea)
+    category_entries = Entry.joins(:tea)
                           .where(user: current_user)
                           .where(teas: { category: @tea.category })
                           .where.not(tea_id: @tea.id)
-                          .average(:rank).to_f
+    ranks = category_entries.map(&:rank)
+    @category_avg_rank = ranks.sum.to_f / ranks.size if ranks.any?
+    @closest_index = current_user.teas.count/10.round(0)
 
     @entry = current_user.entries.find_by(tea: @tea)
-    if @entry&.rank.present? && @category_avg_rank > 0
+    if @entry&.position.present? && @category_avg_rank > 0
       if @entry.rank > @category_avg_rank
-        @category_rank_comparison = "This tea's rank is higher than the average tea in its category (#{@category_avg_rank.round(1)})."
+        @category_rank_comparison = "This tea's rank is higher than the average tea in its category (#{@category_avg_rank.round(0)})."
       else
-        @category_rank_comparison = "This tea's rank is lower than the average tea in its category (#{@category_avg_rank.round(1)})."
+        @category_rank_comparison = "This tea's rank is lower than the average tea in its category (#{@category_avg_rank.round(0)})."
       end
     end
     
@@ -64,9 +66,9 @@ class TeasController < ApplicationController
     if @entry&.rank.present? && @tea.price.present?
       similar_entry_ids = Entry.where(user: current_user)
                              .where.not(tea_id: @tea.id)
-                             .where.not(rank: nil)
+                             .where.not(position: nil)
                              .order(Arel.sql("ABS(rank - #{ActiveRecord::Base.connection.quote(@entry.rank)})"))
-                             .limit(3)
+                             .limit(@closest_index)
                              .pluck(:tea_id)
 
       similar_teas = Tea.where(id: similar_entry_ids).where.not(price: nil)
@@ -74,32 +76,30 @@ class TeasController < ApplicationController
         avg_price = similar_teas.average(:price).to_f
         
         if @tea.price > avg_price
-          @price_rank_comparison = "This tea's rank is higher than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
+          @price_rank_comparison = "This tea's price is higher than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
         else
-          @price_rank_comparison = "This tea's rank is lower than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
+          @price_rank_comparison = "This tea's price is lower than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
         end
       end
     end
     
     # Rank comparison with similar priced teas
     if @tea.price.present? && @entry&.rank.present?
-      similar_teas = current_user.teas.where.not(id: @tea.id)
+      similar_tea_ids = current_user.teas.where.not(id: @tea.id)
                                     .where.not(price: nil)
+                                    .order(Arel.sql("ABS(price - #{ActiveRecord::Base.connection.quote(@tea.price)})"))
+                                    .limit(@closest_index)
+                                    .pluck(:id)
 
-      similar_tea_ids = similar_teas
-                          .order(Arel.sql("ABS(price - #{ActiveRecord::Base.connection.quote(@tea.price)})"))
-                          .limit(3)
-                          .pluck(:id)
+      similar_teas = Entry.where(tea_id: similar_tea_ids)
+      ranks = similar_teas.map(&:rank)
+      avg_rank = ranks.sum.to_f / ranks.size if ranks.any?
 
-      similar_entries = Entry.where(user: current_user, tea_id: similar_tea_ids).where.not(rank: nil)
-
-      if similar_entries.any?
-        avg_rank = similar_entries.average(:rank).to_f
-
+      if similar_teas.any?
         if @entry.rank > avg_rank
-          @rank_price_comparison = "higher than"
+          @rank_price_comparison = "#{(@entry.rank - avg_rank).round(0)} places higher on average than"
         else
-          @rank_price_comparison = "lower than"
+          @rank_price_comparison = "#{(avg_rank - @entry.rank).round(0)} places lower on average than"
         end
       end
     end
