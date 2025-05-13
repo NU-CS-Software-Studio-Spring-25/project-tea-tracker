@@ -2,25 +2,25 @@ class TeasController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_action :require_login
-  before_action :set_tea, only: [:show, :edit, :update, :destroy]
+  before_action :set_tea, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @teas = current_user.teas.includes(:entries)
     @entries = current_user.entries.index_by(&:tea_id)
     @tea_categories = @teas.pluck(:category).uniq
-    
-    
+
+
     # Apply filters
     if params[:category].present?
       @teas = @teas.where(category: params[:category])
     end
-    
+
     if params[:search].present?
       search_term = "%#{params[:search]}%"
-      @teas = @teas.where("name ILIKE ? OR vendor ILIKE ? OR ship_from ILIKE ?", 
+      @teas = @teas.where("name ILIKE ? OR vendor ILIKE ? OR ship_from ILIKE ?",
                           search_term, search_term, search_term)
     end
-    
+
     # Apply sorting
     case params[:sort]
     when "name_asc"
@@ -36,7 +36,7 @@ class TeasController < ApplicationController
     else
       @teas = @teas.order(created_at: :desc) # Default sort
     end
-    
+
     # Paginate results if Kaminari is available [installed it in gemfile so try bunbdle install if you see an error]
     if @teas.respond_to?(:page)
       @teas = @teas.page(params[:page]).per(12)
@@ -61,7 +61,7 @@ class TeasController < ApplicationController
         @category_rank_comparison = "This tea's rank is #{@entry.rank-@category_avg_rank.round(0)} places lower than the average #{@tea.category} tea."
       end
     end
-    
+
     # Price comparison with similar ranked teas
     if @entry&.rank.present? && @tea.price.present?
       similar_entry_ids = Entry.where(user: current_user)
@@ -74,7 +74,7 @@ class TeasController < ApplicationController
       similar_teas = Tea.where(id: similar_entry_ids).where.not(price: nil)
       if similar_teas.any?
         avg_price = similar_teas.average(:price).to_f
-        
+
         if @tea.price > avg_price
           @price_rank_comparison = "This tea's price is higher than the average price of similar ranked teas (#{number_to_currency(avg_price)})."
         else
@@ -82,7 +82,7 @@ class TeasController < ApplicationController
         end
       end
     end
-    
+
     # Rank comparison with similar priced teas
     if @tea.price.present? && @entry&.rank.present?
       similar_tea_ids = current_user.teas.where.not(id: @tea.id)
@@ -111,7 +111,7 @@ class TeasController < ApplicationController
 
   def create
     @tea = Tea.new(tea_params)
-    
+
     ActiveRecord::Base.transaction do
       if @tea.save
         @entry = Entry.create!(tea: @tea, user: current_user, rank: params[:tea][:rank])
@@ -164,32 +164,32 @@ class TeasController < ApplicationController
       redirect_to teas_path, alert: "You don't have access to this tea."
     end
   end
-  
+
   def categories
     @categories = current_user.teas.pluck(:category).uniq
     @teas_by_category = {}
     @entries = current_user.entries.index_by(&:tea_id) # ✅ Add this line
-  
+
     @categories.each do |category|
       @teas_by_category[category] = current_user.teas.where(category: category)
     end
   end
-  
+
   def origins
     @origins = current_user.teas.pluck(:ship_from).uniq
     @teas_by_origin = {}
     @entries = current_user.entries.index_by(&:tea_id)  # ✅ Add this line
-  
+
     @origins.each do |origin|
       @teas_by_origin[origin] = current_user.teas.where(ship_from: origin)
     end
   end
-  
+
   def count
     @total_teas = current_user.teas.count
     @teas_by_category = current_user.teas.group(:category).count
     @teas_by_origin = current_user.teas.group(:ship_from).count
-    
+
     render json: {
       total: @total_teas,
       by_category: @teas_by_category,
@@ -198,15 +198,15 @@ class TeasController < ApplicationController
   end
 
   private
-  
+
   def set_tea
     @tea = current_user.teas.find(params[:id])
   end
-  
+
   def tea_params
     params.require(:tea).permit(:name, :price, :category, :vendor, :known_for, :ship_from, :popularity, :shopping_platform, :product_url)
   end
-  
+
   def require_login
     unless current_user
       redirect_to new_session_path, alert: "You must log in first."

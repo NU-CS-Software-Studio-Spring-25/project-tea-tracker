@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy", as: :logout
   get "/logout", to: "sessions#destroy"
 
-  get '/analytics', to: 'home#analytics', as: 'tea_analytics'
-  get '/categories', to: 'teas#categories', as: 'categories'
-  get '/origins', to: 'teas#origins', as: 'origins'
+  get "/analytics", to: "home#analytics", as: "tea_analytics"
+  get "/categories", to: "teas#categories", as: "categories"
+  get "/origins", to: "teas#origins", as: "origins"
 end

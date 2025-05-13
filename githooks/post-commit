@@ -3,19 +3,11 @@
 # Get the latest commit message
 commit_msg=$(git log -1 --pretty=%B)
 
-echo "Updating Heroku..."
+echo "Updating Heroku database..."
 
 # Check if working directory is clean
-git fetch heroku main || { echo "Failed to fetch latest changes."; exit 1; }
-git pull heroku main || { echo "Failed to pull latest changes."; exit 1; }
 
-git add .
-git commit -m "Auto-sync from Repo A commit: $commit_msg"
-git push heroku main --force
-
-echo "Heroku updated."
-
-echo "Updating from seed..."
+echo "Building local database..."
 bundle install
 rails db:create
 rails db:migrate
@@ -31,7 +23,7 @@ if heroku auth:whoami > /dev/null 2>&1; then
         heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker
         echo "Data pushed successfully after reset."
     else
-        echo "Data pushed successfully to Heroku."
+        echo "Data pushed successfully to Heroku without reset."
     fi
 
 else

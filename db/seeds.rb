@@ -132,7 +132,7 @@ sample_teas.each_with_index do |tea_data, index|
 end
 
 # Add same two teas to user2 with different positions
-["Ali Shan", "Dong Ding"].each_with_index do |name, index|
+[ "Ali Shan", "Dong Ding" ].each_with_index do |name, index|
   tea = Tea.find_by(name: name)
   Entry.create!(
     user: user2,
@@ -329,4 +329,3 @@ csv_teas.each_with_index do |tea_data, index|
     position: (index + 1) * 1000  # Use floating island method
   )
 end
-

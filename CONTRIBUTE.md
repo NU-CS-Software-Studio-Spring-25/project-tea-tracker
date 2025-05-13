@@ -109,8 +109,8 @@ There's a folder called `githooks` that should have a script called `post-commit
 
 Run the following to setup the hooks script:
 ```
-chmod +x setup_hooks.sh
-./setup_hooks.sh
+chmod +x githooks/setup_hooks
+./githooks/setup_hooks
 ```
 
 Run the following to check if it worked:
@@ -154,3 +154,8 @@ Note: this will run when you COMMIT, not when you PUSH. So if you redact a commi
 
 NOTE: this does not work with github desktop. ask me how I know...
 It does work with VSCode/Cursor's internal git functionality though. 
+
+# Rubocop & Brakeman
+If you're getting an error before pushing related to rubocop, run the following:
+```bundle exec rubocop```
+It will automatically format the code correctly. 
