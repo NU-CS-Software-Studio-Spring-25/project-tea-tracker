@@ -1,0 +1,3 @@
+- always project-tea-tracker not tea_tracker
+- git add . , git commit -m "xyz"
+- git push origin/main
