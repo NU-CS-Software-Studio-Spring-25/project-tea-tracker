@@ -82,20 +82,3 @@ test:
 #
 production:
   url: <%= ENV['DATABASE_URL'] %>
-  primary: &primary_production
-    <<: *default
-    database: tea_tracker_production
-    username: tea_tracker
-    password: <%= ENV["TEA_TRACKER_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: tea_tracker_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: tea_tracker_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: tea_tracker_production_cable
-    migrations_paths: db/cable_m
