@@ -9,7 +9,7 @@ class HomeController < ApplicationController
       # Gauge metrics (avg $ and percentile vs all teas)
       user_prices   = @teas.map(&:price)
       all_prices    = Tea.pluck(:price).compact.sort
-      @user_avg     = user_prices.sum.to_f / [user_prices.size,1].max
+      @user_avg     = user_prices.sum.to_f / [ user_prices.size, 1 ].max
       @global_qtiles = all_prices.each_slice((all_prices.size/4.0).ceil).map(&:last)
       @percentile   = (all_prices.count { |p| p < @user_avg } * 100.0 / all_prices.size)
 
@@ -29,17 +29,17 @@ class HomeController < ApplicationController
 
     @user_teas = @teas.pluck(:name, :price, :grams, :category)
     @tea_categories = @teas.pluck(:category).uniq
-    
+
     # Gauge metrics (avg $ and percentile vs all teas)
     user_prices   = @teas.map(&:price)
     all_prices    = Tea.pluck(:price).compact.sort
-    @user_avg     = user_prices.sum.to_f / [user_prices.size,1].max
+    @user_avg     = user_prices.sum.to_f / [ user_prices.size, 1 ].max
     @global_qtiles = all_prices.each_slice((all_prices.size/4.0).ceil).map(&:last)
     @percentile   = (all_prices.count { |p| p < @user_avg } * 100.0 / all_prices.size)
 
     @tea_type_counts   = @teas.group(:category).count
     @average_tea_cost  = @teas.average(:price).to_f
-    @popular_ship_from = @teas.group(:ship_from).count.sort_by { |_loc,c| -c }.first(5).to_h
+    @popular_ship_from = @teas.group(:ship_from).count.sort_by { |_loc, c| -c }.first(5).to_h
     @top_entry         = current_user.entries.order(rank: :desc).first
     @top_ranked_tea    = @top_entry&.tea
     @total_teas        = @teas.count
@@ -79,7 +79,7 @@ class HomeController < ApplicationController
     # Origin statistics
     @origins = @teas.pluck(:ship_from).uniq
     @origin_tea_counts = @teas.group(:ship_from).count
-    render 'analytics/index'
+    render "analytics/index"
   end
 
   private

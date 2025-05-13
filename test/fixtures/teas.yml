@@ -2,14 +2,10 @@
 
 one:
   name: MyString
-  rank: 1
   price: 9.99
   category: MyString
-  user: one
 
 two:
   name: MyString
-  rank: 1
   price: 9.99
   category: MyString
-  user: two
