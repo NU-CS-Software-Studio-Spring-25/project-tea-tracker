@@ -51,13 +51,18 @@ class HomeController < ApplicationController
     @teas = Tea.joins(:entries).where(entries: { user_id: current_user.id })
     @total_teas = @teas.count
     @tea_categories = @teas.pluck(:category).uniq
-    @avg_rank = @teas.average(:rank).to_f
+    entries = Entry.where(user_id: current_user.id)
+    ranks = entries.map(&:rank)
+    @avg_rank = ranks.sum.to_f / ranks.size if ranks.any?
     @total_value = @teas.sum(:price)
 
     # Average rank by category
     @category_avg_ranks = {}
     @tea_categories.each do |category|
-      @category_avg_ranks[category] = @teas.where(category: category).average(:rank).to_f
+      selected = @teas.where(category: category).pluck(:id)
+      entries = Entry.where(tea_id: selected)
+      ranks = entries.map(&:rank)
+      @category_avg_ranks[category] = ranks.sum.to_f / ranks.size if ranks.any?
     end
 
     # Vendor statistics
@@ -65,7 +70,10 @@ class HomeController < ApplicationController
     @vendor_tea_counts = @teas.group(:vendor).count
     @vendor_avg_prices = {}
     @vendors.each do |vendor|
-      @vendor_avg_prices[vendor] = @teas.where(vendor: vendor).average(:price).to_f
+      selected =@teas.where(vendor: vendor).pluck(:id)
+      entries = Entry.where(tea_id: selected)
+      ranks = entries.map(&:rank)
+      @vendor_avg_prices[vendor] = ranks.sum.to_f / ranks.size if ranks.any?
     end
 
     # Origin statistics
