@@ -55,10 +55,10 @@ class TeasController < ApplicationController
 
     @entry = current_user.entries.find_by(tea: @tea)
     if @entry&.position.present? && @category_avg_rank > 0
-      if @entry.rank > @category_avg_rank
-        @category_rank_comparison = "This tea's rank is higher than the average tea in its category (#{@category_avg_rank.round(0)})."
+      if @entry.rank < @category_avg_rank
+        @category_rank_comparison = "This tea's rank is #{@category_avg_rank.round(0)-@entry.rank} places higher than the average #{@tea.category} tea."
       else
-        @category_rank_comparison = "This tea's rank is lower than the average tea in its category (#{@category_avg_rank.round(0)})."
+        @category_rank_comparison = "This tea's rank is #{@entry.rank-@category_avg_rank.round(0)} places lower than the average #{@tea.category} tea."
       end
     end
     

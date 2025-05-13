@@ -79,7 +79,7 @@
               </div>
               <div class="progress flex-grow-1" style="height: 25px;">
                 <div class="progress-bar bg-success" role="progressbar" 
-                     style="width: <%= (avg_rank.to_f / 100) * 100 %>%;" 
+                     style="width: <%= (avg_rank.to_f / @total_teas) * 100 %>%;" 
                      aria-valuenow="<%= avg_rank %>" aria-valuemin="0" aria-valuemax="100">
                   <%= avg_rank.round(1) %>
                 </div>
