@@ -99,6 +99,7 @@
                   <div class="card-body">
                     <h6 class="card-title">Price Comparison</h6>
                     <p class="card-text">
+                      <%= @avg_price%>
                       <% if @price_rank_comparison.present? %>
                         <%= @price_rank_comparison %>
                       <% else %>
@@ -115,7 +116,7 @@
                     <h6 class="card-title">Rank-Price Comparison</h6>
                     <p class="card-text">
                       <% if @rank_price_comparison.present? %>
-                        This tea's price is $<%= @rank_price_comparison %> the 3 teas closest in rank.
+                        This tea's rank is <%= @rank_price_comparison %> than similarly priced teas.
                       <% else %>
                         No comparison data available.
                       <% end %>

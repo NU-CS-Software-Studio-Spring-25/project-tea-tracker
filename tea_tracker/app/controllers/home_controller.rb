@@ -20,8 +20,16 @@ class HomeController < ApplicationController
   end
 
   def dashboard
-    @teas = Tea.joins(:entries).where(entries: { user_id: current_user.id })
-    @user_teas = @teas.pluck(:name, :price, :grams)
+    @selected_category = params[:category]
+    @teas = if @selected_category.present?
+      Tea.joins(:entries).where(entries: { user_id: current_user.id }).where(category: @selected_category)
+    else
+      Tea.joins(:entries).where(entries: { user_id: current_user.id })
+    end
+
+    @user_teas = @teas.pluck(:name, :price, :grams, :category)
+    @tea_categories = @teas.pluck(:category).uniq
+    
     # Gauge metrics (avg $ and percentile vs all teas)
     user_prices   = @teas.map(&:price)
     all_prices    = Tea.pluck(:price).compact.sort
