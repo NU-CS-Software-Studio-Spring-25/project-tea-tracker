@@ -58,7 +58,7 @@ user1 = User.create!(
 
 # === User 2 ===
 user2 = User.create!(
-  username: "oolongfann",
+  username: "oolongfan",
   password: "AnotherSecure1!",
   bio: "Big fan of Taiwanese oolongs.",
   avatar_url: "https://example.com/avatar2.jpg"
