@@ -5,4 +5,4 @@ set -e
 cd "${0%/*}/.."
 
 echo "Running rubocop"
-bundle _2.6.9_ exec rubocop
+bundle exec rubocop -a

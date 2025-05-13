@@ -5,4 +5,4 @@ set -e
 cd "${0%/*}/.."
 
 echo "Running brakeman"
-bundle _2.6.9_ exec brakeman
+bundle exec brakeman

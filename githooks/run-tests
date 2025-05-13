@@ -5,4 +5,4 @@ set -e
 cd "${0%/*}/.."
 
 echo "Running tests"
-bundle _2.6.9_ exec rspec
+rails db:test:prepare test test:system
