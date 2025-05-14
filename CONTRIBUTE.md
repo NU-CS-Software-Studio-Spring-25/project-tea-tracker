@@ -109,8 +109,8 @@ There's a folder called `githooks` that should have a script called `post-commit
 
 Run the following to setup the hooks script:
 ```
-chmod +x githooks/setup_hooks
-./githooks/setup_hooks
+chmod +x setup_hooks.sh
+./setup_hooks.sh
 ```
 
 Run the following to check if it worked:
@@ -123,39 +123,29 @@ githooks
 ```
 
 Now, if you commit, it will deploy to Heroku. If you are not logged in, it will skip. The result will look like this (TODO: check why it's always resetting db):
-
 ```
-git add .
 git commit -m "test"
 
 Updating Heroku...
 From https://git.heroku.com/tea-tracker
  * branch            main       -> FETCH_HEAD
-From https://git.heroku.com/tea-tracker
- * branch            main       -> FETCH_HEAD
 Already up to date.
 On branch main
-Your branch is ahead of 'origin/main' by 2 commits.
-  (use "git push" to publish your local commits)
+Your branch is up to date with 'heroku/main'.
 
 nothing to commit, working tree clean
-Enumerating objects: 12, done.
-Counting objects: 100% (12/12), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (8/8), done.
-Writing objects: 100% (10/10), 4.26 KiB | 4.26 MiB/s, done.
-Total 10 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: Updated 157 paths from dc6ceda
-remote: Compressing source files... done.
-remote: Building source:
+Everything up-to-date
+Heroku updated.
+Logged in to Heroku, proceeding with database update.
+Pushing tea_tracker_development to postgresql-aerodynamic-93675
+ ›   Error: Remote database is not empty. Please create a new database or use heroku pg:reset
+Failed to push data to Heroku. Resetting the database and retrying.
+Resetting postgresql-aerodynamic-93675... done
+Pushing tea_tracker_development to postgresql-aerodynamic-93675
+pg_dump: last built-in OID is 16383
+pg_dump: reading extensions
 ...
 ```
-Note: this will run when you COMMIT, not when you PUSH. So if you redact a commit/go back and forth there may be some messiness in the git history of Heroku, but since we're not explicitly looking there, this should be fine. It is also force pushing every time which is bad practice but will not fail (TODO: look into --force-with-lease and also look into not resetting the db every time).
+Note: this will run when you COMMIT, not when you PUSH. So if you redact a commit/go back and forth there may be some messiness in the git history of Heroku, but since we're not explicitly looking there, this should be fine. It is also force pushing every time which is bad practice but will not fail (TODO: look into --force-with-lease).
 
 NOTE: this does not work with github desktop. ask me how I know...
-It does work with VSCode/Cursor's internal git functionality though. 
-
-# Rubocop & Brakeman
-If you're getting an error before pushing related to rubocop, run the following:
-```bundle exec rubocop```
-It will automatically format the code correctly. 
