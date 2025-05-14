@@ -1160,11 +1160,23 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Store references to chart elements
   const chartElements = {
-    priceChart: document.querySelector('.card-body .border.rounded.p-3'),
-    categoriesSection: document.querySelector('.card-header.bg-success').closest('.card'),
-    originsSection: document.querySelector('.card-header.bg-primary').closest('.card'),
-    teaSummarySection: document.querySelector('.row.mb-4:nth-of-type(3)')
+    priceChart: document.querySelector('.card-body .border.rounded.p-3:has(canvas#priceChart)') || 
+                document.getElementById('priceChart')?.closest('.border.rounded.p-3'),
+    categoriesSection: document.querySelector('.card-header.bg-success')?.closest('.card') || 
+                      document.querySelector('.card:has(.card-header.bg-success)'),
+    originsSection: document.querySelector('.card-header.bg-primary')?.closest('.card') || 
+                   document.querySelector('.card:has(.card-header.bg-primary)'),
+    teaSummarySection: document.querySelector('.row.mb-4:has(.card.bg-success)') || 
+                      document.querySelector('.row.mb-4:nth-of-type(3)')
   };
+  
+  // Debug element selection
+  console.log('Chart Elements:', {
+    priceChart: chartElements.priceChart ? 'Found' : 'Not found',
+    categoriesSection: chartElements.categoriesSection ? 'Found' : 'Not found',
+    originsSection: chartElements.originsSection ? 'Found' : 'Not found',
+    teaSummarySection: chartElements.teaSummarySection ? 'Found' : 'Not found'
+  });
   
   let currentShareElement = null;
   let currentShareTitle = '';
@@ -1197,14 +1209,31 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Open share modal and capture content
   function openShareModal() {
-    const modal = new bootstrap.Modal(document.getElementById('shareModal'));
-    modal.show();
-    captureContent();
+    // Check if Bootstrap 5 is available
+    if (typeof bootstrap !== 'undefined') {
+      const modalElement = document.getElementById('shareModal');
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    } else {
+      // Fallback for Bootstrap 4 or jQuery
+      $('#shareModal').modal('show');
+    }
+    
+    // Slight delay to ensure the modal is rendered before capturing
+    setTimeout(() => {
+      captureContent();
+    }, 300);
   }
   
   // Capture content as image using html2canvas
   function captureContent() {
-    if (!currentShareElement) return;
+    if (!currentShareElement) {
+      console.error("No element selected for sharing");
+      showShareResult('error', 'No content found to share. Please try again.');
+      return;
+    }
+    
+    console.log("Capturing element:", currentShareElement);
     
     const preview = document.getElementById('sharePreview');
     const spinner = document.getElementById('shareSpinner');
@@ -1214,74 +1243,143 @@ document.addEventListener('DOMContentLoaded', function() {
     preview.style.display = 'none';
     spinner.classList.remove('d-none');
     
-    // Additional style options for better image quality
-    const options = {
-      scale: 2, // Increase for higher resolution
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      onclone: function(clonedDoc) {
-        // Add watermark to cloned element
-        const watermark = clonedDoc.createElement('div');
-        watermark.style.position = 'absolute';
-        watermark.style.bottom = '10px';
-        watermark.style.right = '10px';
-        watermark.style.padding = '5px';
-        watermark.style.borderRadius = '3px';
-        watermark.style.backgroundColor = 'rgba(255,255,255,0.7)';
-        watermark.style.fontSize = '12px';
-        watermark.innerText = 'Generated with Tea Tracker';
-        
-        // Add title
-        const title = clonedDoc.createElement('div');
-        title.style.position = 'absolute';
-        title.style.top = '10px';
-        title.style.left = '10px';
-        title.style.padding = '5px 10px';
-        title.style.borderRadius = '3px';
-        title.style.backgroundColor = 'rgba(255,255,255,0.9)';
-        title.style.fontSize = '16px';
-        title.style.fontWeight = 'bold';
-        title.innerText = currentShareTitle;
-        
-        const clonedElement = clonedDoc.querySelector('#' + currentShareElement.id) || 
-                             clonedDoc.querySelector('.' + currentShareElement.className.split(' ')[0]);
-        
-        if (clonedElement) {
-          clonedElement.style.position = 'relative';
-          clonedElement.style.overflow = 'visible';
-          clonedElement.appendChild(watermark);
-          clonedElement.appendChild(title);
+    try {
+      // Ensure element is visible
+      const originalDisplay = currentShareElement.style.display;
+      if (getComputedStyle(currentShareElement).display === 'none') {
+        currentShareElement.style.display = 'block';
+      }
+      
+      // Add a backup way to identify charts when using canvas
+      if (currentShareElement.id === 'priceChart' || 
+          (currentShareElement.querySelector && currentShareElement.querySelector('#priceChart'))) {
+        // If we're targeting a Chart.js canvas directly
+        const chart = window.priceChart;
+        if (chart) {
+          // Use the chart's canvas directly
+          const canvas = chart.canvas;
+          handleCapturedCanvas(canvas);
+          return;
         }
       }
-    };
+      
+      // Additional style options for better image quality
+      const options = {
+        scale: 2, // Increase for higher resolution
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: true, // Enable logging for debugging
+        onclone: function(clonedDoc) {
+          try {
+            // Add watermark to cloned element
+            const watermark = clonedDoc.createElement('div');
+            watermark.style.position = 'absolute';
+            watermark.style.bottom = '10px';
+            watermark.style.right = '10px';
+            watermark.style.padding = '5px';
+            watermark.style.borderRadius = '3px';
+            watermark.style.backgroundColor = 'rgba(255,255,255,0.7)';
+            watermark.style.fontSize = '12px';
+            watermark.innerText = 'Generated with Tea Tracker';
+            
+            // Add title
+            const title = clonedDoc.createElement('div');
+            title.style.position = 'absolute';
+            title.style.top = '10px';
+            title.style.left = '10px';
+            title.style.padding = '5px 10px';
+            title.style.borderRadius = '3px';
+            title.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            title.style.fontSize = '16px';
+            title.style.fontWeight = 'bold';
+            title.innerText = currentShareTitle;
+            
+            let clonedElement;
+            
+            // Try several methods to find the element
+            if (currentShareElement.id) {
+              clonedElement = clonedDoc.getElementById(currentShareElement.id);
+            }
+            
+            if (!clonedElement && currentShareElement.className) {
+              const classes = currentShareElement.className.split(' ');
+              if (classes.length > 0) {
+                clonedElement = clonedDoc.querySelector('.' + classes[0]);
+              }
+            }
+            
+            if (!clonedElement) {
+              // If we can't find by ID or class, try to use a data attribute
+              const uniqueId = 'share-target-' + Date.now();
+              currentShareElement.setAttribute('data-share-id', uniqueId);
+              clonedElement = clonedDoc.querySelector(`[data-share-id="${uniqueId}"]`);
+            }
+            
+            if (clonedElement) {
+              clonedElement.style.position = 'relative';
+              clonedElement.style.overflow = 'visible';
+              clonedElement.appendChild(watermark);
+              clonedElement.appendChild(title);
+            } else {
+              console.error("Could not find cloned element");
+            }
+          } catch (err) {
+            console.error("Error in onclone function:", err);
+          }
+        }
+      };
+      
+      // Capture the element as an image
+      html2canvas(currentShareElement, options)
+        .then(canvas => {
+          // Restore original display if needed
+          if (originalDisplay !== currentShareElement.style.display) {
+            currentShareElement.style.display = originalDisplay;
+          }
+          
+          handleCapturedCanvas(canvas);
+        })
+        .catch(err => {
+          console.error("Error capturing content:", err);
+          showShareResult('error', 'Failed to generate image. Please try again.');
+          spinner.classList.add('d-none');
+          
+          // Restore original display if needed
+          if (originalDisplay !== currentShareElement.style.display) {
+            currentShareElement.style.display = originalDisplay;
+          }
+        });
+    } catch (err) {
+      console.error("Error in captureContent:", err);
+      showShareResult('error', 'An unexpected error occurred. Please try again.');
+      spinner.classList.add('d-none');
+    }
+  }
+  
+  function handleCapturedCanvas(canvas) {
+    const preview = document.getElementById('sharePreview');
+    const spinner = document.getElementById('shareSpinner');
     
-    // Capture the element as an image
-    html2canvas(currentShareElement, options).then(canvas => {
-      capturedImage = canvas;
-      
-      // Set max dimensions while maintaining aspect ratio
-      const maxWidth = preview.offsetWidth;
-      const scale = maxWidth / canvas.width;
-      const scaledHeight = canvas.height * scale;
-      
-      // Resize canvas for preview
-      canvas.style.width = '100%';
-      canvas.style.height = 'auto';
-      canvas.style.borderRadius = '4px';
-      
-      // Hide spinner and show preview
-      spinner.classList.add('d-none');
-      preview.style.display = 'block';
-      preview.appendChild(canvas);
-      
-      // Enable share buttons now that we have an image
-      enableShareButtons();
-    }).catch(err => {
-      console.error("Error capturing content:", err);
-      showShareResult('error', 'Failed to generate image. Please try again.');
-      spinner.classList.add('d-none');
-    });
+    capturedImage = canvas;
+    
+    // Set max dimensions while maintaining aspect ratio
+    const maxWidth = preview.offsetWidth;
+    const scale = maxWidth / canvas.width;
+    const scaledHeight = canvas.height * scale;
+    
+    // Resize canvas for preview
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+    canvas.style.borderRadius = '4px';
+    
+    // Hide spinner and show preview
+    spinner.classList.add('d-none');
+    preview.style.display = 'block';
+    preview.appendChild(canvas);
+    
+    // Enable share buttons now that we have an image
+    enableShareButtons();
   }
   
   // Enable share buttons once image is generated

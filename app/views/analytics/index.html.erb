@@ -79,6 +79,9 @@
       <button id="toggleCustomizePanel" class="btn btn-outline-primary me-2">
         <i class="bi bi-palette"></i> Customize Dashboard
       </button>
+      <button id="shareDashboardBtn" class="btn btn-outline-success me-2">
+        <i class="bi bi-share"></i> Share Dashboard
+      </button>
       <%= link_to "Back to Home Page", root_path, class: "btn btn-outline-secondary" %>
     </div>
   </div>
@@ -203,7 +206,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Category Distribution</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Category Distribution</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="categoryChart" data-title="Tea Categories Distribution">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="category-chart" style="height: 300px;">
@@ -216,7 +224,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Average Rank by Category</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Average Rank by Category</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="rankByCategory" data-title="Average Rank by Tea Category">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <% @category_avg_ranks.each do |category, avg_rank| %>
@@ -245,6 +258,9 @@
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Tea Origins Map</h5>
           <div>
+            <button class="btn btn-sm btn-light share-chart-btn me-2" data-chart="worldMap" data-title="Tea Origins Map">
+              <i class="bi bi-share"></i> Share
+            </button>
             <button id="toggleMapDetails" class="btn btn-sm btn-light">Show Details</button>
           </div>
         </div>
@@ -266,7 +282,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-warning text-white">
-          <h5 class="mb-0">Price vs. Rank Correlation</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Price vs. Rank Correlation</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceRankChart" data-title="Price vs. Rank Correlation">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="price-rank-chart" style="height: 300px;">
@@ -279,7 +300,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-danger text-white">
-          <h5 class="mb-0">Price Distribution by Vendor</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Price Distribution by Vendor</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="vendorPriceChart" data-title="Price Distribution by Vendor">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="vendor-price-chart" style="height: 300px;">
@@ -1471,5 +1497,520 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load preferences on page load
   loadPreferences();
+});
+</script>
+
+<!-- Sharing Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shareModalLabel">Share</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <div id="sharePreview" class="border rounded mb-3 mx-auto" style="max-width: 100%; overflow: hidden;">
+            <!-- Preview content will be injected here -->
+          </div>
+          <div id="shareSpinner" class="text-center my-5 d-none">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Generating image...</p>
+          </div>
+        </div>
+        <div class="share-options">
+          <div class="d-grid gap-2">
+            <button id="downloadImage" class="btn btn-primary">
+              <i class="bi bi-download"></i> Download as Image
+            </button>
+            <button id="copyToClipboard" class="btn btn-secondary">
+              <i class="bi bi-clipboard"></i> Copy to Clipboard
+            </button>
+            <button id="generateShareLink" class="btn btn-info">
+              <i class="bi bi-link-45deg"></i> Generate Shareable Link
+            </button>
+            <div class="btn-group mt-2" role="group">
+              <button id="shareTwitter" class="btn btn-outline-dark">
+                <i class="bi bi-twitter"></i>
+              </button>
+              <button id="shareFacebook" class="btn btn-outline-dark">
+                <i class="bi bi-facebook"></i>
+              </button>
+              <button id="shareReddit" class="btn btn-outline-dark">
+                <i class="bi bi-reddit"></i>
+              </button>
+              <button id="shareWhatsApp" class="btn btn-outline-dark">
+                <i class="bi bi-whatsapp"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="shareLinkContainer" class="mt-3 d-none">
+          <div class="input-group">
+            <input type="text" id="shareLink" class="form-control" readonly>
+            <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">Copy</button>
+          </div>
+          <small class="text-muted">This link will expire in 30 days</small>
+        </div>
+        <div id="shareResult" class="alert mt-3 d-none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Load required libraries -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Store references to chart elements
+  const chartElements = {
+    // Chart containers
+    categoryChart: document.querySelector('.category-chart'),
+    rankByCategory: document.querySelector('.card-header.bg-success')?.closest('.card'),
+    worldMap: document.querySelector('.origins-map'),
+    priceRankChart: document.querySelector('.price-rank-chart'),
+    vendorPriceChart: document.querySelector('.vendor-price-chart')
+  };
+  
+  let currentShareElement = null;
+  let currentShareTitle = '';
+  let capturedImage = null;
+  
+  // Add Bootstrap icons if not already included
+  if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+    const iconLink = document.createElement('link');
+    iconLink.rel = 'stylesheet';
+    iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css';
+    document.head.appendChild(iconLink);
+  }
+  
+  // Share chart button click handler
+  document.querySelectorAll('.share-chart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const chartId = this.dataset.chart;
+      currentShareElement = chartElements[chartId] || document.getElementById(chartId);
+      currentShareTitle = this.dataset.title;
+      
+      // Special handling for Chart.js charts
+      if (chartId === 'categoryChart' && window.categoryChart) {
+        currentShareElement = window.categoryChart.canvas;
+      } else if (chartId === 'priceRankChart' && window.priceRankChart) {
+        currentShareElement = window.priceRankChart.canvas;
+      } else if (chartId === 'vendorPriceChart' && window.vendorPriceChart) {
+        currentShareElement = window.vendorPriceChart.canvas;
+      }
+      
+      console.log(`Sharing ${chartId}:`, currentShareElement);
+      openShareModal();
+    });
+  });
+  
+  // Share Dashboard button click handler
+  document.getElementById('shareDashboardBtn').addEventListener('click', function() {
+    currentShareElement = document.querySelector('.container');
+    currentShareTitle = 'Tea Analytics Dashboard';
+    openShareModal();
+  });
+  
+  // Open share modal and capture content
+  function openShareModal() {
+    // Check if Bootstrap 5 is available
+    if (typeof bootstrap !== 'undefined') {
+      const modalElement = document.getElementById('shareModal');
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    } else {
+      // Fallback for Bootstrap 4 or jQuery
+      $('#shareModal').modal('show');
+    }
+    
+    // Slight delay to ensure the modal is rendered before capturing
+    setTimeout(() => {
+      captureContent();
+    }, 300);
+  }
+  
+  // Capture content as image using html2canvas
+  function captureContent() {
+    if (!currentShareElement) {
+      console.error("No element selected for sharing");
+      showShareResult('error', 'No content found to share. Please try again.');
+      return;
+    }
+    
+    console.log("Capturing element:", currentShareElement);
+    
+    const preview = document.getElementById('sharePreview');
+    const spinner = document.getElementById('shareSpinner');
+    
+    // Clear previous content and show spinner
+    preview.innerHTML = '';
+    preview.style.display = 'none';
+    spinner.classList.remove('d-none');
+    
+    try {
+      // If it's a Chart.js canvas, we can just use that directly
+      if (currentShareElement instanceof HTMLCanvasElement && 
+          (currentShareElement.id === 'categoryChart' || 
+           currentShareElement.id === 'priceRankChart' || 
+           currentShareElement.id === 'vendorPriceChart')) {
+        
+        // Create a copy of the canvas with a white background
+        const canvas = document.createElement('canvas');
+        canvas.width = currentShareElement.width;
+        canvas.height = currentShareElement.height;
+        const ctx = canvas.getContext('2d');
+        
+        // Fill white background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Copy the original canvas content
+        ctx.drawImage(currentShareElement, 0, 0);
+        
+        // Add title text
+        ctx.font = 'bold 16px Arial';
+        ctx.fillStyle = '#333333';
+        ctx.textAlign = 'center';
+        ctx.fillText(currentShareTitle, canvas.width / 2, 30);
+        
+        // Add watermark
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#888888';
+        ctx.textAlign = 'right';
+        ctx.fillText('Generated with Tea Tracker', canvas.width - 10, canvas.height - 10);
+        
+        handleCapturedCanvas(canvas);
+        return;
+      }
+      
+      // For Leaflet map, special handling
+      if (currentShareElement.id === 'worldMap' || 
+          (currentShareElement.querySelector && currentShareElement.querySelector('#worldMap'))) {
+        // Use map screenshot - leaflet has methods for this
+        const mapContainer = document.getElementById('worldMap');
+        if (mapContainer && window.map) {
+          try {
+            // Try to use leaflet-image if available
+            if (window.leafletImage) {
+              leafletImage(window.map, function(err, canvas) {
+                if (err) {
+                  console.error("Error capturing map:", err);
+                  fallbackToHtml2Canvas();
+                } else {
+                  handleCapturedCanvas(canvas);
+                }
+              });
+              return;
+            } else {
+              fallbackToHtml2Canvas();
+            }
+          } catch (err) {
+            console.error("Error capturing map:", err);
+            fallbackToHtml2Canvas();
+          }
+        } else {
+          fallbackToHtml2Canvas();
+        }
+        return;
+      }
+      
+      // For everything else, use html2canvas
+      fallbackToHtml2Canvas();
+    } catch (err) {
+      console.error("Error in captureContent:", err);
+      showShareResult('error', 'An unexpected error occurred. Please try again.');
+      spinner.classList.add('d-none');
+    }
+    
+    function fallbackToHtml2Canvas() {
+      // Ensure element is visible
+      const originalDisplay = currentShareElement.style.display;
+      if (getComputedStyle(currentShareElement).display === 'none') {
+        currentShareElement.style.display = 'block';
+      }
+      
+      // Additional style options for better image quality
+      const options = {
+        scale: 2, // Increase for higher resolution
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: true, // Enable logging for debugging
+        onclone: function(clonedDoc) {
+          try {
+            // Add watermark to cloned element
+            const watermark = clonedDoc.createElement('div');
+            watermark.style.position = 'absolute';
+            watermark.style.bottom = '10px';
+            watermark.style.right = '10px';
+            watermark.style.padding = '5px';
+            watermark.style.borderRadius = '3px';
+            watermark.style.backgroundColor = 'rgba(255,255,255,0.7)';
+            watermark.style.fontSize = '12px';
+            watermark.innerText = 'Generated with Tea Tracker';
+            
+            // Add title
+            const title = clonedDoc.createElement('div');
+            title.style.position = 'absolute';
+            title.style.top = '10px';
+            title.style.left = '10px';
+            title.style.padding = '5px 10px';
+            title.style.borderRadius = '3px';
+            title.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            title.style.fontSize = '16px';
+            title.style.fontWeight = 'bold';
+            title.innerText = currentShareTitle;
+            
+            let clonedElement;
+            
+            // Try several methods to find the element
+            if (currentShareElement.id) {
+              clonedElement = clonedDoc.getElementById(currentShareElement.id);
+            }
+            
+            if (!clonedElement && currentShareElement.className) {
+              const classes = currentShareElement.className.split(' ');
+              if (classes.length > 0) {
+                clonedElement = clonedDoc.querySelector('.' + classes[0]);
+              }
+            }
+            
+            if (!clonedElement) {
+              // If we can't find by ID or class, try to use a data attribute
+              const uniqueId = 'share-target-' + Date.now();
+              currentShareElement.setAttribute('data-share-id', uniqueId);
+              clonedElement = clonedDoc.querySelector(`[data-share-id="${uniqueId}"]`);
+            }
+            
+            if (clonedElement) {
+              clonedElement.style.position = 'relative';
+              clonedElement.style.overflow = 'visible';
+              clonedElement.appendChild(watermark);
+              clonedElement.appendChild(title);
+            } else {
+              console.error("Could not find cloned element");
+            }
+          } catch (err) {
+            console.error("Error in onclone function:", err);
+          }
+        }
+      };
+      
+      // Capture the element as an image
+      html2canvas(currentShareElement, options)
+        .then(canvas => {
+          // Restore original display if needed
+          if (originalDisplay !== currentShareElement.style.display) {
+            currentShareElement.style.display = originalDisplay;
+          }
+          
+          handleCapturedCanvas(canvas);
+        })
+        .catch(err => {
+          console.error("Error capturing content:", err);
+          showShareResult('error', 'Failed to generate image. Please try again.');
+          spinner.classList.add('d-none');
+          
+          // Restore original display if needed
+          if (originalDisplay !== currentShareElement.style.display) {
+            currentShareElement.style.display = originalDisplay;
+          }
+        });
+    }
+  }
+  
+  function handleCapturedCanvas(canvas) {
+    const preview = document.getElementById('sharePreview');
+    const spinner = document.getElementById('shareSpinner');
+    
+    capturedImage = canvas;
+    
+    // Set max dimensions while maintaining aspect ratio
+    const maxWidth = preview.offsetWidth;
+    const scale = maxWidth / canvas.width;
+    const scaledHeight = canvas.height * scale;
+    
+    // Resize canvas for preview
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+    canvas.style.borderRadius = '4px';
+    
+    // Hide spinner and show preview
+    spinner.classList.add('d-none');
+    preview.style.display = 'block';
+    preview.appendChild(canvas);
+    
+    // Enable share buttons now that we have an image
+    enableShareButtons();
+  }
+  
+  // Enable share buttons once image is generated
+  function enableShareButtons() {
+    document.getElementById('downloadImage').disabled = false;
+    document.getElementById('copyToClipboard').disabled = false;
+    document.getElementById('generateShareLink').disabled = false;
+    document.getElementById('shareTwitter').disabled = false;
+    document.getElementById('shareFacebook').disabled = false;
+    document.getElementById('shareReddit').disabled = false;
+    document.getElementById('shareWhatsApp').disabled = false;
+  }
+  
+  // Download Image button click handler
+  document.getElementById('downloadImage').addEventListener('click', function() {
+    if (!capturedImage) return;
+    
+    capturedImage.toBlob(function(blob) {
+      saveAs(blob, `${currentShareTitle.replace(/\s+/g, '_')}.png`);
+      showShareResult('success', 'Image downloaded successfully!');
+    });
+  });
+  
+  // Copy to Clipboard button click handler
+  document.getElementById('copyToClipboard').addEventListener('click', async function() {
+    if (!capturedImage) return;
+    
+    try {
+      const blob = await new Promise(resolve => capturedImage.toBlob(resolve));
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob
+        })
+      ]);
+      showShareResult('success', 'Image copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy image: ', err);
+      showShareResult('error', 'Failed to copy image. Your browser may not support this feature.');
+    }
+  });
+  
+  // Generate Share Link button click handler
+  document.getElementById('generateShareLink').addEventListener('click', async function() {
+    if (!capturedImage) return;
+    
+    try {
+      const linkContainer = document.getElementById('shareLinkContainer');
+      const linkInput = document.getElementById('shareLink');
+      
+      showShareResult('info', 'Generating shareable link...');
+      
+      // Convert canvas to blob and upload to a service
+      // This would typically call your backend API to handle storage
+      // For demo purposes, we'll just simulate it with a timeout
+      
+      setTimeout(() => {
+        // Replace with your actual API call that returns a shareable link
+        const demoShareLink = `${window.location.origin}/share/${Math.random().toString(36).substring(2, 10)}`;
+        
+        linkInput.value = demoShareLink;
+        linkContainer.classList.remove('d-none');
+        
+        showShareResult('success', 'Shareable link generated!');
+      }, 1000);
+    } catch (err) {
+      console.error('Failed to generate link: ', err);
+      showShareResult('error', 'Failed to generate shareable link.');
+    }
+  });
+  
+  // Copy Share Link button handler
+  document.getElementById('copyLinkBtn').addEventListener('click', function() {
+    const linkInput = document.getElementById('shareLink');
+    linkInput.select();
+    document.execCommand('copy');
+    
+    this.innerText = 'Copied!';
+    setTimeout(() => {
+      this.innerText = 'Copy';
+    }, 2000);
+  });
+  
+  // Social media share handlers
+  document.getElementById('shareTwitter').addEventListener('click', function() {
+    shareToSocialMedia('twitter');
+  });
+  
+  document.getElementById('shareFacebook').addEventListener('click', function() {
+    shareToSocialMedia('facebook');
+  });
+  
+  document.getElementById('shareReddit').addEventListener('click', function() {
+    shareToSocialMedia('reddit');
+  });
+  
+  document.getElementById('shareWhatsApp').addEventListener('click', function() {
+    shareToSocialMedia('whatsapp');
+  });
+  
+  // Share to social media platforms
+  function shareToSocialMedia(platform) {
+    // In a real implementation, you would:
+    // 1. Create a shareable link to your image
+    // 2. Construct the appropriate social media share URL
+    
+    // For demo purposes, we'll check if Web Share API is available
+    if (navigator.share && capturedImage) {
+      capturedImage.toBlob(async function(blob) {
+        const file = new File([blob], `${currentShareTitle.replace(/\s+/g, '_')}.png`, { type: 'image/png' });
+        
+        try {
+          await navigator.share({
+            title: currentShareTitle,
+            text: 'Check out my Tea Tracker stats!',
+            files: [file]
+          });
+          showShareResult('success', 'Content shared successfully!');
+        } catch (err) {
+          console.error('Error sharing:', err);
+          
+          // Fallback to platform-specific sharing
+          let shareUrl = '';
+          
+          // This would be replaced with your actual shareable link in production
+          const demoShareLink = `${window.location.origin}/share/${Math.random().toString(36).substring(2, 10)}`;
+          
+          switch (platform) {
+            case 'twitter':
+              shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareTitle)}&url=${encodeURIComponent(demoShareLink)}`;
+              break;
+            case 'facebook':
+              shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(demoShareLink)}`;
+              break;
+            case 'reddit':
+              shareUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(demoShareLink)}&title=${encodeURIComponent(currentShareTitle)}`;
+              break;
+            case 'whatsapp':
+              shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(currentShareTitle + ' ' + demoShareLink)}`;
+              break;
+          }
+          
+          if (shareUrl) {
+            window.open(shareUrl, '_blank');
+          }
+        }
+      });
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      showShareResult('info', 'Direct sharing not supported in your browser. Please use the "Generate Shareable Link" option instead.');
+    }
+  }
+  
+  // Display result messages
+  function showShareResult(type, message) {
+    const resultElement = document.getElementById('shareResult');
+    
+    resultElement.className = 'alert mt-3';
+    resultElement.classList.add(`alert-${type === 'error' ? 'danger' : type}`);
+    resultElement.textContent = message;
+    resultElement.classList.remove('d-none');
+    
+    setTimeout(() => {
+      resultElement.classList.add('d-none');
+    }, 5000);
+  }
 });
 </script>
