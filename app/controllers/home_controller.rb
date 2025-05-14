@@ -94,10 +94,10 @@ class HomeController < ApplicationController
     else
       Tea.joins(:entries).where(entries: { user_id: current_user.id })
     end
-    
+
     @average_tea_cost = @teas.average(:price).to_f
-    
-    render partial: 'price_statistics'
+
+    render partial: "price_statistics"
   end
 
   private

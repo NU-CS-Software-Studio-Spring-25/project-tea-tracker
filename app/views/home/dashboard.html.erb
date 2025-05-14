@@ -77,8 +77,11 @@
 
   <!-- User Profile Section -->
   <div class="d-flex justify-content-end mb-3">
-    <button id="toggleCustomizePanel" class="btn btn-outline-primary">
+    <button id="toggleCustomizePanel" class="btn btn-outline-primary me-2">
       <i class="bi bi-palette"></i> Customize Dashboard
+    </button>
+    <button id="shareDashboardBtn" class="btn btn-outline-success">
+      <i class="bi bi-share"></i> Share Dashboard
     </button>
   </div>
   
@@ -181,7 +184,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Tea Categories</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tea Categories</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="categoriesSection" data-title="My Tea Categories">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <% @tea_type_counts.each do |category, count| %>
@@ -207,7 +215,12 @@
     <div class="col-md-6">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Tea Origins</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tea Origins</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="originsSection" data-title="My Tea Origins">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="list-group">
@@ -232,7 +245,12 @@
   <!-- Tea Collection Summary -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <h3 class="border-bottom pb-2 mb-3">Your Tea Collection at a Glance</h3>
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="border-bottom pb-2 mb-3">Your Tea Collection at a Glance</h3>
+        <button class="btn btn-sm btn-outline-primary share-chart-btn" data-chart="teaSummarySection" data-title="My Tea Collection Summary">
+          <i class="bi bi-share"></i> Share Stats
+        </button>
+      </div>
     </div>
 
     <div class="col-md-3">
