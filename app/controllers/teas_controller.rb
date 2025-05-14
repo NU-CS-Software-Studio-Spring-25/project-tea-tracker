@@ -97,9 +97,9 @@ class TeasController < ApplicationController
 
       if similar_teas.any?
         if @entry.rank > avg_rank
-          @rank_price_comparison = "#{(@entry.rank - avg_rank).round(0)} places higher on average than"
+          @rank_price_comparison = "#{(@entry.rank - avg_rank).round(0)} places lower on average than"
         else
-          @rank_price_comparison = "#{(avg_rank - @entry.rank).round(0)} places lower on average than"
+          @rank_price_comparison = "#{(avg_rank - @entry.rank).round(0)} places higher on average than"
         end
       end
     end
