@@ -54,7 +54,7 @@ class TeasController < ApplicationController
     @closest_index = current_user.teas.count/10.round(0)
 
     @entry = current_user.entries.find_by(tea: @tea)
-    if @entry&.position.present? && @category_avg_rank > 0
+    if @entry&.position.present? && @category_avg_rank && @category_avg_rank > 0
       if @entry.rank < @category_avg_rank
         @category_rank_comparison = "This tea's rank is #{@category_avg_rank.round(0)-@entry.rank} places higher than the average #{@tea.category} tea."
       else

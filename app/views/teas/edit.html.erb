@@ -1,71 +1,82 @@
 <h1>Edit Tea</h1>
 
+<% if @tea.errors.any? %>
+  <div id="error-modal" class="alert alert-danger">
+    <h4>There were errors with your submission:</h4>
+    <ul>
+      <% @tea.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= form_with model: @tea, local: true do |form| %>
   <div class="form-group">
     <%= form.label :name %>
-    <%= form.text_field :name, class: "form-control" %>
+    <%= form.text_field :name, required: true, class: "form-control", maxlength: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :category %>
-    <%= form.text_field :category, class: "form-control" %>
+    <%= form.select :category, options_for_select(["Black", "Green", "White", "Oolong", "Herbal", "Pu-erh", "Rooibos"]), {}, class: "form-control", required: true %>
   </div>
 
   <div class="form-group">
     <div class="row">
       <div class="col">
         <%= form.label :price, "Price per Gram ($/g)" %>
-        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price" %>
+        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price", min: 0.01, max: 999.99 %>
       </div>
       <div class="col">
         <%= form.label :total_price, "Total Price ($)" %>
-        <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price" %>
+        <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price", min: 0.01, max: 9999.99, required: true %>
       </div>
       <div class="col">
         <%= form.label :weight, "Weight (g)" %>
-        <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight" %>
+        <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight", min: 0.01, max: 9999.99, required: true %>
       </div>
     </div>
   </div>
 
   <div class="form-group">
     <%= form.label :vendor %>
-    <%= form.text_field :vendor, class: "form-control" %>
+    <%= form.text_field :vendor, class: "form-control", maxlength: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :known_for %>
-    <%= form.text_field :known_for, class: "form-control" %>
+    <%= form.text_field :known_for, class: "form-control", maxlength: 200 %>
   </div>
 
   <div class="form-group">
     <%= form.label :year %>
-    <%= form.number_field :year, step: 1, class: "form-control", placeholder: "Leave blank if unknown" %>
+    <%= form.number_field :year, step: 1, class: "form-control", max: 9999 %>
   </div>
 
   <div class="form-group">
     <%= form.label :region %>
-    <%= form.text_field :region, class: "form-control" %>
+    <%= form.text_field :region, class: "form-control", maxlength: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :ship_from %>
-    <%= form.text_field :ship_from, class: "form-control" %>
+    <%= form.text_field :ship_from, class: "form-control", maxlength: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :popularity %>
-    <%= form.number_field :popularity, step: 1, class: "form-control" %>
+    <%= form.number_field :popularity, step: 1, class: "form-control", max: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :shopping_platform %>
-    <%= form.text_field :shopping_platform, class: "form-control" %>
+    <%= form.text_field :shopping_platform, class: "form-control", maxlength: 100 %>
   </div>
 
   <div class="form-group">
     <%= form.label :product_url %>
-    <%= form.url_field :product_url, class: "form-control" %>
+    <%= form.url_field :product_url, class: "form-control", maxlength: 200 %>
   </div>
 
   <div class="form-group">
@@ -79,6 +90,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Hide the error modal after 5 seconds
+  const errorModal = document.getElementById('error-modal');
+  if (errorModal) {
+    setTimeout(() => {
+      errorModal.style.display = 'none';
+    }, 5000); // 5000ms = 5 seconds
+  }
+
+  // Existing JavaScript for price and weight validation
   const directPriceInput = document.getElementById('direct-price');
   const totalPriceInput = document.getElementById('total-price');
   const weightInput = document.getElementById('weight');
@@ -100,5 +120,18 @@ document.addEventListener('DOMContentLoaded', function() {
   totalPriceInput.addEventListener('input', calculatePricePerGram);
   weightInput.addEventListener('input', calculatePricePerGram);
   directPriceInput.addEventListener('input', clearTotalAndWeight);
+
+  // Ensure price and weight are at least 0.01
+  directPriceInput.addEventListener('input', function() {
+    if (parseFloat(directPriceInput.value) < 0.01) {
+      directPriceInput.value = 0.01;
+    }
+  });
+
+  weightInput.addEventListener('input', function() {
+    if (parseFloat(weightInput.value) < 0.01) {
+      weightInput.value = 0.01;
+    }
+  });
 });
-</script> 
+</script>
