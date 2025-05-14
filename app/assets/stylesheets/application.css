@@ -9,7 +9,8 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-
+/* Import pixel fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Silkscreen:wght@400;700&family=Press+Start+2P&family=VT323&family=Pixelify+Sans&family=DotGothic16&display=swap');
 
 /* Global Variables */
 :root {
@@ -27,14 +28,29 @@
     --tea-info: #2196F3;
     --tea-warning: #FF9800;
     --tea-danger: #F44336;
+    
+    /* Pixel font variables - define preferred order */
+    --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
 }
 
+/* Global font override - ensure this applies everywhere */
+html, body {
+    font-family: var(--font-pixel) !important;
+}
 
+/* Apply to all text elements with high specificity */
+body *:not(i):not(.bi) {
+    font-family: var(--font-pixel) !important;
+}
+
+/* Bootstrap overrides */
+.btn, .form-control, .form-select, .alert, .card, .modal, .dropdown-menu, .nav-link, .navbar {
+    font-family: var(--font-pixel) !important;
+}
 
 /* Typography */
 body {
     color: var(--tea-text);
-    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 h1,
@@ -45,10 +61,39 @@ h5,
 h6 {
     font-weight: 600;
     margin-bottom: 1rem;
+    font-family: var(--font-pixel) !important;
 }
 
-.text-muted {
-    color: var(--tea-text-light) !important;
+/* Adjust specific element sizes for better readability with pixel fonts */
+p, .text-muted, .btn, .form-control, .form-label, .form-select, .card-text {
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+
+/* Headers should be more prominent with pixel fonts */
+h1 {
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+}
+
+h2 {
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+}
+
+h3 {
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+}
+
+/* Specific adjustments for readability */
+.form-control, select, input, textarea {
+    font-size: 1.1rem !important;
+}
+
+/* Chart labels and other canvas text */
+canvas, .chart-js-render-monitor {
+    font-family: var(--font-pixel) !important;
 }
 
 /* Card Styles */

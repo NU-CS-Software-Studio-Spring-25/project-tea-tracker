@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Set up global chart defaults for consistent text colors and fonts
   Chart.defaults.color = '#333333';
-  Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
+  Chart.defaults.font.family = getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace";
   Chart.defaults.plugins.legend.labels.color = '#333333';
   Chart.defaults.plugins.title.color = '#333333';
   
@@ -375,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             position: 'right',
             labels: {
               font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 size: 12
               }
             }
@@ -776,11 +777,15 @@ document.addEventListener('DOMContentLoaded', () => {
               display: true,
               text: 'Price per Gram ($/g)',
               font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 weight: 'bold'
               }
             },
             ticks: {
-              callback: value => `$${value.toFixed(2)}`
+              callback: value => `$${value.toFixed(2)}`,
+              font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
+              }
             }
           },
           y: {
@@ -788,7 +793,13 @@ document.addEventListener('DOMContentLoaded', () => {
               display: true,
               text: 'Rank',
               font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 weight: 'bold'
+              }
+            },
+            ticks: {
+              font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
               }
             }
           }
@@ -919,13 +930,17 @@ document.addEventListener('DOMContentLoaded', () => {
               display: true,
               text: 'Vendor',
               font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 weight: 'bold'
               }
             },
             ticks: {
               maxRotation: 45,
               minRotation: 45,
-              autoSkip: false // Ensure all vendors are shown
+              autoSkip: false, // Ensure all vendors are shown
+              font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
+              }
             }
           },
           y: {
@@ -934,12 +949,16 @@ document.addEventListener('DOMContentLoaded', () => {
               display: true,
               text: yAxisTitle,
               font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 weight: 'bold'
               }
             },
             ticks: {
               // Fixed to 2 decimal places for price formatting
-              callback: value => `$${value.toFixed(2)}`
+              callback: value => `$${value.toFixed(2)}`,
+              font: {
+                family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
+              }
             }
           }
         }
@@ -1318,8 +1337,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateChartColors(colorScheme, textColor = '#333333') {
     const selectedColors = colorThemes[colorScheme] || colorThemes.default;
     
-    // Set global chart text color
+    // Get the pixel font
+    const pixelFont = getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace";
+    
+    // Set global chart text color and font
     Chart.defaults.color = textColor;
+    Chart.defaults.font.family = pixelFont;
     Chart.defaults.plugins.legend.labels.color = textColor;
     Chart.defaults.plugins.title.color = textColor;
     
@@ -1332,6 +1355,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update text color in options
       if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
         chart.options.plugins.legend.labels.color = textColor;
+        chart.options.plugins.legend.labels.font = {
+          family: pixelFont,
+          size: chart.options.plugins.legend.labels.font?.size || 12
+        };
       }
       
       chart.update();
@@ -1348,17 +1375,46 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update text colors
       if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
         chart.options.plugins.legend.labels.color = textColor;
+        chart.options.plugins.legend.labels.font = {
+          family: pixelFont,
+          size: chart.options.plugins.legend.labels.font?.size || 12
+        };
       }
       
       // Update axis titles and ticks
       if (chart.options && chart.options.scales) {
         if (chart.options.scales.x) {
           chart.options.scales.x.ticks.color = textColor;
-          if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+          chart.options.scales.x.ticks.font = {
+            family: pixelFont,
+            size: chart.options.scales.x.ticks.font?.size || 12
+          };
+          
+          if (chart.options.scales.x.title) {
+            chart.options.scales.x.title.color = textColor;
+            chart.options.scales.x.title.font = {
+              family: pixelFont,
+              weight: chart.options.scales.x.title.font?.weight || 'bold',
+              size: chart.options.scales.x.title.font?.size || 12
+            };
+          }
         }
+        
         if (chart.options.scales.y) {
           chart.options.scales.y.ticks.color = textColor;
-          if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+          chart.options.scales.y.ticks.font = {
+            family: pixelFont,
+            size: chart.options.scales.y.ticks.font?.size || 12
+          };
+          
+          if (chart.options.scales.y.title) {
+            chart.options.scales.y.title.color = textColor;
+            chart.options.scales.y.title.font = {
+              family: pixelFont,
+              weight: chart.options.scales.y.title.font?.weight || 'bold',
+              size: chart.options.scales.y.title.font?.size || 12
+            };
+          }
         }
       }
       
@@ -1381,17 +1437,46 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update text colors
       if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
         chart.options.plugins.legend.labels.color = textColor;
+        chart.options.plugins.legend.labels.font = {
+          family: pixelFont,
+          size: chart.options.plugins.legend.labels.font?.size || 12
+        };
       }
       
       // Update axis titles and ticks
       if (chart.options && chart.options.scales) {
         if (chart.options.scales.x) {
           chart.options.scales.x.ticks.color = textColor;
-          if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+          chart.options.scales.x.ticks.font = {
+            family: pixelFont,
+            size: chart.options.scales.x.ticks.font?.size || 12
+          };
+          
+          if (chart.options.scales.x.title) {
+            chart.options.scales.x.title.color = textColor;
+            chart.options.scales.x.title.font = {
+              family: pixelFont,
+              weight: chart.options.scales.x.title.font?.weight || 'bold',
+              size: chart.options.scales.x.title.font?.size || 12
+            };
+          }
         }
+        
         if (chart.options.scales.y) {
           chart.options.scales.y.ticks.color = textColor;
-          if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+          chart.options.scales.y.ticks.font = {
+            family: pixelFont,
+            size: chart.options.scales.y.ticks.font?.size || 12
+          };
+          
+          if (chart.options.scales.y.title) {
+            chart.options.scales.y.title.color = textColor;
+            chart.options.scales.y.title.font = {
+              family: pixelFont,
+              weight: chart.options.scales.y.title.font?.weight || 'bold',
+              size: chart.options.scales.y.title.font?.size || 12
+            };
+          }
         }
       }
       
