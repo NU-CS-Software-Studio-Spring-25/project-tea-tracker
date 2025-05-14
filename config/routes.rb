@@ -31,4 +31,8 @@ Rails.application.routes.draw do
   get "/categories", to: "teas#categories", as: "categories"
   get "/origins", to: "teas#origins", as: "origins"
   get "/price_statistics", to: "home#price_statistics", as: "price_statistics"
+  
+  # Sharing routes
+  post "/shares", to: "shares#create", as: "create_share"
+  get "/share/:share_id", to: "shares#show", as: "show_share"
 end
