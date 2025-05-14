@@ -56,6 +56,9 @@ class HomeController < ApplicationController
     @avg_rank = ranks.sum.to_f / ranks.size if ranks.any?
     @total_value = @teas.sum(:price)
 
+    # Category statistics
+    @tea_type_counts = @teas.group(:category).count
+
     # Average rank by category
     @category_avg_ranks = {}
     @tea_categories.each do |category|
@@ -79,7 +82,22 @@ class HomeController < ApplicationController
     # Origin statistics
     @origins = @teas.pluck(:ship_from).uniq
     @origin_tea_counts = @teas.group(:ship_from).count
+    @popular_ship_from = @teas.group(:ship_from).count
+
     render "analytics/index"
+  end
+
+  def price_statistics
+    @selected_category = params[:category]
+    @teas = if @selected_category.present?
+      Tea.joins(:entries).where(entries: { user_id: current_user.id }).where(category: @selected_category)
+    else
+      Tea.joins(:entries).where(entries: { user_id: current_user.id })
+    end
+    
+    @average_tea_cost = @teas.average(:price).to_f
+    
+    render partial: 'price_statistics'
   end
 
   private

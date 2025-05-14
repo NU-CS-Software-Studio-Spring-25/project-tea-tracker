@@ -1,9 +1,161 @@
-
 <div class="container-fluid py-4">
+  <!-- Theme Styles -->
+  <style>
+    :root {
+      --chart-text-color: #333333;
+      --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    body, .card, .card-body, h1, h2, h3, h4, h5, h6, p, button, input, select, .btn {
+      font-family: var(--font-family) !important;
+    }
+    
+    /* Theme Styles */
+    body.theme-dark {
+      background-color: #2c3e50;
+      color: #e0e0e0;
+    }
+    
+    body.theme-dark .card {
+      background-color: #34495e;
+      border-color: #2c3e50;
+    }
+    
+    body.theme-dark .card-header {
+      border-color: #2c3e50;
+    }
+    
+    body.theme-dark .text-muted {
+      color: #a0aec0 !important;
+    }
+    
+    body.theme-pastel {
+      background-color: #f8f9fa;
+      color: #5a6268;
+    }
+    
+    body.theme-pastel .card {
+      background-color: #ffffff;
+      border-color: #e9ecef;
+    }
+    
+    body.theme-pastel .card-header.bg-primary {
+      background-color: #a8d8ff !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-success {
+      background-color: #c3e6cb !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-info {
+      background-color: #bee5eb !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-warning {
+      background-color: #ffeeba !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-danger {
+      background-color: #f5c6cb !important;
+      color: #212529 !important;
+    }
+    
+    /* Transition effects */
+    body, .card, .card-header {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Custom font loading */
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap');
+  </style>
+
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Tea Collection Analytics</h1>
     <div>
-      <%= link_to "Back to Dashboard", root_path, class: "btn btn-outline-secondary" %>
+      <button id="toggleCustomizePanel" class="btn btn-outline-primary me-2">
+        <i class="bi bi-palette"></i> Customize Dashboard
+      </button>
+      <%= link_to "Back to Home Page", root_path, class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+  
+  <!-- Customization Panel -->
+  <div id="customizePanel" class="card shadow-sm mb-4" style="display: none;">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Customize Your Analytics Dashboard</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <h6>Dashboard Theme</h6>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeDefault" value="default" checked>
+              <label class="form-check-label" for="themeDefault">Default</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeDark" value="dark">
+              <label class="form-check-label" for="themeDark">Dark</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themePastel" value="pastel">
+              <label class="form-check-label" for="themePastel">Pastel</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeVivid" value="vivid">
+              <label class="form-check-label" for="themeVivid">Vivid</label>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="cardHeadersColor" class="form-label">Card Headers Style</label>
+            <select class="form-select" id="cardHeadersStyle">
+              <option value="default" selected>Default</option>
+              <option value="solid">Solid Colors</option>
+              <option value="gradient">Gradient</option>
+              <option value="subtle">Subtle</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <h6>Chart Colors</h6>
+          <div class="mb-3">
+            <label for="categoryChartColors" class="form-label">Category Chart</label>
+            <select class="form-select" id="categoryChartColors">
+              <option value="default" selected>Default</option>
+              <option value="tea">Tea Colors</option>
+              <option value="pastels">Pastel Colors</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="mapLineColor" class="form-label">Map Lines</label>
+            <input type="color" class="form-control form-control-color" id="mapLineColor" value="#ff637c" title="Choose map line color">
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <h6>Text & Header Colors</h6>
+          <div class="mb-3">
+            <label for="chartTextColor" class="form-label">Chart Text Color</label>
+            <input type="color" class="form-control form-control-color" id="chartTextColor" value="#333333" title="Choose chart text color">
+          </div>
+          <div class="mb-3">
+            <label for="dashboardTitle" class="form-label">Dashboard Title Color</label>
+            <input type="color" class="form-control form-control-color" id="dashboardTitleColor" value="#212529" title="Choose dashboard title color">
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-2">
+        <button id="resetCustomizations" class="btn btn-secondary">Reset to Default</button>
+        <button id="saveCustomizations" class="btn btn-success">Save Preferences</button>
+      </div>
     </div>
   </div>
   
@@ -54,13 +206,8 @@
           <h5 class="mb-0">Category Distribution</h5>
         </div>
         <div class="card-body">
-          <!-- This would be a chart in a real implementation -->
           <div class="category-chart" style="height: 300px;">
-            <!-- Placeholder for chart -->
-            <div class="text-center py-5">
-              <p class="text-muted">Category distribution chart would appear here</p>
-              <p class="small">This would show the distribution of tea categories in your collection</p>
-            </div>
+            <canvas id="categoryChart" style="width:100%;height:100%;"></canvas>
           </div>
         </div>
       </div>
@@ -95,16 +242,18 @@
   <div class="row mb-4">
     <div class="col-md-12">
       <div class="card shadow-sm">
-        <div class="card-header bg-info text-white">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
           <h5 class="mb-0">Tea Origins Map</h5>
+          <div>
+            <button id="toggleMapDetails" class="btn btn-sm btn-light">Show Details</button>
+          </div>
         </div>
         <div class="card-body">
-          <!-- This would be a map in a real implementation -->
-          <div class="origins-map" style="height: 400px;">
-            <!-- Placeholder for map -->
-            <div class="text-center py-5">
-              <p class="text-muted">Tea origins map would appear here</p>
-              <p class="small">This would show a world map with markers for your tea origins</p>
+          <div class="origins-map" style="height: 400px; position: relative;">
+            <div id="worldMap" style="width:100%;height:100%;"></div>
+            <div id="mapDetails" class="bg-white shadow-sm border rounded p-2" style="position: absolute; bottom: 10px; right: 10px; max-width: 300px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000; font-size: 12px;">
+              <h6 class="mb-2">Tea Origins</h6>
+              <div id="originsList"></div>
             </div>
           </div>
         </div>
@@ -120,13 +269,8 @@
           <h5 class="mb-0">Price vs. Rank Correlation</h5>
         </div>
         <div class="card-body">
-          <!-- This would be a scatter plot in a real implementation -->
           <div class="price-rank-chart" style="height: 300px;">
-            <!-- Placeholder for chart -->
-            <div class="text-center py-5">
-              <p class="text-muted">Price vs. Rank chart would appear here</p>
-              <p class="small">This would show if higher-priced teas tend to have higher ranks</p>
-            </div>
+            <canvas id="priceRankChart" style="width:100%;height:100%;"></canvas>
           </div>
         </div>
       </div>
@@ -138,16 +282,1194 @@
           <h5 class="mb-0">Price Distribution by Vendor</h5>
         </div>
         <div class="card-body">
-          <!-- This would be a box plot in a real implementation -->
           <div class="vendor-price-chart" style="height: 300px;">
-            <!-- Placeholder for chart -->
-            <div class="text-center py-5">
-              <p class="text-muted">Vendor price distribution chart would appear here</p>
-              <p class="small">This would show how tea prices vary by vendor</p>
-            </div>
+            <canvas id="vendorPriceChart" style="width:100%;height:100%;"></canvas>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Get the data from controller
+  const categoryData = <%= raw @tea_type_counts.to_json %>;
+  const originData = <%= raw @popular_ship_from.to_json %>;
+  const teasData = <%= raw @teas.to_json(only: [:id, :name, :price, :grams, :vendor, :category, :ship_from]) %>;
+  
+  // Create a mapping of tea ranks directly from entries
+  const rankData = {};
+  <% current_user.entries.each do |entry| %>
+    rankData[<%= entry.tea_id %>] = <%= entry.rank %>;
+  <% end %>
+  
+  console.log("Tea rank mapping:", rankData);
+  
+  // Set up global chart defaults for consistent text colors and fonts
+  Chart.defaults.color = '#333333';
+  Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
+  Chart.defaults.plugins.legend.labels.color = '#333333';
+  Chart.defaults.plugins.title.color = '#333333';
+  
+  // Category Distribution Chart
+  function renderCategoryChart() {
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    if (!ctx) return;
+    
+    const categories = Object.keys(categoryData);
+    const counts = Object.values(categoryData);
+    
+    const backgroundColor = [
+      'rgba(54, 162, 235, 0.6)', // blue
+      'rgba(255, 99, 132, 0.6)', // pink
+      'rgba(75, 192, 192, 0.6)', // green
+      'rgba(255, 206, 86, 0.6)', // yellow
+      'rgba(153, 102, 255, 0.6)', // purple
+      'rgba(255, 159, 64, 0.6)', // orange
+      'rgba(199, 199, 199, 0.6)' // gray
+    ];
+    
+    window.categoryChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: categories,
+        datasets: [{
+          data: counts,
+          backgroundColor: backgroundColor.slice(0, categories.length),
+          borderColor: backgroundColor.map(color => color.replace('0.6', '1')),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              font: {
+                size: 12
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                const total = counts.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                return `${label}: ${value} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    return window.categoryChart;
+  }
+  
+  // New Simplified World Map Implementation
+  function renderWorldMap() {
+    const mapElement = document.getElementById('worldMap');
+    if (!mapElement) return;
+    
+    // More comprehensive mapping with cities/regions included
+    const locationCoordinates = {
+      // Countries
+      'China': [35.8617, 104.1954],
+      'Taiwan': [23.6978, 120.9605],
+      'Japan': [36.2048, 138.2529],
+      'India': [20.5937, 78.9629],
+      'Vietnam': [14.0583, 108.2772],
+      'Korea': [35.9078, 127.7669],
+      'South Korea': [35.9078, 127.7669],
+      'Thailand': [15.8700, 100.9925],
+      'Malaysia': [4.2105, 101.9758],
+      'Sri Lanka': [7.8731, 80.7718],
+      'Nepal': [28.3949, 84.1240],
+      'Kenya': [-1.2921, 36.8219],
+      'United Kingdom': [55.3781, -3.4360],
+      'United States': [37.0902, -95.7129],
+      'Indonesia': [-0.7893, 113.9213],
+      'Myanmar': [21.9162, 95.9560],
+      'Laos': [19.8563, 102.4955],
+      
+      // Chinese regions/cities
+      'Yunnan': [25.0453, 102.7097],
+      'Fujian': [26.0789, 117.9874],
+      'Guangdong': [23.3790, 113.7633],
+      'Hangzhou': [30.2741, 120.1551],
+      'Fuding': [27.3260, 120.2000],
+      'Anxi': [25.0563, 118.1868],
+      'Wuyi': [27.7617, 117.8413],
+      'Guangxi': [23.7248, 108.8076],
+      'Sichuan': [30.6570, 104.0650],
+      'Beijing': [39.9042, 116.4074],
+      'Shanghai': [31.2304, 121.4737],
+      'Zhejiang': [29.1416, 119.7889],
+      'Hubei': [30.7378, 112.2384],
+      'Hunan': [27.6253, 111.8569],
+      'Shaanxi': [35.3911, 109.1882],
+      
+      // Taiwan regions
+      'Taipei': [25.0330, 121.5654],
+      'Nantou': [23.9609, 120.9718],
+      'Hualien': [23.9749, 121.6059],
+      
+      // Japan regions
+      'Shizuoka': [34.9756, 138.3827],
+      'Kyoto': [35.0116, 135.7681],
+      'Uji': [34.8811, 135.8009],
+      'Kagoshima': [31.5969, 130.5571],
+      
+      // India regions
+      'Darjeeling': [27.0360, 88.2627],
+      'Assam': [26.2006, 92.9376],
+      'Nilgiri': [11.4916, 76.7399],
+      'Sikkim': [27.5330, 88.5122],
+    };
+    
+    // Initialize the map
+    const map = L.map('worldMap').setView([30, 100], 2);
+    
+    // Add the base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Home location
+    const homeLocation = [40, -95]; // US center
+    
+    // Add home marker
+    const homeMarker = L.marker(homeLocation, {
+      icon: L.divIcon({
+        className: 'home-icon',
+        html: '<i class="bi bi-house-fill" style="color: blue; font-size: 24px;"></i>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      })
+    }).addTo(map).bindPopup('Your Location');
+    
+    // Process and display origins
+    const origins = Object.keys(originData);
+    
+    // Populate the details panel
+    const originsList = document.getElementById('originsList');
+    if (originsList) {
+      originsList.innerHTML = origins.map(origin => 
+        `<div class="mb-1">
+           <strong>${origin}</strong>: ${originData[origin]} teas
+         </div>`
+      ).join('');
+    }
+    
+    // Tea icon style
+    const teaIcon = L.divIcon({
+      className: 'tea-icon',
+      html: '<i class="bi bi-cup-hot-fill" style="color: green; font-size: 20px;"></i>',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+    
+    // Create a layer group for all tea markers and lines
+    const teaGroup = L.layerGroup().addTo(map);
+    
+    // Track unmapped origins
+    const unmappedOrigins = [];
+    
+    // Add markers and lines for each origin
+    origins.forEach(origin => {
+      // Skip if origin is empty
+      if (!origin || origin.trim() === '') return;
+      
+      // Get count of teas from this origin
+      const count = originData[origin];
+      
+      // Try to find coordinates (case-insensitive)
+      let coords;
+      const originLower = origin.toLowerCase();
+      
+      for (const [key, value] of Object.entries(locationCoordinates)) {
+        if (key.toLowerCase() === originLower) {
+          coords = value;
+          break;
+        }
+      }
+      
+      // If origin not found, use approximate coordinates by geocoding
+      if (!coords) {
+        console.warn(`No predefined coordinates for: ${origin}, assigning to China as fallback`);
+        unmappedOrigins.push(origin);
+        // Fallback to China coordinates
+        coords = [35.8617, 104.1954]; 
+      }
+      
+      // Add marker for this origin
+      const marker = L.marker(coords, { icon: teaIcon })
+        .bindPopup(`<strong>${origin}</strong><br>${count} teas`)
+        .addTo(teaGroup);
+      
+      // Add a straight line connecting to home
+      const line = L.polyline([coords, homeLocation], {
+        color: 'rgba(255, 99, 132, 0.6)',
+        weight: Math.max(1, Math.min(Math.floor(count / 10) + 1, 5)),
+        dashArray: '5, 5'
+      }).addTo(teaGroup);
+      
+      // Add arrow to the line
+      const arrowHead = L.polylineDecorator(line, {
+        patterns: [
+          {
+            offset: '60%',
+            repeat: 0,
+            symbol: L.Symbol.arrowHead({
+              pixelSize: 10,
+              headAngle: 30,
+              polygon: true,
+              pathOptions: { color: 'rgba(255, 99, 132, 0.8)', fillOpacity: 0.8 }
+            })
+          }
+        ]
+      }).addTo(teaGroup);
+    });
+    
+    // Show unmapped origins warning if any
+    if (unmappedOrigins.length > 0) {
+      const warningDiv = document.createElement('div');
+      warningDiv.className = 'bg-warning text-dark p-2 rounded';
+      warningDiv.style.position = 'absolute';
+      warningDiv.style.bottom = '10px';
+      warningDiv.style.left = '10px';
+      warningDiv.style.zIndex = '1000';
+      warningDiv.style.maxWidth = '250px';
+      warningDiv.style.fontSize = '12px';
+      
+      warningDiv.innerHTML = `
+        <p class="mb-1"><strong>Some origins mapped to China:</strong></p>
+        <p class="mb-0">${unmappedOrigins.join(', ')}</p>
+      `;
+      
+      document.querySelector('.origins-map').appendChild(warningDiv);
+    }
+    
+    // Add event listener for the toggle button
+    document.getElementById('toggleMapDetails').addEventListener('click', function() {
+      const detailsPanel = document.getElementById('mapDetails');
+      if (detailsPanel.style.display === 'none') {
+        detailsPanel.style.display = 'block';
+        this.textContent = 'Hide Details';
+      } else {
+        detailsPanel.style.display = 'none';
+        this.textContent = 'Show Details';
+      }
+    });
+    
+    // Force a map resize to ensure all is displaying properly
+    setTimeout(() => map.invalidateSize(), 100);
+  }
+  
+  // Price vs Rank Correlation Chart (Scatter Plot)
+  function renderPriceRankChart() {
+    const ctx = document.getElementById('priceRankChart').getContext('2d');
+    if (!ctx) return;
+    
+    // Debug the teas data
+    console.log('Tea data received:', teasData);
+    console.log('Rank data mapping:', rankData);
+    
+    // Try to identify fields - different models might name them differently
+    const sampleTea = teasData.length > 0 ? teasData[0] : null;
+    if (sampleTea) {
+      console.log('Sample tea structure:', Object.keys(sampleTea));
+      console.log('Sample tea data:', sampleTea);
+    }
+    
+    // CRITICAL FIX: Use the rankData mapping to get ranks for each tea
+    const validTeas = teasData.filter(tea => {
+      // Get price, which we know exists on the tea directly
+      let price = 0, grams = 0;
+      
+      try {
+        price = typeof tea.price === 'number' ? tea.price : parseFloat(tea.price || 0);
+      } catch (e) {
+        price = 0;
+      }
+
+      // Try to get grams
+      try {
+        grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
+      } catch (e) {
+        grams = 1;
+      }
+      
+      // Get rank from our rankData mapping
+      const rank = rankData[tea.id] || 0;
+      
+      console.log(`Tea: ${tea.name || 'unknown'}, ID: ${tea.id}, Price: ${price}, Grams: ${grams}, Rank: ${rank}`);
+      
+      // Include tea in chart if we can calculate price per gram and have some rank info
+      return price > 0 && rank > 0;
+    });
+    
+    console.log(`Found ${validTeas.length} valid teas for price-rank chart`);
+    
+    if (validTeas.length === 0) {
+      console.warn('No valid teas with price and rank data for the scatter plot');
+      // Display a more informative message
+      const chartContainer = document.querySelector('.price-rank-chart');
+      if (chartContainer) {
+        chartContainer.innerHTML = `
+          <div class="alert alert-warning text-center my-5">
+            <p>No teas with complete price and rank data could be processed.</p>
+            <p>Rank data likely exists in the entries relation, not on tea objects directly.</p>
+            <p class="small text-muted">Received ${teasData.length} teas, but couldn't extract rank information.</p>
+            <button id="debugDataBtn" class="btn btn-sm btn-outline-primary mt-2">Show Sample Data</button>
+          </div>
+        `;
+        
+        // Add event listener for the debug button
+        setTimeout(() => {
+          const debugBtn = document.getElementById('debugDataBtn');
+          if (debugBtn) {
+            debugBtn.addEventListener('click', () => {
+              if (sampleTea) {
+                alert(JSON.stringify(sampleTea, null, 2));
+              } else {
+                alert('No sample tea data available');
+              }
+            });
+          }
+        }, 100);
+      }
+      return;
+    }
+    
+    // Prepare data for scatter plot
+    const scatterData = validTeas.map(tea => {
+      let price, grams;
+      
+      // Get price
+      try {
+        price = typeof tea.price === 'number' ? tea.price : parseFloat(tea.price || 0);
+      } catch (e) {
+        price = 0;
+      }
+      
+      // Get grams
+      try {
+        grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
+        if (grams <= 0) grams = 1; // Avoid division by zero
+      } catch (e) {
+        grams = 1;
+      }
+      
+      // Get rank from rankData mapping
+      const rank = rankData[tea.id] || 0;
+      
+      // Calculate price per gram
+      const pricePerGram = grams > 0 ? price / grams : price;
+      
+      return {
+        x: pricePerGram, // Price per gram
+        y: rank,
+        label: tea.name || 'Unnamed Tea',
+        category: tea.category || 'Unknown',
+        price: price,
+        grams: grams
+      };
+    });
+    
+    // Get unique categories for color coding
+    const uniqueCategories = [...new Set(validTeas.map(tea => tea.category || 'Unknown'))];
+    const colorPalette = [
+      'rgba(255, 99, 132, 0.6)',  // pink
+      'rgba(54, 162, 235, 0.6)',  // blue
+      'rgba(255, 206, 86, 0.6)',  // yellow
+      'rgba(75, 192, 192, 0.6)',  // green
+      'rgba(153, 102, 255, 0.6)', // purple
+      'rgba(255, 159, 64, 0.6)'   // orange
+    ];
+    
+    // Create datasets, one for each category
+    const datasets = uniqueCategories.map((category, index) => {
+      const color = colorPalette[index % colorPalette.length];
+      return {
+        label: category,
+        data: scatterData.filter(point => point.category === category),
+        backgroundColor: color,
+        borderColor: color.replace('0.6', '1'),
+        pointRadius: 6,
+        pointHoverRadius: 8
+      };
+    });
+    
+    window.priceRankChart = new Chart(ctx, {
+      type: 'scatter',
+      data: {
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const point = context.raw;
+                const labels = [
+                  `Name: ${point.label}`,
+                  `Price/Gram: $${point.x.toFixed(3)}/g`,
+                  `Price: $${point.price.toFixed(2)}`,
+                  `Rank: ${point.y}`,
+                ];
+                
+                if (point.grams > 0) {
+                  labels.splice(3, 0, `Grams: ${point.grams}g`);
+                }
+                
+                if (point.category && point.category !== 'Unknown') {
+                  labels.push(`Category: ${point.category}`);
+                }
+                
+                return labels;
+              }
+            }
+          },
+          legend: {
+            position: 'top',
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            title: {
+              display: true,
+              text: 'Price per Gram ($/g)',
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              callback: value => `$${value.toFixed(2)}`
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Rank',
+              font: {
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    return window.priceRankChart;
+  }
+  
+  // Vendor Price Distribution Chart (Box Plot-like using bar chart)
+  function renderVendorPriceChart() {
+    const ctx = document.getElementById('vendorPriceChart').getContext('2d');
+    if (!ctx) return;
+    
+    console.log('Rendering vendor price chart...');
+    
+    // Create a more flexible grouping function to handle different data structures
+    const vendorGroups = {};
+    teasData.forEach(tea => {
+      // Convert potential string values to numbers
+      let price = 0, grams = 0;
+      const vendor = tea.vendor || tea.company || '';
+      
+      try {
+        price = typeof tea.price === 'number' ? tea.price : parseFloat(tea.price || 0);
+      } catch (e) {
+        price = 0;
+      }
+      
+      try {
+        grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
+        if (grams <= 0) grams = 1; // Avoid division by zero
+      } catch (e) {
+        grams = 1;
+      }
+      
+      if (price > 0 && vendor) {
+        if (!vendorGroups[vendor]) {
+          vendorGroups[vendor] = [];
+        }
+        
+        // Always store price per gram
+        const pricePerGram = price / grams;
+        vendorGroups[vendor].push({
+          price: price,
+          pricePerGram: pricePerGram,
+          grams: grams,
+          value: pricePerGram
+        });
+      }
+    });
+    
+    // Check if we have vendor data
+    const vendorCount = Object.keys(vendorGroups).length;
+    console.log(`Found ${vendorCount} vendors with price data`);
+    
+    if (vendorCount === 0) {
+      console.warn('No vendor price data available');
+      // Display a message in the chart area
+      const chartContainer = document.querySelector('.vendor-price-chart');
+      if (chartContainer) {
+        chartContainer.innerHTML = `
+          <div class="alert alert-warning text-center my-5">
+            <p>No teas with vendor and price data available.</p>
+            <p>Please add vendor and price information to your teas.</p>
+            <p class="small text-muted">Received ${teasData.length} teas, but none had valid vendor and price.</p>
+          </div>
+        `;
+      }
+      return;
+    }
+    
+    // Calculate average price per vendor
+    const vendorAvgPrices = {};
+    Object.keys(vendorGroups).forEach(vendor => {
+      const prices = vendorGroups[vendor].map(item => item.value);
+      vendorAvgPrices[vendor] = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+    });
+    
+    // Sort vendors by average price
+    const sortedVendors = Object.keys(vendorAvgPrices).sort((a, b) => 
+      vendorAvgPrices[b] - vendorAvgPrices[a]
+    );
+    
+    // Show ALL vendors - no cap
+    const displayVendors = sortedVendors;
+    const displayAvgPrices = displayVendors.map(vendor => vendorAvgPrices[vendor]);
+    const teaCounts = displayVendors.map(vendor => vendorGroups[vendor].length);
+    
+    // Always use price per gram for consistency
+    const priceLabel = 'Average Price per Gram';
+    const yAxisTitle = 'Price per Gram ($/g)';
+    
+    window.vendorPriceChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: displayVendors,
+        datasets: [{
+          label: priceLabel,
+          data: displayAvgPrices,
+          backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const vendor = context.label;
+                const avgPrice = context.raw.toFixed(2); // Fixed to 2 decimal places for price formatting
+                const count = teaCounts[context.dataIndex];
+                return [
+                  `Price/Gram: $${avgPrice}/g`,
+                  `Tea Count: ${count}`
+                ];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Vendor',
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45,
+              autoSkip: false // Ensure all vendors are shown
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: yAxisTitle,
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              // Fixed to 2 decimal places for price formatting
+              callback: value => `$${value.toFixed(2)}`
+            }
+          }
+        }
+      }
+    });
+    
+    return window.vendorPriceChart;
+  }
+  
+  // Call all chart rendering functions
+  if (document.getElementById('categoryChart')) renderCategoryChart();
+  if (document.getElementById('priceRankChart')) renderPriceRankChart();
+  if (document.getElementById('vendorPriceChart')) renderVendorPriceChart();
+  renderWorldMap();
+  
+  // Dashboard Customization Feature
+  const customizePanel = document.getElementById('customizePanel');
+  const toggleCustomizePanel = document.getElementById('toggleCustomizePanel');
+  let charts = {}; // Store chart instances for re-rendering
+  
+  // Color theme palettes
+  const colorThemes = {
+    default: [
+      'rgba(54, 162, 235, 0.6)', // blue
+      'rgba(255, 99, 132, 0.6)', // pink
+      'rgba(75, 192, 192, 0.6)', // green
+      'rgba(255, 206, 86, 0.6)', // yellow
+      'rgba(153, 102, 255, 0.6)', // purple
+      'rgba(255, 159, 64, 0.6)'  // orange
+    ],
+    tea: [
+      'rgba(183, 110, 39, 0.6)',  // brown
+      'rgba(104, 160, 99, 0.6)',  // green
+      'rgba(196, 145, 2, 0.6)',   // yellow
+      'rgba(181, 71, 82, 0.6)',   // red
+      'rgba(76, 40, 30, 0.6)',    // dark brown
+      'rgba(192, 171, 142, 0.6)'  // beige
+    ],
+    pastels: [
+      'rgba(255, 179, 198, 0.6)', // pink
+      'rgba(181, 234, 215, 0.6)', // mint
+      'rgba(255, 241, 179, 0.6)', // light yellow
+      'rgba(199, 206, 234, 0.6)', // lavender
+      'rgba(235, 179, 255, 0.6)', // light purple
+      'rgba(181, 228, 255, 0.6)'  // sky blue
+    ],
+    monochrome: [
+      'rgba(44, 62, 80, 0.8)',
+      'rgba(44, 62, 80, 0.7)',
+      'rgba(44, 62, 80, 0.6)', 
+      'rgba(44, 62, 80, 0.5)',
+      'rgba(44, 62, 80, 0.4)',
+      'rgba(44, 62, 80, 0.3)'
+    ]
+  };
+  
+  // Save preferences to localStorage
+  function savePreferences() {
+    try {
+      const prefs = {
+        dashboardTheme: document.querySelector('input[name="dashboardTheme"]:checked').value,
+        categoryChartColors: document.getElementById('categoryChartColors').value,
+        mapLineColor: document.getElementById('mapLineColor').value,
+        chartTextColor: document.getElementById('chartTextColor').value,
+        cardHeadersStyle: document.getElementById('cardHeadersStyle').value,
+        dashboardTitleColor: document.getElementById('dashboardTitleColor')?.value || '#212529'
+      };
+      
+      localStorage.setItem('teaTrackerDashboardPrefs', JSON.stringify(prefs));
+      
+      // Show save confirmation
+      const saveBtn = document.getElementById('saveCustomizations');
+      const originalText = saveBtn.textContent;
+      saveBtn.textContent = 'Saved!';
+      saveBtn.classList.remove('btn-success');
+      saveBtn.classList.add('btn-info');
+      
+      setTimeout(() => {
+        saveBtn.textContent = originalText;
+        saveBtn.classList.remove('btn-info');
+        saveBtn.classList.add('btn-success');
+      }, 2000);
+      
+    } catch (e) {
+      console.error('Error saving preferences:', e);
+    }
+  }
+  
+  // Load saved preferences from localStorage
+  function loadPreferences() {
+    try {
+      const savedPrefs = localStorage.getItem('teaTrackerDashboardPrefs');
+      if (savedPrefs) {
+        const prefs = JSON.parse(savedPrefs);
+        
+        // Apply theme
+        document.querySelector(`input[name="dashboardTheme"][value="${prefs.dashboardTheme || 'default'}"]`).checked = true;
+        
+        // Apply chart colors
+        if (prefs.categoryChartColors) {
+          document.getElementById('categoryChartColors').value = prefs.categoryChartColors;
+        }
+        
+        // Apply map color
+        if (prefs.mapLineColor) {
+          document.getElementById('mapLineColor').value = prefs.mapLineColor;
+        }
+        
+        // Apply text color
+        if (prefs.chartTextColor) {
+          document.getElementById('chartTextColor').value = prefs.chartTextColor;
+        }
+        
+        // Apply card header style
+        if (prefs.cardHeadersStyle) {
+          document.getElementById('cardHeadersStyle').value = prefs.cardHeadersStyle;
+        }
+        
+        // Apply dashboard title color
+        if (prefs.dashboardTitleColor && document.getElementById('dashboardTitleColor')) {
+          document.getElementById('dashboardTitleColor').value = prefs.dashboardTitleColor;
+        }
+        
+        // Apply all preferences
+        applyPreferences();
+      }
+    } catch (e) {
+      console.error('Error loading preferences:', e);
+    }
+  }
+  
+  // Apply preferences to dashboard
+  function applyPreferences() {
+    // Get current preferences
+    const theme = document.querySelector('input[name="dashboardTheme"]:checked').value;
+    const categoryColors = document.getElementById('categoryChartColors').value;
+    const mapColor = document.getElementById('mapLineColor').value;
+    const textColor = document.getElementById('chartTextColor').value;
+    const headerStyle = document.getElementById('cardHeadersStyle').value;
+    const titleColor = document.getElementById('dashboardTitleColor')?.value || '#212529';
+    
+    // Apply theme
+    applyTheme(theme);
+    
+    // Apply card header styles
+    updateCardHeadersAndStats(headerStyle);
+    
+    // Update dashboard title color
+    const dashboardTitle = document.querySelector('.container-fluid > .d-flex > h1');
+    if (dashboardTitle) {
+      dashboardTitle.style.color = titleColor;
+    }
+    
+    // Re-render charts with new colors
+    updateChartColors(categoryColors, textColor);
+    
+    // Update map colors
+    updateMapColors(mapColor);
+  }
+  
+  // Update card headers and statistic cards
+  function updateCardHeadersAndStats(style) {
+    const headers = document.querySelectorAll('.card-header');
+    const statCards = document.querySelectorAll('.row:first-of-type .card');
+    const progressBars = document.querySelectorAll('.progress-bar');
+    const selectedColors = colorThemes[document.getElementById('categoryChartColors').value] || colorThemes.default;
+    
+    // Reset headers to default first
+    headers.forEach(header => {
+      header.style.background = '';
+      header.style.borderBottom = '';
+      header.style.color = '';
+    });
+    
+    // Reset stat cards first
+    statCards.forEach(card => {
+      if (!card.classList.contains('bg-success') && 
+          !card.classList.contains('bg-primary') && 
+          !card.classList.contains('bg-warning') && 
+          !card.classList.contains('bg-info')) return;
+          
+      card.style.background = '';
+      card.style.backgroundColor = '';
+      card.style.color = '';
+    });
+    
+    // Apply header styles
+    if (style === 'solid') {
+      // Solid vibrant colors
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '1');
+        header.style.backgroundColor = color;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        card.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
+      });
+    } 
+    else if (style === 'gradient') {
+      // Gradient backgrounds
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
+        header.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
+        card.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.8');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.6');
+        bar.style.background = `linear-gradient(90deg, ${startColor}, ${endColor})`;
+      });
+    }
+    else if (style === 'subtle') {
+      // Subtle backgrounds with border
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '0.3');
+        const borderColor = selectedColors[colorIdx].replace('0.6', '0.8');
+        header.style.backgroundColor = color;
+        header.style.borderBottom = `2px solid ${borderColor}`;
+        header.style.color = '#333333';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '0.7');
+        card.style.backgroundColor = color;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
+      });
+    }
+    else if (style === 'monochrome') {
+      // Monochrome with different shade levels
+      headers.forEach((header, i) => {
+        const shade = 0.2 + (i % 5) * 0.1; // 0.2, 0.3, 0.4, 0.5, 0.6
+        header.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const shade = 0.5 + (i % 4) * 0.1; // 0.5, 0.6, 0.7, 0.8
+        card.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const shade = 0.5 + (i % 5) * 0.1; // 0.5, 0.6, 0.7, 0.8, 0.9
+        bar.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+      });
+    }
+  }
+  
+  // Apply overall theme
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    const cardHeaders = document.querySelectorAll('.card-header');
+    const cards = document.querySelectorAll('.card');
+    const textColor = document.getElementById('chartTextColor').value;
+    
+    // Reset previous theme classes
+    document.body.classList.remove('theme-dark', 'theme-pastel', 'theme-vivid');
+    
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark');
+      root.style.setProperty('--chart-text-color', '#e0e0e0');
+      document.body.style.backgroundColor = '#2c3e50';
+      document.body.style.color = '#e0e0e0';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '#34495e';
+        card.style.borderColor = '#2c3e50';
+      });
+      
+    } else if (theme === 'pastel') {
+      document.body.classList.add('theme-pastel');
+      root.style.setProperty('--chart-text-color', '#5a6268');
+      document.body.style.backgroundColor = '#f8f9fa';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '#ffffff';
+        card.style.borderColor = '#e9ecef';
+      });
+      
+    } else if (theme === 'vivid') {
+      document.body.classList.add('theme-vivid');
+      root.style.setProperty('--chart-text-color', '#212529');
+      document.body.style.backgroundColor = '#ffffff';
+      
+      cardHeaders.forEach(header => {
+        // Make card headers more vibrant
+        if (header.classList.contains('bg-primary')) header.style.backgroundColor = '#007bff';
+        if (header.classList.contains('bg-success')) header.style.backgroundColor = '#28a745'; 
+        if (header.classList.contains('bg-info')) header.style.backgroundColor = '#17a2b8';
+        if (header.classList.contains('bg-warning')) header.style.backgroundColor = '#ffc107';
+        if (header.classList.contains('bg-danger')) header.style.backgroundColor = '#dc3545';
+      });
+      
+    } else {
+      // Default theme
+      root.style.setProperty('--chart-text-color', '#333333');
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '';
+        card.style.borderColor = '';
+      });
+      
+      cardHeaders.forEach(header => {
+        header.style.backgroundColor = '';
+      });
+    }
+    
+    // Apply text color consistently to chart options
+    Chart.defaults.color = textColor;
+    Chart.defaults.plugins.legend.labels.color = textColor;
+    Chart.defaults.plugins.title.color = textColor;
+  }
+  
+  // Update chart colors based on selection
+  function updateChartColors(colorScheme, textColor = '#333333') {
+    const selectedColors = colorThemes[colorScheme] || colorThemes.default;
+    
+    // Set global chart text color
+    Chart.defaults.color = textColor;
+    Chart.defaults.plugins.legend.labels.color = textColor;
+    Chart.defaults.plugins.title.color = textColor;
+    
+    // Update category chart if it exists
+    if (window.categoryChart && typeof window.categoryChart.data !== 'undefined') {
+      const chart = window.categoryChart;
+      chart.data.datasets[0].backgroundColor = selectedColors.slice(0, chart.data.labels.length);
+      chart.data.datasets[0].borderColor = selectedColors.map(color => color.replace('0.6', '1')).slice(0, chart.data.labels.length);
+      
+      // Update text color in options
+      if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
+        chart.options.plugins.legend.labels.color = textColor;
+      }
+      
+      chart.update();
+    }
+    
+    // Update vendor price chart colors
+    if (window.vendorPriceChart && typeof window.vendorPriceChart.data !== 'undefined') {
+      const chart = window.vendorPriceChart;
+      
+      // Update bar colors
+      chart.data.datasets[0].backgroundColor = selectedColors.map(c => c);
+      chart.data.datasets[0].borderColor = selectedColors.map(c => c.replace('0.6', '1'));
+      
+      // Update text colors
+      if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
+        chart.options.plugins.legend.labels.color = textColor;
+      }
+      
+      // Update axis titles and ticks
+      if (chart.options && chart.options.scales) {
+        if (chart.options.scales.x) {
+          chart.options.scales.x.ticks.color = textColor;
+          if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+        }
+        if (chart.options.scales.y) {
+          chart.options.scales.y.ticks.color = textColor;
+          if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+        }
+      }
+      
+      chart.update();
+    }
+    
+    // Update price vs rank chart colors
+    if (window.priceRankChart && typeof window.priceRankChart.data !== 'undefined') {
+      const chart = window.priceRankChart;
+      
+      // Update scatter plot colors
+      if (chart.data && chart.data.datasets) {
+        chart.data.datasets.forEach((dataset, i) => {
+          const color = selectedColors[i % selectedColors.length];
+          dataset.backgroundColor = color;
+          dataset.borderColor = color.replace('0.6', '1');
+        });
+      }
+      
+      // Update text colors
+      if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
+        chart.options.plugins.legend.labels.color = textColor;
+      }
+      
+      // Update axis titles and ticks
+      if (chart.options && chart.options.scales) {
+        if (chart.options.scales.x) {
+          chart.options.scales.x.ticks.color = textColor;
+          if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+        }
+        if (chart.options.scales.y) {
+          chart.options.scales.y.ticks.color = textColor;
+          if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+        }
+      }
+      
+      chart.update();
+    }
+  }
+  
+  // Update map colors
+  function updateMapColors(color) {
+    // Find all map line elements and update their color
+    const mapLines = document.querySelectorAll('.leaflet-overlay-pane path');
+    mapLines.forEach(line => {
+      // Use style property instead of setAttribute for broader browser support
+      line.style.stroke = color;
+      
+      // For polyline decorators (arrows)
+      if (line.classList.contains('leaflet-polylineDecorator') || 
+          !line.hasAttribute('stroke-dasharray')) {
+        line.style.fill = color;
+        line.style.fillOpacity = '0.8';
+      }
+    });
+    
+    // Check if we need to recreate the map with new colors for deeper changes
+    if (window.teaMap) {
+      // Store paths before recreating
+      const origins = Object.keys(originData);
+      origins.forEach(origin => {
+        if (!origin || origin.trim() === '') return;
+        
+        // Try to find coordinates
+        let coords;
+        const originLower = origin.toLowerCase();
+        
+        for (const [key, value] of Object.entries(locationCoordinates)) {
+          if (key.toLowerCase() === originLower) {
+            coords = value;
+            break;
+          }
+        }
+        
+        // Use fallback if needed
+        if (!coords) {
+          coords = [35.8617, 104.1954];
+        }
+        
+        // Update line color if it exists
+        const lines = document.querySelectorAll(`.leaflet-overlay-pane path`);
+        lines.forEach(line => {
+          if (!line.hasAttribute('stroke-dasharray')) return;
+          line.style.stroke = color;
+        });
+      });
+    }
+  }
+  
+  // Event Listeners
+  toggleCustomizePanel.addEventListener('click', () => {
+    if (customizePanel.style.display === 'none') {
+      customizePanel.style.display = 'block';
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> Close Customization';
+      toggleCustomizePanel.classList.replace('btn-outline-primary', 'btn-outline-secondary');
+    } else {
+      customizePanel.style.display = 'none';
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> Customize Dashboard';
+      toggleCustomizePanel.classList.replace('btn-outline-secondary', 'btn-outline-primary');
+    }
+  });
+  
+  document.getElementById('saveCustomizations').addEventListener('click', () => {
+    applyPreferences();
+    savePreferences();
+  });
+  
+  document.getElementById('resetCustomizations').addEventListener('click', () => {
+    // Reset form to defaults
+    document.getElementById('themeDefault').checked = true;
+    document.getElementById('categoryChartColors').value = 'default';
+    document.getElementById('mapLineColor').value = '#ff637c';
+    document.getElementById('chartTextColor').value = '#333333';
+    document.getElementById('cardHeadersStyle').value = 'default';
+    if (document.getElementById('dashboardTitleColor')) {
+      document.getElementById('dashboardTitleColor').value = '#212529';
+    }
+    
+    // Apply defaults
+    applyPreferences();
+    savePreferences();
+  });
+  
+  // Apply changes in real-time for instant preview
+  document.querySelectorAll('input[name="dashboardTheme"]').forEach(radio => {
+    radio.addEventListener('change', applyPreferences);
+  });
+  
+  document.getElementById('categoryChartColors').addEventListener('change', applyPreferences);
+  document.getElementById('mapLineColor').addEventListener('change', applyPreferences);
+  document.getElementById('chartTextColor').addEventListener('change', applyPreferences);
+  document.getElementById('cardHeadersStyle').addEventListener('change', applyPreferences);
+  if (document.getElementById('dashboardTitleColor')) {
+    document.getElementById('dashboardTitleColor').addEventListener('change', applyPreferences);
+  }
+  
+  // Load preferences on page load
+  loadPreferences();
+});
+</script>

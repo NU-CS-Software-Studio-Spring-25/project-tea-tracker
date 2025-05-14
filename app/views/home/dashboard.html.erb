@@ -1,6 +1,159 @@
 <h1 class="mt-5 text-center">Welcome to Tea Tracker</h1>
 <% if current_user %>
 <div class="container-fluid py-4">
+  <!-- Theme Styles -->
+  <style>
+    :root {
+      --chart-text-color: #333333;
+      --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    body, .card, .card-body, h1, h2, h3, h4, h5, h6, p, button, input, select, .btn {
+      font-family: var(--font-family) !important;
+    }
+    
+    /* Theme Styles */
+    body.theme-dark {
+      background-color: #2c3e50;
+      color: #e0e0e0;
+    }
+    
+    body.theme-dark .card {
+      background-color: #34495e;
+      border-color: #2c3e50;
+    }
+    
+    body.theme-dark .card-header {
+      border-color: #2c3e50;
+    }
+    
+    body.theme-dark .text-muted {
+      color: #a0aec0 !important;
+    }
+    
+    body.theme-pastel {
+      background-color: #f8f9fa;
+      color: #5a6268;
+    }
+    
+    body.theme-pastel .card {
+      background-color: #ffffff;
+      border-color: #e9ecef;
+    }
+    
+    body.theme-pastel .card-header.bg-primary {
+      background-color: #a8d8ff !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-success {
+      background-color: #c3e6cb !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-info {
+      background-color: #bee5eb !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-warning {
+      background-color: #ffeeba !important;
+      color: #212529 !important;
+    }
+    
+    body.theme-pastel .card-header.bg-danger {
+      background-color: #f5c6cb !important;
+      color: #212529 !important;
+    }
+    
+    /* Transition effects */
+    body, .card, .card-header {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Custom font loading */
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap');
+  </style>
+
+  <!-- User Profile Section -->
+  <div class="d-flex justify-content-end mb-3">
+    <button id="toggleCustomizePanel" class="btn btn-outline-primary">
+      <i class="bi bi-palette"></i> Customize Dashboard
+    </button>
+  </div>
+  
+  <!-- Customization Panel -->
+  <div id="customizePanel" class="card shadow-sm mb-4" style="display: none;">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Customize Your Dashboard</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <h6>Dashboard Theme</h6>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeDefault" value="default" checked>
+              <label class="form-check-label" for="themeDefault">Default</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeDark" value="dark">
+              <label class="form-check-label" for="themeDark">Dark</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themePastel" value="pastel">
+              <label class="form-check-label" for="themePastel">Pastel</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="dashboardTheme" id="themeVivid" value="vivid">
+              <label class="form-check-label" for="themeVivid">Vivid</label>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="cardHeadersColor" class="form-label">Card Headers Style</label>
+            <select class="form-select" id="cardHeadersStyle">
+              <option value="default" selected>Default</option>
+              <option value="solid">Solid Colors</option>
+              <option value="gradient">Gradient</option>
+              <option value="subtle">Subtle</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <h6>Chart Colors</h6>
+          <div class="mb-3">
+            <label for="categoryChartColors" class="form-label">Chart Colors</label>
+            <select class="form-select" id="categoryChartColors">
+              <option value="default" selected>Default</option>
+              <option value="tea">Tea Colors</option>
+              <option value="pastels">Pastel Colors</option>
+              <option value="monochrome">Monochrome</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <h6>Text & Header Colors</h6>
+          <div class="mb-3">
+            <label for="chartTextColor" class="form-label">Chart Text Color</label>
+            <input type="color" class="form-control form-control-color" id="chartTextColor" value="#333333" title="Choose chart text color">
+          </div>
+          <div class="mb-3">
+            <label for="dashboardTitleColor" class="form-label">Dashboard Title Color</label>
+            <input type="color" class="form-control form-control-color" id="dashboardTitleColor" value="#212529" title="Choose dashboard title color">
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-2">
+        <button id="resetCustomizations" class="btn btn-secondary">Reset to Default</button>
+        <button id="saveCustomizations" class="btn btn-success">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
   <!-- User Profile Section -->
   <div class="row mb-4">
     <div class="col-md-12">
@@ -272,37 +425,26 @@
 <!-- === Your Price Distribution ================================ -->
 <div class="card shadow-sm mb-4">
   <div class="card-header bg-info text-white">
-    <h5 class="mb-0">Your Price Distribution</h5>
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Your Price Distribution</h5>
+      <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceChart" data-title="My Tea Price Distribution">
+        <i class="bi bi-share"></i> Share
+      </button>
+    </div>
   </div>
 
   <div class="card-body p-3">
     <div class="row">
       <div class="col-md-8">
-    <div class="mb-3">
-      <!-- category picker -->
-      <label for="categorySelect" class="form-label me-2">Select a Tea Category:</label>
-      <select id="categorySelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
-         <option value=""   selected>All</option>
-        <% @tea_categories.each do |category| %>
-          <option value="<%= category %>"><%= category %></option>
-        <% end %>
-      </select>
-
-      <!-- color picker -->
-      <label for="colorSelect" class="form-label me-2">Color:</label>
-      <select id="colorSelect" class="form-select form-select-sm d-inline-block" style="width:auto;">
-        <option value="pink"   selected>Pink</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-        <option value="yellow">Yellow</option>
-      </select>
-    </div>
     <div class="border rounded p-3" style="height:400px;">
       <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
     </div>
       </div>
         <div class="col-md-4">
-          <%= render partial: 'price_statistics' %>
+          <!-- Price Statistics -->
+          <div id="price-statistics">
+            <%= render partial: 'price_statistics' %>
+          </div>
         </div>
       </div>
     </div>
@@ -321,23 +463,16 @@
 <% end %>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   const teaData = <%= @user_teas.to_json.html_safe %>; // [["Name", price, grams]]
   if (!teaData.length) return;
-
-  let mode = 'perGram';
-  let selectedColor = 'pink';
-  let selectedCategory = '';
 
   function getPriceValue(price, grams) {
     return parseFloat(price); // Just use the raw price, no need to divide by grams
   }
 
   function getHistogramData() {
-    const data = selectedCategory !== '' 
-    ? teaData.filter(item => item[3] === selectedCategory) 
-    : teaData;
-    const values = data.map(([_, price, grams, category]) => getPriceValue(price, grams)).filter(v => v !== null);
+    const values = teaData.map(([_, price, grams]) => getPriceValue(price, grams)).filter(v => v !== null);
 
     const binSize = 0.1;
     const min = 0;
@@ -352,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       binCounts.push(0);
     }
 
-    data.forEach(([_, price, grams]) => {
+    teaData.forEach(([_, price, grams]) => {
       const val = getPriceValue(price, grams);
       if (val === null) return;
       const i = Math.floor((val - min) / binSize);
@@ -391,25 +526,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return xPoints.map((x, i) => ({ x, y: scaledY[i] }));
   }
 
-  const pastels = {
-    pink: 'rgba(255,179,198,0.6)',
-    green: 'rgba(181,234,215,0.6)',
-    blue: 'rgba(179,199,255,0.6)',
-    yellow: 'rgba(255,241,179,0.6)'
-  };
-
   const ctx = document.getElementById('priceChart').getContext('2d');
   let chart;
 
-  function renderChart() {
+  // Get theme color
+  function getThemeBarColor() {
+    // Get from theme or use default pink if not set
+    if (window.colorThemes && document.getElementById('categoryChartColors')) {
+      const colorScheme = document.getElementById('categoryChartColors').value;
+      const selectedColors = window.colorThemes[colorScheme] || window.colorThemes.default;
+      return selectedColors[0]; // Use first color in selected theme
+    }
+    
+    // Default color
+    return 'rgba(255, 179, 198, 0.6)';  // pink
+  }
+
+  // Make renderChart available globally
+  window.renderChart = function() {
     const { histogramData, bins, binSize, values, roundedMax } = getHistogramData();
     const maxY = Math.ceil(Math.max(...histogramData.map(d => d.y)) / 5) * 5;
+    
+    // Get theme color
+    const barColor = getThemeBarColor();
 
     const datasets = [{
       type: 'bar',
       data: histogramData,
-      backgroundColor: pastels[selectedColor],
-      borderColor: pastels[selectedColor].replace('0.6', '1'),
+      backgroundColor: barColor,
+      borderColor: barColor.replace('0.6', '1'),
       borderWidth: 1,
       barPercentage: 1.0,
       categoryPercentage: 1.0
@@ -419,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     datasets.push({
       type: 'line',
       data: smooth,
-      borderColor: pastels[selectedColor].replace('0.6', '1'),
+      borderColor: barColor.replace('0.6', '1'),
       borderWidth: 2,
       fill: false,
       tension: 0.4,
@@ -429,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (chart) chart.destroy();
 
-    chart = new Chart(ctx, {
+    window.priceChart = new Chart(ctx, {
       type: 'bar',
       data: { datasets },
       options: {
@@ -475,19 +620,456 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+    
+    return window.priceChart;
+  };
+
+  // Initial render on page load
+  window.renderChart();
+  
+  // Dashboard Customization Feature
+  // Color theme palettes
+  window.colorThemes = {
+    default: [
+      'rgba(54, 162, 235, 0.6)', // blue
+      'rgba(255, 99, 132, 0.6)', // pink
+      'rgba(75, 192, 192, 0.6)', // green
+      'rgba(255, 206, 86, 0.6)', // yellow
+      'rgba(153, 102, 255, 0.6)', // purple
+      'rgba(255, 159, 64, 0.6)'  // orange
+    ],
+    tea: [
+      'rgba(183, 110, 39, 0.6)',  // brown
+      'rgba(104, 160, 99, 0.6)',  // green
+      'rgba(196, 145, 2, 0.6)',   // yellow
+      'rgba(181, 71, 82, 0.6)',   // red
+      'rgba(76, 40, 30, 0.6)',    // dark brown
+      'rgba(192, 171, 142, 0.6)'  // beige
+    ],
+    pastels: [
+      'rgba(255, 179, 198, 0.6)', // pink
+      'rgba(181, 234, 215, 0.6)', // mint
+      'rgba(255, 241, 179, 0.6)', // light yellow
+      'rgba(199, 206, 234, 0.6)', // lavender
+      'rgba(235, 179, 255, 0.6)', // light purple
+      'rgba(181, 228, 255, 0.6)'  // sky blue
+    ],
+    monochrome: [
+      'rgba(44, 62, 80, 0.8)',
+      'rgba(44, 62, 80, 0.7)',
+      'rgba(44, 62, 80, 0.6)', 
+      'rgba(44, 62, 80, 0.5)',
+      'rgba(44, 62, 80, 0.4)',
+      'rgba(44, 62, 80, 0.3)'
+    ]
+  };
+  
+  const customizePanel = document.getElementById('customizePanel');
+  const toggleCustomizePanel = document.getElementById('toggleCustomizePanel');
+  
+  // Apply preferences to dashboard
+  function applyPreferences() {
+    // Get current preferences
+    const theme = document.querySelector('input[name="dashboardTheme"]:checked').value;
+    const categoryColors = document.getElementById('categoryChartColors').value;
+    const textColor = document.getElementById('chartTextColor').value;
+    const headerStyle = document.getElementById('cardHeadersStyle').value;
+    const titleColor = document.getElementById('dashboardTitleColor')?.value || '#212529';
+    
+    // Apply theme
+    applyTheme(theme);
+    
+    // Apply card header styles
+    updateCardHeadersAndStats(headerStyle);
+    
+    // Update dashboard title color
+    const dashboardTitle = document.querySelector('h1.mt-5.text-center');
+    if (dashboardTitle) {
+      dashboardTitle.style.color = titleColor;
+    }
+    
+    // Re-render charts with new colors
+    updateChartColors(categoryColors, textColor);
   }
-
-  document.getElementById('colorSelect').addEventListener('change', e => {
-    selectedColor = e.target.value;
-    renderChart();
+  
+  // Update card headers and statistic cards
+  function updateCardHeadersAndStats(style) {
+    const headers = document.querySelectorAll('.card-header');
+    const statCards = document.querySelectorAll('.row .card.bg-success, .row .card.bg-primary, .row .card.bg-warning, .row .card.bg-info');
+    const progressBars = document.querySelectorAll('.progress-bar');
+    const selectedColors = window.colorThemes[document.getElementById('categoryChartColors').value] || window.colorThemes.default;
+    
+    // Reset headers to default first
+    headers.forEach(header => {
+      header.style.background = '';
+      header.style.borderBottom = '';
+      header.style.color = '';
+    });
+    
+    // Reset stat cards first
+    statCards.forEach(card => {
+      if (!card.classList.contains('bg-success') && 
+          !card.classList.contains('bg-primary') && 
+          !card.classList.contains('bg-warning') && 
+          !card.classList.contains('bg-info')) return;
+          
+      card.style.background = '';
+      card.style.backgroundColor = '';
+      card.style.color = '';
+    });
+    
+    // Apply header styles
+    if (style === 'solid') {
+      // Solid vibrant colors
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '1');
+        header.style.backgroundColor = color;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        card.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
+      });
+    } 
+    else if (style === 'gradient') {
+      // Gradient backgrounds
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
+        header.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
+        card.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.8');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.6');
+        bar.style.background = `linear-gradient(90deg, ${startColor}, ${endColor})`;
+      });
+    }
+    else if (style === 'subtle') {
+      // Subtle backgrounds with border
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '0.3');
+        const borderColor = selectedColors[colorIdx].replace('0.6', '0.8');
+        header.style.backgroundColor = color;
+        header.style.borderBottom = `2px solid ${borderColor}`;
+        header.style.color = '#333333';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '0.7');
+        card.style.backgroundColor = color;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const colorIdx = i % selectedColors.length;
+        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
+      });
+    }
+    else if (style === 'monochrome') {
+      // Monochrome with different shade levels
+      headers.forEach((header, i) => {
+        const shade = 0.2 + (i % 5) * 0.1; // 0.2, 0.3, 0.4, 0.5, 0.6
+        header.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+      
+      // Apply to stat cards
+      statCards.forEach((card, i) => {
+        if (!card.classList.contains('bg-success') && 
+            !card.classList.contains('bg-primary') && 
+            !card.classList.contains('bg-warning') && 
+            !card.classList.contains('bg-info')) return;
+            
+        const shade = 0.5 + (i % 4) * 0.1; // 0.5, 0.6, 0.7, 0.8
+        card.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+        card.style.color = '#ffffff';
+      });
+      
+      // Apply to progress bars
+      progressBars.forEach((bar, i) => {
+        const shade = 0.5 + (i % 5) * 0.1; // 0.5, 0.6, 0.7, 0.8, 0.9
+        bar.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+      });
+    }
+  }
+  
+  // Apply overall theme
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    const cardHeaders = document.querySelectorAll('.card-header');
+    const cards = document.querySelectorAll('.card');
+    const textColor = document.getElementById('chartTextColor').value;
+    
+    // Reset previous theme classes
+    document.body.classList.remove('theme-dark', 'theme-pastel', 'theme-vivid');
+    
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark');
+      root.style.setProperty('--chart-text-color', '#e0e0e0');
+      document.body.style.backgroundColor = '#2c3e50';
+      document.body.style.color = '#e0e0e0';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '#34495e';
+        card.style.borderColor = '#2c3e50';
+      });
+      
+    } else if (theme === 'pastel') {
+      document.body.classList.add('theme-pastel');
+      root.style.setProperty('--chart-text-color', '#5a6268');
+      document.body.style.backgroundColor = '#f8f9fa';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '#ffffff';
+        card.style.borderColor = '#e9ecef';
+      });
+      
+    } else if (theme === 'vivid') {
+      document.body.classList.add('theme-vivid');
+      root.style.setProperty('--chart-text-color', '#212529');
+      document.body.style.backgroundColor = '#ffffff';
+      
+      cardHeaders.forEach(header => {
+        // Make card headers more vibrant
+        if (header.classList.contains('bg-primary')) header.style.backgroundColor = '#007bff';
+        if (header.classList.contains('bg-success')) header.style.backgroundColor = '#28a745'; 
+        if (header.classList.contains('bg-info')) header.style.backgroundColor = '#17a2b8';
+        if (header.classList.contains('bg-warning')) header.style.backgroundColor = '#ffc107';
+        if (header.classList.contains('bg-danger')) header.style.backgroundColor = '#dc3545';
+      });
+      
+    } else {
+      // Default theme
+      root.style.setProperty('--chart-text-color', '#333333');
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      
+      cards.forEach(card => {
+        card.style.backgroundColor = '';
+        card.style.borderColor = '';
+      });
+      
+      cardHeaders.forEach(header => {
+        header.style.backgroundColor = '';
+      });
+    }
+    
+    // Apply text color consistently to chart options
+    Chart.defaults.color = textColor;
+    Chart.defaults.plugins.legend.labels.color = textColor;
+    Chart.defaults.plugins.title.color = textColor;
+  }
+  
+  // Update chart colors based on selection
+  function updateChartColors(colorScheme, textColor = '#333333') {
+    const selectedColors = window.colorThemes[colorScheme] || window.colorThemes.default;
+    
+    // Set global chart text color
+    Chart.defaults.color = textColor;
+    Chart.defaults.plugins.legend.labels.color = textColor;
+    Chart.defaults.plugins.title.color = textColor;
+    
+    // Update price chart (histogram) if it exists
+    if (window.priceChart && typeof window.priceChart.data !== 'undefined') {
+      const chart = window.priceChart;
+      
+      // Get theme color
+      const barColor = selectedColors[0];
+      
+      // Update the colors of the bar chart
+      if (chart.data && chart.data.datasets && chart.data.datasets.length > 0) {
+        // First dataset is the bar chart
+        chart.data.datasets[0].backgroundColor = barColor;
+        chart.data.datasets[0].borderColor = barColor.replace('0.6', '1');
+        
+        // Second dataset is the line chart
+        if (chart.data.datasets.length > 1) {
+          chart.data.datasets[1].borderColor = barColor.replace('0.6', '1');
+        }
+      }
+      
+      // Update text colors
+      if (chart.options && chart.options.scales) {
+        if (chart.options.scales.x) {
+          chart.options.scales.x.ticks.color = textColor;
+          if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+        }
+        if (chart.options.scales.y) {
+          chart.options.scales.y.ticks.color = textColor;
+          if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+        }
+      }
+      
+      chart.update();
+    } else {
+      // If chart doesn't exist yet, just re-render it
+      if (window.renderChart && typeof window.renderChart === 'function') {
+        window.renderChart();
+      }
+    }
+  }
+  
+  // Save preferences to localStorage
+  function savePreferences() {
+    try {
+      const prefs = {
+        dashboardTheme: document.querySelector('input[name="dashboardTheme"]:checked').value,
+        categoryChartColors: document.getElementById('categoryChartColors').value,
+        chartTextColor: document.getElementById('chartTextColor').value,
+        cardHeadersStyle: document.getElementById('cardHeadersStyle').value,
+        dashboardTitleColor: document.getElementById('dashboardTitleColor')?.value || '#212529'
+      };
+      
+      localStorage.setItem('teaTrackerDashboardPrefs', JSON.stringify(prefs));
+      
+      // Show save confirmation
+      const saveBtn = document.getElementById('saveCustomizations');
+      const originalText = saveBtn.textContent;
+      saveBtn.textContent = 'Saved!';
+      saveBtn.classList.remove('btn-success');
+      saveBtn.classList.add('btn-info');
+      
+      setTimeout(() => {
+        saveBtn.textContent = originalText;
+        saveBtn.classList.remove('btn-info');
+        saveBtn.classList.add('btn-success');
+      }, 2000);
+      
+    } catch (e) {
+      console.error('Error saving preferences:', e);
+    }
+  }
+  
+  // Load saved preferences from localStorage
+  function loadPreferences() {
+    try {
+      const savedPrefs = localStorage.getItem('teaTrackerDashboardPrefs');
+      if (savedPrefs) {
+        const prefs = JSON.parse(savedPrefs);
+        
+        // Apply theme
+        document.querySelector(`input[name="dashboardTheme"][value="${prefs.dashboardTheme || 'default'}"]`).checked = true;
+        
+        // Apply chart colors
+        if (prefs.categoryChartColors) {
+          document.getElementById('categoryChartColors').value = prefs.categoryChartColors;
+        }
+        
+        // Apply text color
+        if (prefs.chartTextColor) {
+          document.getElementById('chartTextColor').value = prefs.chartTextColor;
+        }
+        
+        // Apply card header style
+        if (prefs.cardHeadersStyle) {
+          document.getElementById('cardHeadersStyle').value = prefs.cardHeadersStyle;
+        }
+        
+        // Apply dashboard title color
+        if (prefs.dashboardTitleColor && document.getElementById('dashboardTitleColor')) {
+          document.getElementById('dashboardTitleColor').value = prefs.dashboardTitleColor;
+        }
+        
+        // Apply all preferences
+        applyPreferences();
+      }
+    } catch (e) {
+      console.error('Error loading preferences:', e);
+    }
+  }
+  
+  // Event Listeners
+  toggleCustomizePanel.addEventListener('click', () => {
+    if (customizePanel.style.display === 'none') {
+      customizePanel.style.display = 'block';
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> Close Customization';
+      toggleCustomizePanel.classList.replace('btn-outline-primary', 'btn-outline-secondary');
+    } else {
+      customizePanel.style.display = 'none';
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> Customize Dashboard';
+      toggleCustomizePanel.classList.replace('btn-outline-secondary', 'btn-outline-primary');
+    }
   });
-
-  document.getElementById('categorySelect').addEventListener('change', e => {
-    selectedCategory = e.target.value;
-    renderChart();
+  
+  document.getElementById('saveCustomizations').addEventListener('click', () => {
+    applyPreferences();
+    savePreferences();
   });
-
-  // ✅ Initial render on page load
-  renderChart();
+  
+  document.getElementById('resetCustomizations').addEventListener('click', () => {
+    // Reset form to defaults
+    document.getElementById('themeDefault').checked = true;
+    document.getElementById('categoryChartColors').value = 'default';
+    document.getElementById('chartTextColor').value = '#333333';
+    document.getElementById('cardHeadersStyle').value = 'default';
+    if (document.getElementById('dashboardTitleColor')) {
+      document.getElementById('dashboardTitleColor').value = '#212529';
+    }
+    
+    // Apply defaults
+    applyPreferences();
+    savePreferences();
+  });
+  
+  // Apply changes in real-time for instant preview
+  document.querySelectorAll('input[name="dashboardTheme"]').forEach(radio => {
+    radio.addEventListener('change', applyPreferences);
+  });
+  
+  document.getElementById('categoryChartColors').addEventListener('change', applyPreferences);
+  document.getElementById('chartTextColor').addEventListener('change', applyPreferences);
+  document.getElementById('cardHeadersStyle').addEventListener('change', applyPreferences);
+  if (document.getElementById('dashboardTitleColor')) {
+    document.getElementById('dashboardTitleColor').addEventListener('change', applyPreferences);
+  }
+  
+  // Load preferences on page load
+  loadPreferences();
 });
 </script>

@@ -30,4 +30,5 @@ Rails.application.routes.draw do
   get "/analytics", to: "home#analytics", as: "tea_analytics"
   get "/categories", to: "teas#categories", as: "categories"
   get "/origins", to: "teas#origins", as: "origins"
+  get "/price_statistics", to: "home#price_statistics", as: "price_statistics"
 end
