@@ -2,7 +2,10 @@ class User < ApplicationRecord
   has_many :entries, dependent: :destroy
   has_many :teas, through: :entries
   has_secure_password
-
+  
+  # Active Storage attachment
+  has_one_attached :avatar
+  
   # Username validations
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
@@ -26,6 +29,17 @@ class User < ApplicationRecord
 
   # Normalize username before validation to handle case sensitivity properly
   before_validation :normalize_username
+  
+  # Method to get avatar image - either from Active Storage or URL
+  def avatar_image
+    if avatar.attached?
+      avatar
+    elsif avatar_url.present?
+      avatar_url
+    else
+      nil
+    end
+  end
 
   private
 

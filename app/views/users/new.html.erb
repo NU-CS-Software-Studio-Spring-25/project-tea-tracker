@@ -1,140 +1,186 @@
-<h2>Sign Up</h2>
-
-<% if @user.errors.any? %>
-  <div id="error-modal" class="alert alert-danger">
-    <h4>There were errors with your submission:</h4>
-    <ul>
-      <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<style>
-  .required-field label::after {
-    content: " *";
-    color: #dc3545;
-    font-weight: bold;
-  }
-  
-  .form-text.required-hint {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-  }
-  
-  input:required:invalid,
-  textarea:required:invalid {
-    border-left: 3px solid #dc3545;
-  }
-  
-  input:required:valid,
-  textarea:required:valid {
-    border-left: 3px solid #28a745;
-  }
-  
-  .password-strength-meter {
-    height: 5px;
-    width: 100%;
-    background: #DDD;
-    margin-top: 8px;
-    border-radius: 3px;
-  }
-  
-  .password-strength-meter div {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-  
-  .password-strength-meter div.weak {
-    width: 25%;
-    background: #dc3545;
-  }
-  
-  .password-strength-meter div.medium {
-    width: 50%;
-    background: #ffc107;
-  }
-  
-  .password-strength-meter div.strong {
-    width: 75%;
-    background: #28a745;
-  }
-  
-  .password-strength-meter div.very-strong {
-    width: 100%;
-    background: #20c997;
-  }
-  
-  .password-feedback {
-    margin-top: 5px;
-    font-size: 0.875rem;
-  }
-</style>
-
-<div class="form-text required-hint mb-3">Fields marked with * are required</div>
-
-<%= form_with model: @user, local: true do |form| %>
-  <div class="form-group required-field">
-    <%= form.label :username, "Username (3-30 characters)" %>
-    <div class="input-group">
-      <%= form.text_field :username, class: "form-control", required: true, 
-                       minlength: 3, maxlength: 30, 
-                       pattern: "[a-zA-Z0-9_.-]+",
-                       placeholder: "Choose a unique username",
-                       id: "username-input" %>
-      <div class="input-group-append">
-        <span class="input-group-text" id="username-status">
-          <!-- Status icon will be inserted here -->
-        </span>
+<div class="auth-container">
+  <div class="auth-card signup-card">
+    <div class="auth-header">
+      <h2 class="auth-title">Sign Up</h2>
+      <div class="tea-icon">✨</div>
+    </div>
+    
+    <% if @user.errors.any? %>
+      <div id="error-modal" class="alert alert-danger">
+        <h4>There were errors with your submission:</h4>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
       </div>
+    <% end %>
+
+    <style>
+      .required-field label::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+      }
+      
+      .form-text.required-hint {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+      }
+      
+      input:required:invalid,
+      textarea:required:invalid {
+        border-left: 3px solid #dc3545;
+      }
+      
+      input:required:valid,
+      textarea:required:valid {
+        border-left: 3px solid #28a745;
+      }
+      
+      .password-strength-meter {
+        height: 5px;
+        width: 100%;
+        background: #DDD;
+        margin-top: 8px;
+        border-radius: 3px;
+      }
+      
+      .password-strength-meter div {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+      
+      .password-strength-meter div.weak {
+        width: 25%;
+        background: #dc3545;
+      }
+      
+      .password-strength-meter div.medium {
+        width: 50%;
+        background: #ffc107;
+      }
+      
+      .password-strength-meter div.strong {
+        width: 75%;
+        background: #28a745;
+      }
+      
+      .password-strength-meter div.very-strong {
+        width: 100%;
+        background: #20c997;
+      }
+      
+      .password-feedback {
+        margin-top: 5px;
+        font-size: 0.875rem;
+      }
+    </style>
+
+    <div class="auth-form">
+      <div class="form-text required-hint mb-3">Fields marked with * are required</div>
+      
+      <%= form_with model: @user, local: true, html: { multipart: true } do |form| %>
+        <div class="form-group required-field">
+          <%= form.label :username, "Username (3-30 characters)" %>
+          <div class="retro-input">
+            <div class="input-group">
+              <%= form.text_field :username, class: "form-control", required: true, 
+                               minlength: 3, maxlength: 30, 
+                               pattern: "[a-zA-Z0-9_.-]+",
+                               placeholder: "Choose a unique username",
+                               id: "username-input" %>
+              <div class="input-group-append">
+                <span class="input-group-text" id="username-status">
+                  <!-- Status icon will be inserted here -->
+                </span>
+              </div>
+            </div>
+          </div>
+          <small class="form-text text-muted">Letters, numbers, and the characters _ . - only</small>
+          <small id="username-feedback" class="form-text"></small>
+        </div>
+    
+        <div class="form-group mt-3 required-field">
+          <%= form.label :bio, "Bio (max 300 characters)" %>
+          <div class="retro-input">
+            <%= form.text_area :bio, class: "form-control", maxlength: 300, required: true,
+                           placeholder: "Tell us about yourself and your tea interests" %>
+          </div>
+          <small class="form-text text-muted">Share your tea journey with the community</small>
+        </div>
+        
+        <div class="form-group mt-3">
+          <label>Avatar (optional)</label>
+          <div class="avatar-options">
+            <div class="form-group mb-3">
+              <%= form.label :avatar, "Upload Image", class: "form-label" %>
+              <div class="retro-file-input">
+                <%= form.file_field :avatar, class: "form-control", accept: "image/*" %>
+              </div>
+              <small class="form-text text-muted">Upload a profile image</small>
+            </div>
+            
+            <div class="form-group mb-2">
+              <div class="text-center">
+                <span class="or-divider">OR</span>
+              </div>
+            </div>
+            
+            <div class="form-group mb-3">
+              <%= form.label :avatar_url, "Image URL", class: "form-label" %>
+              <div class="retro-input">
+                <%= form.url_field :avatar_url, class: "form-control", 
+                            placeholder: "https://..." %>
+              </div>
+              <small class="form-text text-muted">Link to your profile picture (must start with http:// or https://)</small>
+            </div>
+          </div>
+        </div>
+    
+        <div class="form-group mt-3 required-field">
+          <%= form.label :password, "Password" %>
+          <div class="retro-input">
+            <%= form.password_field :password, class: "form-control", required: true, 
+                                id: "password-input", 
+                                minlength: 8,
+                                placeholder: "Create a strong password" %>
+          </div>
+          <div class="password-strength-meter">
+            <div id="password-strength-bar"></div>
+          </div>
+          <small id="password-feedback" class="form-text password-feedback"></small>
+          <small class="form-text text-muted">At least 8 characters with uppercase, lowercase, and numbers</small>
+        </div>
+    
+        <div class="form-group mt-3 required-field">
+          <%= form.label :password_confirmation, "Confirm Password" %>
+          <div class="retro-input">
+            <%= form.password_field :password_confirmation, class: "form-control", required: true, 
+                                id: "confirm-password-input",
+                                placeholder: "Repeat your password" %>
+          </div>
+          <small id="password-match" class="form-text"></small>
+        </div>
+    
+        <div class="auth-actions">
+          <%= form.submit "Create Account", class: "cta-button primary-btn", id: "submit-button" %>
+          <%= link_to "Back", root_path, class: "cta-button secondary-btn" %>
+        </div>
+      <% end %>
     </div>
-    <small class="form-text text-muted">Letters, numbers, and the characters _ . - only</small>
-    <small id="username-feedback" class="form-text"></small>
   </div>
-
-  <div class="form-group mt-3 required-field">
-    <%= form.label :bio, "Bio (max 300 characters)" %>
-    <%= form.text_area :bio, class: "form-control", maxlength: 300, required: true,
-                     placeholder: "Tell us about yourself and your tea interests" %>
-    <small class="form-text text-muted">Share your tea journey with the community</small>
+  
+  <div class="auth-decoration">
+    <div class="deco-bubble b1"></div>
+    <div class="deco-bubble b2"></div>
+    <div class="deco-bubble b3"></div>
+    <div class="deco-shape s1"></div>
+    <div class="deco-shape s2"></div>
   </div>
-
-  <div class="form-group mt-3">
-    <%= form.label :avatar_url, "Avatar URL (optional)" %>
-    <%= form.url_field :avatar_url, class: "form-control", 
-                      placeholder: "https://..." %>
-    <small class="form-text text-muted">Link to your profile picture (must start with http:// or https://)</small>
-  </div>
-
-  <div class="form-group mt-3 required-field">
-    <%= form.label :password, "Password" %>
-    <%= form.password_field :password, class: "form-control", required: true, 
-                          id: "password-input", 
-                          minlength: 8,
-                          placeholder: "Create a strong password" %>
-    <div class="password-strength-meter">
-      <div id="password-strength-bar"></div>
-    </div>
-    <small id="password-feedback" class="form-text password-feedback"></small>
-    <small class="form-text text-muted">At least 8 characters with uppercase, lowercase, and numbers</small>
-  </div>
-
-  <div class="form-group mt-3 required-field">
-    <%= form.label :password_confirmation, "Confirm Password" %>
-    <%= form.password_field :password_confirmation, class: "form-control", required: true, 
-                          id: "confirm-password-input",
-                          placeholder: "Repeat your password" %>
-    <small id="password-match" class="form-text"></small>
-  </div>
-
-  <div class="mt-4 d-flex gap-2">
-    <%= link_to "Back", root_path, class: "btn btn-secondary" %>
-    <%= form.submit "Create Account", class: "btn btn-success", id: "submit-button" %>
-  </div>
-<% end %>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -248,9 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (strength < 2) {
       passwordStrengthBar.classList.add("weak");
       if (!feedback) feedback = "Password is weak";
-    } else if (strength < 3) {
+    } else if (strength < 4) {
       passwordStrengthBar.classList.add("medium");
-      feedback = "Password is okay, but could be stronger";
+      feedback = "Password is medium strength";
     } else if (strength < 5) {
       passwordStrengthBar.classList.add("strong");
       feedback = "Password is strong";
@@ -260,18 +306,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     passwordFeedback.textContent = feedback;
-    checkPasswordMatch();
+    passwordFeedback.className = "form-text password-feedback";
+    if (strength < 2) {
+      passwordFeedback.classList.add("text-danger");
+    } else if (strength < 4) {
+      passwordFeedback.classList.add("text-warning");
+    } else {
+      passwordFeedback.classList.add("text-success");
+    }
+    
+    // Check matching with confirm password field
+    if (confirmPasswordInput.value) {
+      checkPasswordMatch();
+    }
   });
   
-  confirmPasswordInput.addEventListener('input', checkPasswordMatch);
-  
+  // Check if passwords match
   function checkPasswordMatch() {
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
     
-    if (confirmPassword.length === 0) {
+    if (!confirmPassword) {
       passwordMatch.textContent = "";
-      passwordMatch.className = "form-text";
       return;
     }
     
@@ -287,5 +343,33 @@ document.addEventListener('DOMContentLoaded', function() {
       confirmPasswordInput.classList.add('is-invalid');
     }
   }
+  
+  confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+  confirmPasswordInput.addEventListener('blur', checkPasswordMatch);
+  
+  // Form submission validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    // Validate all required fields
+    const invalidFields = document.querySelectorAll('input:invalid, textarea:invalid');
+    if (invalidFields.length > 0) {
+      e.preventDefault();
+      
+      // Highlight the first invalid field
+      invalidFields[0].focus();
+      
+      // Show an error message
+      alert('Please fill in all required fields correctly.');
+    }
+    
+    // Check password match
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    
+    if (password !== confirmPassword) {
+      e.preventDefault();
+      alert('Passwords do not match.');
+      confirmPasswordInput.focus();
+    }
+  });
 });
 </script>

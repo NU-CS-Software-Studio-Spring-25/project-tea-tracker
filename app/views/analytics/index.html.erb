@@ -3,11 +3,6 @@
   <style>
     :root {
       --chart-text-color: #333333;
-      --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-    
-    body, .card, .card-body, h1, h2, h3, h4, h5, h6, p, button, input, select, .btn {
-      font-family: var(--font-family) !important;
     }
     
     /* Theme Styles */
@@ -69,20 +64,32 @@
       transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     
-    /* Custom font loading */
-    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap');
+    /* Keep the custom font loading but we'll use it for our pixel fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans&display=swap');
   </style>
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Tea Collection Analytics</h1>
-    <div>
-      <button id="toggleCustomizePanel" class="btn btn-outline-primary me-2">
-        <i class="bi bi-palette"></i> Customize Dashboard
-      </button>
-      <button id="shareDashboardBtn" class="btn btn-outline-success me-2">
-        <i class="bi bi-share"></i> Share Dashboard
-      </button>
-      <%= link_to "Back to Home Page", root_path, class: "btn btn-outline-secondary" %>
+  <h1 class="mt-3 mb-4 text-center gradient-text">Tea Collection Analytics</h1>
+  
+  <div class="analytics-controls mb-4">
+    <div class="row justify-content-center">
+      <div class="col-md-auto">
+        <div class="control-btn-group">
+          <button id="toggleCustomizePanel" class="control-btn customize-btn">
+            <i class="bi bi-palette"></i>
+            <span>Customize</span>
+          </button>
+          
+          <button id="shareDashboardBtn" class="control-btn share-btn">
+            <i class="bi bi-share"></i>
+            <span>Share</span>
+          </button>
+          
+          <%= link_to root_path, class: "control-btn back-btn" do %>
+            <i class="bi bi-house"></i>
+            <span>Back to Home</span>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
   
@@ -165,37 +172,37 @@
   <!-- Analytics Overview -->
   <div class="row mb-4">
     <div class="col-md-3">
-      <div class="card bg-success text-white h-100">
-        <div class="card-body text-center">
-          <h1 class="display-4 mb-0"><%= @total_teas %></h1>
-          <p class="mb-0">Total Teas</p>
+      <div class="stats-card bg-success">
+        <div class="stats-card-inner">
+          <h1 class="stats-value"><%= @total_teas %></h1>
+          <p class="stats-label">Total Teas</p>
         </div>
       </div>
     </div>
     
     <div class="col-md-3">
-      <div class="card bg-primary text-white h-100">
-        <div class="card-body text-center">
-          <h1 class="display-4 mb-0"><%= @tea_categories.count %></h1>
-          <p class="mb-0">Categories</p>
+      <div class="stats-card bg-primary">
+        <div class="stats-card-inner">
+          <h1 class="stats-value"><%= @tea_categories.count %></h1>
+          <p class="stats-label">Categories</p>
         </div>
       </div>
     </div>
     
     <div class="col-md-3">
-      <div class="card bg-warning text-white h-100">
-        <div class="card-body text-center">
-          <h1 class="display-4 mb-0"><%= @avg_rank ? @avg_rank.round(1) : 'N/A' %></h1>
-          <p class="mb-0">Avg. Rank</p>
+      <div class="stats-card bg-warning">
+        <div class="stats-card-inner">
+          <h1 class="stats-value"><%= @avg_rank ? @avg_rank.round(1) : 'N/A' %></h1>
+          <p class="stats-label">Avg. Rank</p>
         </div>
       </div>
     </div>
     
     <div class="col-md-3">
-      <div class="card bg-info text-white h-100">
-        <div class="card-body text-center">
-          <h1 class="display-4 mb-0"><%= number_to_currency(@total_value) %></h1>
-          <p class="mb-0">Collection Value</p>
+      <div class="stats-card bg-info">
+        <div class="stats-card-inner">
+          <h1 class="stats-value"><%= number_to_currency(@total_value) %></h1>
+          <p class="stats-label">Collection Value</p>
         </div>
       </div>
     </div>
@@ -278,14 +285,14 @@
   </div>
   
   <!-- Price Analysis -->
-  <div class="row">
+  <div class="row mb-4">
     <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-warning text-white">
+      <div class="retro-card">
+        <div class="card-header bg-info">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Price vs. Rank Correlation</h5>
-            <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceRankChart" data-title="Price vs. Rank Correlation">
-              <i class="bi bi-share"></i> Share
+            <h5 class="mb-0">Price vs. Rank Analysis</h5>
+            <button class="retro-share-btn" data-chart="priceRankChart" data-title="Price vs. Rank Analysis">
+              <i class="bi bi-share"></i> <span>Share</span>
             </button>
           </div>
         </div>
@@ -298,12 +305,12 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-danger text-white">
+      <div class="retro-card">
+        <div class="card-header bg-danger">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Price Distribution by Vendor</h5>
-            <button class="btn btn-sm btn-light share-chart-btn" data-chart="vendorPriceChart" data-title="Price Distribution by Vendor">
-              <i class="bi bi-share"></i> Share
+            <button class="retro-share-btn" data-chart="vendorPriceChart" data-title="Price Distribution by Vendor">
+              <i class="bi bi-share"></i> <span>Share</span>
             </button>
           </div>
         </div>
@@ -1537,18 +1544,23 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleCustomizePanel.addEventListener('click', () => {
     if (customizePanel.style.display === 'none') {
       customizePanel.style.display = 'block';
-      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> Close Customization';
-      toggleCustomizePanel.classList.replace('btn-outline-primary', 'btn-outline-secondary');
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> <span>Close</span>';
+      toggleCustomizePanel.classList.add('active');
     } else {
       customizePanel.style.display = 'none';
-      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> Customize Dashboard';
-      toggleCustomizePanel.classList.replace('btn-outline-secondary', 'btn-outline-primary');
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> <span>Customize</span>';
+      toggleCustomizePanel.classList.remove('active');
     }
   });
   
   document.getElementById('saveCustomizations').addEventListener('click', () => {
     applyPreferences();
     savePreferences();
+    
+    // Close the customization panel automatically
+    customizePanel.style.display = 'none';
+    toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> <span>Customize</span>';
+    toggleCustomizePanel.classList.remove('active');
   });
   
   document.getElementById('resetCustomizations').addEventListener('click', () => {

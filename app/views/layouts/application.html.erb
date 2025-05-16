@@ -96,14 +96,30 @@
   </head>
 
   <body>
-    <div class="container mt-5">
-    <% if flash[:notice] %>
-    <div class="alert alert-success"><%= flash[:notice] %></div>
-    <% elsif flash[:alert] %>
-      <div class="alert alert-danger"><%= flash[:alert] %></div>
-    <% end %>
+    <% if current_page?(root_path) && !current_user %>
+      <% if flash[:notice] %>
+        <div class="alert alert-success"><%= flash[:notice] %></div>
+      <% elsif flash[:alert] %>
+        <div class="alert alert-danger"><%= flash[:alert] %></div>
+      <% end %>
+      
+      <%= yield %>
+    <% else %>
+      <%= render 'shared/header' %>
+      
+      <div class="content-wrapper">
+        <div class="container mt-4 mb-5">
+          <% if flash[:notice] %>
+            <div class="alert alert-success"><%= flash[:notice] %></div>
+          <% elsif flash[:alert] %>
+            <div class="alert alert-danger"><%= flash[:alert] %></div>
+          <% end %>
 
-    <%= yield %>
-    </div>
+          <%= yield %>
+        </div>
+      </div>
+      
+      <%= render 'shared/footer' %>
+    <% end %>
   </body>
 </html>

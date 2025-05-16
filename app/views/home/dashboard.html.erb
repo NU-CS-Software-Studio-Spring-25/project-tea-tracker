@@ -1,4 +1,4 @@
-<h1 class="mt-5 text-center">Welcome to Tea Tracker</h1>
+<h1 class="mt-5 text-center gradient-text">Welcome Back to Tea Tracker, <%= current_user.username %>!</h1>
 <% if current_user %>
 <div class="container-fluid py-4">
   <!-- Theme Styles -->
@@ -70,14 +70,66 @@
     @import url('https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans&display=swap');
   </style>
 
-  <!-- User Profile Section -->
-  <div class="d-flex justify-content-end mb-3">
-    <button id="toggleCustomizePanel" class="btn btn-outline-primary me-2">
-      <i class="bi bi-palette"></i> Customize Dashboard
-    </button>
-    <button id="shareDashboardBtn" class="btn btn-outline-success">
-      <i class="bi bi-share"></i> Share Dashboard
-    </button>
+  <!-- Y2K-Style User Profile Section -->
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <div class="profile-card">
+        <div class="profile-inner">
+          <div class="profile-content">
+            <div class="row align-items-center">
+              <div class="col-lg-2 col-md-3 col-sm-4 text-center">
+                <div class="avatar-container">
+                  <% if current_user.avatar.attached? %>
+                    <%= image_tag current_user.avatar, class: "avatar-img", alt: "#{current_user.username}" %>
+                  <% elsif current_user.avatar_url.present? %>
+                    <img src="<%= current_user.avatar_url %>" class="avatar-img" alt="<%= current_user.username %>">
+                  <% else %>
+                    <div class="avatar-placeholder">
+                      <i class="bi bi-person-circle"></i>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              
+              <div class="col-lg-7 col-md-6 col-sm-8">
+                <div class="profile-info">
+                  <h2 class="profile-name"><%= current_user.username %></h2>
+                  <p class="profile-bio"><%= current_user.bio.present? ? current_user.bio : "No bio yet. Add one to tell people about your tea journey!" %></p>
+                  
+                  <div class="profile-stats">
+                    <div class="stat-item">
+                      <div class="stat-value"><%= @total_teas %></div>
+                      <div class="stat-label">Teas</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-value"><%= @tea_type_counts.keys.count %></div>
+                      <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-value"><%= @popular_ship_from.keys.count %></div>
+                      <div class="stat-label">Origins</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="dashboard-controls">
+                  <button id="toggleCustomizePanel" class="control-btn customize-btn">
+                    <i class="bi bi-palette"></i>
+                    <span>Customize</span>
+                  </button>
+                  <button id="shareDashboardBtn" class="control-btn share-btn">
+                    <i class="bi bi-share"></i>
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   
   <!-- Customization Panel -->
@@ -148,28 +200,6 @@
       <div class="d-flex justify-content-between mt-2">
         <button id="resetCustomizations" class="btn btn-secondary">Reset to Default</button>
         <button id="saveCustomizations" class="btn btn-success">Save Preferences</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- User Profile Section -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body text-center">
-          <% if current_user.avatar_url.present? %>
-            <img src="<%= current_user.avatar_url %>" class="rounded-circle mb-3" alt="Avatar" width="120">
-          <% end %>
-          <h2 class="mb-1"><%= current_user.username %>'s Tea Collection</h2>
-          <p class="text-muted"><%= current_user.bio %></p>
-
-          <div class="d-flex justify-content-center gap-2 mt-3">
-            <%= link_to "Add New Tea", new_tea_path, class: "btn btn-success" %>
-            <%= link_to "View Collection", teas_path, class: "btn btn-primary" %>
-            <%= link_to "Tea Analytics", tea_analytics_path, class: "btn btn-info" %>
-            <%= link_to "Logout", logout_path, method: :delete, class: "btn btn-outline-danger" %>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -1063,18 +1093,23 @@
   toggleCustomizePanel.addEventListener('click', () => {
     if (customizePanel.style.display === 'none') {
       customizePanel.style.display = 'block';
-      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> Close Customization';
-      toggleCustomizePanel.classList.replace('btn-outline-primary', 'btn-outline-secondary');
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-x-lg"></i> <span>Close</span>';
+      toggleCustomizePanel.classList.add('active');
     } else {
       customizePanel.style.display = 'none';
-      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> Customize Dashboard';
-      toggleCustomizePanel.classList.replace('btn-outline-secondary', 'btn-outline-primary');
+      toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> <span>Customize</span>';
+      toggleCustomizePanel.classList.remove('active');
     }
   });
   
   document.getElementById('saveCustomizations').addEventListener('click', () => {
     applyPreferences();
     savePreferences();
+    
+    // Close the customization panel automatically
+    customizePanel.style.display = 'none';
+    toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> <span>Customize</span>';
+    toggleCustomizePanel.classList.remove('active');
   });
   
   document.getElementById('resetCustomizations').addEventListener('click', () => {

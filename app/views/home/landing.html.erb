@@ -1,5 +1,75 @@
-<h1>Welcome to Tea Tracker</h1>
-<p>Your app for tracking and visualizing tea consumption habits!</p>
+<%= render 'shared/header' %>
 
-<p><%= link_to "Login", new_session_path, class: "btn btn-primary" %></p>
-<p><%= link_to "Sign Up", new_user_path, class: "btn btn-outline-success" %></p>
+<div class="landing-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="gradient-text">Track Your Tea</span>
+        <span class="subtitle">Journey One Cup at a Time</span>
+      </h1>
+      
+      <p class="hero-description">
+        Discover, track, and visualize your tea consumption habits with our fun, retro-inspired tracker!
+      </p>
+      
+      <div class="hero-actions">
+        <%= link_to "Sign Up", new_user_path, class: "cta-button primary-btn" %>
+        <%= link_to "Login", new_session_path, class: "cta-button secondary-btn" %>
+      </div>
+    </div>
+    
+    <div class="hero-image">
+      <div class="tea-cup-container">
+        <div class="tea-cup">
+          <div class="cup-handle"></div>
+          <div class="cup-body"></div>
+          <div class="tea-liquid"></div>
+          <div class="cup-steam s1"></div>
+          <div class="cup-steam s2"></div>
+          <div class="cup-steam s3"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="features-section">
+    <h2 class="section-title">Why Tea Tracker?</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-title">Track Consumption</h3>
+        <p class="feature-description">Log your daily cups and see your brewing trends over time</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">🌎</div>
+        <h3 class="feature-title">Discover Origins</h3>
+        <p class="feature-description">Explore teas from different regions and vendors worldwide</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h3 class="feature-title">Rate &amp; Review</h3>
+        <p class="feature-description">Build your personal tea database with ratings and notes</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to begin your tea journey?</h2>
+      <p class="cta-description">Join our community of tea enthusiasts today!</p>
+      <%= link_to "Get Started", new_user_path, class: "cta-button primary-btn large" %>
+    </div>
+    
+    <div class="decorative-elements">
+      <div class="deco-circle c1"></div>
+      <div class="deco-circle c2"></div>
+      <div class="deco-square"></div>
+      <div class="deco-zigzag"></div>
+    </div>
+  </section>
+</div>
+
+<%= render 'shared/footer' %>

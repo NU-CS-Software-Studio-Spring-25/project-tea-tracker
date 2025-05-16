@@ -11,27 +11,40 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "home#dashboard"
+  root "home#index"
+  
+  # Dashboard route
+  get "dashboard", to: "home#dashboard", as: :dashboard
+  get "analytics", to: "home#analytics", as: :tea_analytics
 
   # Tea resources with all CRUD actions
   resources :teas do
     collection do
       get :count
+      get "categories"
+      get "origins"
     end
   end
   resources :entries
 
-  # user authentication
+  # User account and profile routes
   resources :users, only: [ :new, :create, :show ] do
     collection do
       get :check_username
     end
   end
+  
+  # User profile routes
+  get "/profile", to: "users#profile", as: :profile
+  patch "/profile", to: "users#update_profile"
+  patch "/profile/password", to: "users#update_password", as: :update_password
+  delete "/profile", to: "users#destroy_account", as: :destroy_account
+
+  # Session routes
   resources :sessions, only: [ :new, :create, :destroy ]
   delete "/logout", to: "sessions#destroy", as: :logout
   get "/logout", to: "sessions#destroy"
 
-  get "/analytics", to: "home#analytics", as: "tea_analytics"
   get "/categories", to: "teas#categories", as: "categories"
   get "/origins", to: "teas#origins", as: "origins"
   get "/price_statistics", to: "home#price_statistics", as: "price_statistics"

@@ -1,19 +1,9 @@
 class HomeController < ApplicationController
-  before_action :require_login
+  before_action :require_login, except: [:index]
 
   def index
     if current_user
-      @teas = Tea.joins(:entries).where(entries: { user_id: current_user.id })
-      @user_teas = @teas.pluck(:name, :price, :grams)
-
-      # Gauge metrics (avg $ and percentile vs all teas)
-      user_prices   = @teas.map(&:price)
-      all_prices    = Tea.pluck(:price).compact.sort
-      @user_avg     = user_prices.sum.to_f / [ user_prices.size, 1 ].max
-      @global_qtiles = all_prices.each_slice((all_prices.size/4.0).ceil).map(&:last)
-      @percentile   = (all_prices.count { |p| p < @user_avg } * 100.0 / all_prices.size)
-
-      render :dashboard
+      redirect_to action: :dashboard
     else
       render :landing
     end

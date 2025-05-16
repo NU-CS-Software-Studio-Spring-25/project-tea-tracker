@@ -1,0 +1,49 @@
+<!-- Y2K/Retro-Style Header -->
+<header class="tea-header">
+  <div class="tea-header-container">
+    <div class="tea-logo">
+      <div class="logo-text">
+        <span class="logo-tea">Tea</span>
+        <span class="logo-tracker">Tracker</span>
+      </div>
+      <div class="logo-icon">🍵</div>
+    </div>
+    
+    <nav class="tea-nav">
+      <ul class="nav-links">
+        <% if current_user %>
+          <li><%= link_to "Dashboard", dashboard_path, class: "nav-link" %></li>
+          <li><%= link_to "Collection", teas_path, class: "nav-link" %></li>
+          <li><%= link_to "Analytics", tea_analytics_path, class: "nav-link" %></li>
+          <li><%= link_to "Add Tea", new_tea_path, class: "nav-btn" %></li>
+          <li class="profile-nav-item">
+            <%= link_to profile_path, class: "profile-link" do %>
+              <div class="mini-avatar">
+                <% if current_user.avatar.attached? %>
+                  <%= image_tag current_user.avatar, alt: current_user.username %>
+                <% elsif current_user.avatar_url.present? %>
+                  <img src="<%= current_user.avatar_url %>" alt="<%= current_user.username %>">
+                <% else %>
+                  <i class="bi bi-person-circle"></i>
+                <% end %>
+              </div>
+              <span>Profile</span>
+            <% end %>
+          </li>
+          <li><%= link_to "Logout", logout_path, method: :delete, class: "nav-link" %></li>
+        <% else %>
+          <li><%= link_to "Home", root_path, class: "nav-link" %></li>
+          <li><%= link_to "Login", new_session_path, class: "nav-link" %></li>
+          <li><%= link_to "Sign Up", new_user_path, class: "nav-btn" %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+  
+  <!-- Decorative Elements -->
+  <div class="header-bubbles">
+    <div class="bubble b1"></div>
+    <div class="bubble b2"></div>
+    <div class="bubble b3"></div>
+  </div>
+</header> 
