@@ -11,45 +11,281 @@
   </div>
 <% end %>
 
+<style>
+  .required-field label::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .form-text.required-hint {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+  
+  input:required:invalid,
+  textarea:required:invalid {
+    border-left: 3px solid #dc3545;
+  }
+  
+  input:required:valid,
+  textarea:required:valid {
+    border-left: 3px solid #28a745;
+  }
+  
+  .password-strength-meter {
+    height: 5px;
+    width: 100%;
+    background: #DDD;
+    margin-top: 8px;
+    border-radius: 3px;
+  }
+  
+  .password-strength-meter div {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  
+  .password-strength-meter div.weak {
+    width: 25%;
+    background: #dc3545;
+  }
+  
+  .password-strength-meter div.medium {
+    width: 50%;
+    background: #ffc107;
+  }
+  
+  .password-strength-meter div.strong {
+    width: 75%;
+    background: #28a745;
+  }
+  
+  .password-strength-meter div.very-strong {
+    width: 100%;
+    background: #20c997;
+  }
+  
+  .password-feedback {
+    margin-top: 5px;
+    font-size: 0.875rem;
+  }
+</style>
+
+<div class="form-text required-hint mb-3">Fields marked with * are required</div>
+
 <%= form_with model: @user, local: true do |form| %>
-  <div class="form-group">
-    <%= form.label :username %>
-    <%= form.text_field :username, class: "form-control", required: true %>
+  <div class="form-group required-field">
+    <%= form.label :username, "Username (3-30 characters)" %>
+    <div class="input-group">
+      <%= form.text_field :username, class: "form-control", required: true, 
+                       minlength: 3, maxlength: 30, 
+                       pattern: "[a-zA-Z0-9_.-]+",
+                       placeholder: "Choose a unique username",
+                       id: "username-input" %>
+      <div class="input-group-append">
+        <span class="input-group-text" id="username-status">
+          <!-- Status icon will be inserted here -->
+        </span>
+      </div>
+    </div>
+    <small class="form-text text-muted">Letters, numbers, and the characters _ . - only</small>
+    <small id="username-feedback" class="form-text"></small>
+  </div>
+
+  <div class="form-group mt-3 required-field">
+    <%= form.label :bio, "Bio (max 300 characters)" %>
+    <%= form.text_area :bio, class: "form-control", maxlength: 300, required: true,
+                     placeholder: "Tell us about yourself and your tea interests" %>
+    <small class="form-text text-muted">Share your tea journey with the community</small>
   </div>
 
   <div class="form-group mt-3">
-    <%= form.label :bio %>
-    <%= form.text_area :bio, class: "form-control", maxlength: 300 %>
+    <%= form.label :avatar_url, "Avatar URL (optional)" %>
+    <%= form.url_field :avatar_url, class: "form-control", 
+                      placeholder: "https://..." %>
+    <small class="form-text text-muted">Link to your profile picture (must start with http:// or https://)</small>
   </div>
 
-  <div class="form-group mt-3">
-    <%= form.label :avatar_url %>
-    <%= form.url_field :avatar_url, class: "form-control" %>
+  <div class="form-group mt-3 required-field">
+    <%= form.label :password, "Password" %>
+    <%= form.password_field :password, class: "form-control", required: true, 
+                          id: "password-input", 
+                          minlength: 8,
+                          placeholder: "Create a strong password" %>
+    <div class="password-strength-meter">
+      <div id="password-strength-bar"></div>
+    </div>
+    <small id="password-feedback" class="form-text password-feedback"></small>
+    <small class="form-text text-muted">At least 8 characters with uppercase, lowercase, and numbers</small>
   </div>
 
-  <div class="form-group mt-3">
-    <%= form.label :password %>
-    <%= form.password_field :password, class: "form-control", required: true %>
+  <div class="form-group mt-3 required-field">
+    <%= form.label :password_confirmation, "Confirm Password" %>
+    <%= form.password_field :password_confirmation, class: "form-control", required: true, 
+                          id: "confirm-password-input",
+                          placeholder: "Repeat your password" %>
+    <small id="password-match" class="form-text"></small>
   </div>
 
-  <div class="form-group mt-3">
-    <%= form.label :password_confirmation %>
-    <%= form.password_field :password_confirmation, class: "form-control", required: true %>
-  </div>
-
-  <div class="mt-3">
-    <%= form.submit "Create Account", class: "btn btn-success" %>
+  <div class="mt-4 d-flex gap-2">
+    <%= link_to "Back", root_path, class: "btn btn-secondary" %>
+    <%= form.submit "Create Account", class: "btn btn-success", id: "submit-button" %>
   </div>
 <% end %>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Username availability checker
+  const usernameInput = document.getElementById('username-input');
+  const usernameStatus = document.getElementById('username-status');
+  const usernameFeedback = document.getElementById('username-feedback');
+  let usernameTimer;
+  
+  function checkUsername() {
+    const username = usernameInput.value.trim();
+    
+    // Clear previous status
+    usernameStatus.innerHTML = '';
+    usernameFeedback.textContent = '';
+    usernameFeedback.className = 'form-text';
+    
+    // Skip checking if username is too short
+    if (username.length < 3) {
+      return;
+    }
+    
+    // Show loading spinner
+    usernameStatus.innerHTML = '<div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>';
+    
+    // Make AJAX request to check username
+    fetch(`/users/check_username?username=${encodeURIComponent(username)}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.valid) {
+          // Username is available
+          usernameStatus.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+          usernameFeedback.textContent = data.message;
+          usernameFeedback.className = 'form-text text-success';
+          usernameInput.classList.remove('is-invalid');
+          usernameInput.classList.add('is-valid');
+        } else {
+          // Username is invalid or taken
+          usernameStatus.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+          usernameFeedback.textContent = data.message;
+          usernameFeedback.className = 'form-text text-danger';
+          usernameInput.classList.remove('is-valid');
+          usernameInput.classList.add('is-invalid');
+        }
+      })
+      .catch(error => {
+        console.error('Error checking username:', error);
+        usernameStatus.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+        usernameFeedback.textContent = 'Error checking username availability';
+        usernameFeedback.className = 'form-text text-warning';
+      });
+  }
+  
+  // Check username after user stops typing
+  usernameInput.addEventListener('input', function() {
+    clearTimeout(usernameTimer);
+    usernameTimer = setTimeout(checkUsername, 500); // Wait 500ms after typing stops
+  });
+  
+  // Also check on blur
+  usernameInput.addEventListener('blur', checkUsername);
+  
   // Hide the error modal after 5 seconds
   const errorModal = document.getElementById('error-modal');
   if (errorModal) {
     setTimeout(() => {
       errorModal.style.display = 'none';
     }, 5000); // 5000ms = 5 seconds
+  }
+  
+  // Add validation feedback for all required fields
+  document.querySelectorAll('input[required], textarea[required]').forEach(field => {
+    field.addEventListener('blur', function() {
+      if (!this.validity.valid) {
+        this.classList.add('is-invalid');
+      } else {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+      }
+    });
+  });
+  
+  // Password strength meter
+  const passwordInput = document.getElementById('password-input');
+  const confirmPasswordInput = document.getElementById('confirm-password-input');
+  const passwordStrengthBar = document.getElementById('password-strength-bar');
+  const passwordFeedback = document.getElementById('password-feedback');
+  const passwordMatch = document.getElementById('password-match');
+  const submitButton = document.getElementById('submit-button');
+  
+  passwordInput.addEventListener('input', function() {
+    const password = this.value;
+    let strength = 0;
+    let feedback = "";
+    
+    // Length check
+    if (password.length >= 8) {
+      strength += 1;
+    } else {
+      feedback = "Password is too short";
+    }
+    
+    // Complexity checks
+    if (password.match(/[a-z]/)) strength += 1;
+    if (password.match(/[A-Z]/)) strength += 1;
+    if (password.match(/\d/)) strength += 1;
+    if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+    
+    // Update UI based on strength
+    passwordStrengthBar.className = "";
+    if (strength < 2) {
+      passwordStrengthBar.classList.add("weak");
+      if (!feedback) feedback = "Password is weak";
+    } else if (strength < 3) {
+      passwordStrengthBar.classList.add("medium");
+      feedback = "Password is okay, but could be stronger";
+    } else if (strength < 5) {
+      passwordStrengthBar.classList.add("strong");
+      feedback = "Password is strong";
+    } else {
+      passwordStrengthBar.classList.add("very-strong");
+      feedback = "Password is very strong";
+    }
+    
+    passwordFeedback.textContent = feedback;
+    checkPasswordMatch();
+  });
+  
+  confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+  
+  function checkPasswordMatch() {
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    
+    if (confirmPassword.length === 0) {
+      passwordMatch.textContent = "";
+      passwordMatch.className = "form-text";
+      return;
+    }
+    
+    if (password === confirmPassword) {
+      passwordMatch.textContent = "Passwords match";
+      passwordMatch.className = "form-text text-success";
+      confirmPasswordInput.classList.remove('is-invalid');
+      confirmPasswordInput.classList.add('is-valid');
+    } else {
+      passwordMatch.textContent = "Passwords do not match";
+      passwordMatch.className = "form-text text-danger";
+      confirmPasswordInput.classList.remove('is-valid');
+      confirmPasswordInput.classList.add('is-invalid');
+    }
   }
 });
 </script>

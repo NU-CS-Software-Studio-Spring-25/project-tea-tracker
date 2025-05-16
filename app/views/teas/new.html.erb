@@ -11,72 +11,118 @@
   </div>
 <% end %>
 
+<style>
+  .required-field label::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .form-text.required-hint {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+  
+  input:required:invalid,
+  select:required:invalid,
+  textarea:required:invalid {
+    border-left: 3px solid #dc3545;
+  }
+  
+  input:required:valid,
+  select:required:valid,
+  textarea:required:valid {
+    border-left: 3px solid #28a745;
+  }
+</style>
+
+<div class="form-text required-hint mb-3">Fields marked with * are required</div>
+
 <%= form_with model: @tea, local: true do |form| %>
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :name %>
     <%= form.text_field :name, required: true, class: "form-control", maxlength: 100 %>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :category %>
-    <%= form.select :category, options_for_select(["Black", "Green", "White", "Oolong", "Herbal", "Pu-erh", "Rooibos"]), {}, class: "form-control", required: true %>
+    <%= form.text_field :category, 
+                      required: true, 
+                      class: "form-control", 
+                      list: "tea-categories", 
+                      placeholder: "Choose from suggestions or enter your own custom category" %>
+    <datalist id="tea-categories">
+      <% Tea::CANONICAL_CATEGORIES.each do |cat| %>
+        <option value="<%= cat %>"><%= cat.humanize %></option>
+      <% end %>
+    </datalist>
+    <small class="form-text text-muted">Select from common types or enter your own custom tea variety</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <div class="row">
       <div class="col">
         <%= form.label :price, "Price per Gram ($/g)" %>
-        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price", min: 0.01, max: 999.99 %>
+        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price", min: 0.01, max: 999.99, required: true %>
       </div>
-      <div class="col">
+      <div class="col required-field">
         <%= form.label :total_price, "Total Price ($)" %>
         <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price", min: 0.01, max: 9999.99, required: true %>
       </div>
-      <div class="col">
+      <div class="col required-field">
         <%= form.label :weight, "Weight (g)" %>
         <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight", min: 0.01, max: 9999.99, required: true %>
       </div>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :vendor %>
-    <%= form.text_field :vendor, class: "form-control", maxlength: 100 %>
+    <%= form.text_field :vendor, class: "form-control", maxlength: 100, required: true %>
+    <small class="form-text text-muted">Store or company selling the tea</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :known_for %>
-    <%= form.text_field :known_for, class: "form-control", maxlength: 200 %>
+    <%= form.text_field :known_for, class: "form-control", maxlength: 200, required: true %>
+    <small class="form-text text-muted">What makes this tea special?</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :year %>
-    <%= form.number_field :year, step: 1, class: "form-control", max: 9999 %>
+    <%= form.number_field :year, step: 1, class: "form-control", min: 1800, max: Date.current.year, required: true %>
+    <small class="form-text text-muted">Year the tea was produced (1800-present)</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :region %>
-    <%= form.text_field :region, class: "form-control", maxlength: 100 %>
+    <%= form.text_field :region, class: "form-control", maxlength: 100, required: true %>
+    <small class="form-text text-muted">Region where the tea was grown</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :ship_from %>
-    <%= form.text_field :ship_from, class: "form-control", maxlength: 100 %>
+    <%= form.text_field :ship_from, class: "form-control", maxlength: 100, required: true %>
+    <small class="form-text text-muted">Country or location the tea ships from</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :popularity %>
-    <%= form.number_field :popularity, step: 1, class: "form-control", max: 100 %>
+    <%= form.number_field :popularity, step: 1, class: "form-control", min: 0, max: 100, required: true, placeholder: "0-100" %>
+    <small class="form-text text-muted">How popular is this tea? (0-100)</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :shopping_platform %>
-    <%= form.text_field :shopping_platform, class: "form-control", maxlength: 100 %>
+    <%= form.text_field :shopping_platform, class: "form-control", maxlength: 100, required: true %>
+    <small class="form-text text-muted">Website or platform where you bought the tea</small>
   </div>
 
-  <div class="form-group">
+  <div class="form-group required-field">
     <%= form.label :product_url %>
-    <%= form.url_field :product_url, class: "form-control", maxlength: 200 %>
+    <%= form.url_field :product_url, class: "form-control", maxlength: 500, required: true, pattern: "https?://.+" %>
+    <small class="form-text text-muted">Direct link to the product page (must start with http:// or https://)</small>
   </div>
 
   <div class="form-group">
@@ -133,5 +179,111 @@ document.addEventListener('DOMContentLoaded', function() {
       weightInput.value = 0.01;
     }
   });
+  
+  // Enhanced validation for all required fields
+  document.querySelectorAll('input[required], select[required], textarea[required]').forEach(field => {
+    // Add feedback div after each field if it doesn't exist
+    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+      const feedbackDiv = document.createElement('div');
+      feedbackDiv.className = 'invalid-feedback';
+      field.parentNode.insertBefore(feedbackDiv, field.nextElementSibling);
+    }
+    
+    field.addEventListener('blur', function() {
+      // Reset field status
+      this.classList.remove('is-invalid', 'is-valid');
+      
+      // Find the feedback div
+      const feedbackDiv = this.nextElementSibling.classList.contains('invalid-feedback') 
+        ? this.nextElementSibling 
+        : this.parentNode.querySelector('.invalid-feedback');
+      
+      if (!feedbackDiv) return;
+      
+      // Check validity and show appropriate message
+      if (!this.validity.valid) {
+        this.classList.add('is-invalid');
+        
+        if (this.validity.valueMissing) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} is required`;
+        } else if (this.validity.tooShort) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} must be at least ${this.minLength} characters`;
+        } else if (this.validity.tooLong) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} must be at most ${this.maxLength} characters`;
+        } else if (this.validity.typeMismatch) {
+          if (this.type === 'url') {
+            feedbackDiv.textContent = 'Please enter a valid URL (must start with http:// or https://)';
+          } else if (this.type === 'email') {
+            feedbackDiv.textContent = 'Please enter a valid email address';
+          } else {
+            feedbackDiv.textContent = `Please enter a valid ${this.type}`;
+          }
+        } else if (this.validity.rangeUnderflow) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} must be at least ${this.min}`;
+        } else if (this.validity.rangeOverflow) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} must be at most ${this.max}`;
+        } else if (this.validity.patternMismatch) {
+          if (this.id === 'product_url') {
+            feedbackDiv.textContent = 'Product URL must start with http:// or https://';
+          } else {
+            feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} has an invalid format`;
+          }
+        } else if (this.validity.stepMismatch) {
+          feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} must be in steps of ${this.step}`;
+        } else {
+          feedbackDiv.textContent = 'Please enter a valid value';
+        }
+      } else {
+        this.classList.add('is-valid');
+        feedbackDiv.textContent = '';
+      }
+    });
+    
+    // Also validate on input for immediate feedback
+    field.addEventListener('input', function() {
+      if (this.classList.contains('is-invalid')) {
+        // Re-validate on input if it was previously invalid
+        const event = new Event('blur');
+        this.dispatchEvent(event);
+      }
+    });
+  });
+  
+  // Custom validation for year field
+  const yearField = document.querySelector('input[name="tea[year]"]');
+  if (yearField) {
+    yearField.addEventListener('blur', function() {
+      const year = parseInt(this.value);
+      const currentYear = new Date().getFullYear();
+      
+      if (year > currentYear) {
+        this.classList.add('is-invalid');
+        const feedbackDiv = this.nextElementSibling.classList.contains('invalid-feedback') 
+          ? this.nextElementSibling 
+          : this.parentNode.querySelector('.invalid-feedback');
+        
+        if (feedbackDiv) {
+          feedbackDiv.textContent = `Year cannot be in the future (max: ${currentYear})`;
+        }
+      }
+    });
+  }
+  
+  // Custom validation for URL field
+  const urlField = document.querySelector('input[name="tea[product_url]"]');
+  if (urlField) {
+    urlField.addEventListener('blur', function() {
+      if (this.value && !this.value.match(/^https?:\/\/.+/)) {
+        this.classList.add('is-invalid');
+        const feedbackDiv = this.nextElementSibling.classList.contains('invalid-feedback') 
+          ? this.nextElementSibling 
+          : this.parentNode.querySelector('.invalid-feedback');
+        
+        if (feedbackDiv) {
+          feedbackDiv.textContent = 'Product URL must start with http:// or https://';
+        }
+      }
+    });
+  }
 });
 </script>

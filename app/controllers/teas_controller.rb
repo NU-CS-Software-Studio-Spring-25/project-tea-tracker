@@ -111,6 +111,10 @@ class TeasController < ApplicationController
 
   def create
     @tea = Tea.new(tea_params)
+    normalize_category_param
+
+    # Check for potential misspelling
+    check_for_category_misspelling(@tea)
 
     ActiveRecord::Base.transaction do
       if @tea.save
@@ -139,6 +143,11 @@ class TeasController < ApplicationController
       redirect_to teas_path, alert: "You don't have access to this tea."
       return
     end
+
+    normalize_category_param
+    
+    # Check for potential misspelling
+    check_for_category_misspelling(@tea)
 
     ActiveRecord::Base.transaction do
       if @tea.update(tea_params)
@@ -210,6 +219,23 @@ class TeasController < ApplicationController
   def require_login
     unless current_user
       redirect_to new_session_path, alert: "You must log in first."
+    end
+  end
+
+  def normalize_category_param
+    if params[:tea] && params[:tea][:category]
+      params[:tea][:category] = params[:tea][:category].downcase.strip
+    end
+  end
+
+  def check_for_category_misspelling(tea)
+    return if tea.category.blank? || tea.canonical_category?
+    
+    if suggestion = tea.category_suggestion
+      # Only suggest if the edit distance is small (likely a typo)
+      if tea.send(:levenshtein_distance, tea.category, suggestion) <= 2
+        flash.now[:warning] = "Did you mean '#{suggestion}' instead of '#{tea.category}'? We've kept your entry, but it might be a typo."
+      end
     end
   end
 end

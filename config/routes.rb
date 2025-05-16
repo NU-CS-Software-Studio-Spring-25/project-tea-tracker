@@ -22,7 +22,11 @@ Rails.application.routes.draw do
   resources :entries
 
   # user authentication
-  resources :users, only: [ :new, :create, :show ]
+  resources :users, only: [ :new, :create, :show ] do
+    collection do
+      get :check_username
+    end
+  end
   resources :sessions, only: [ :new, :create, :destroy ]
   delete "/logout", to: "sessions#destroy", as: :logout
   get "/logout", to: "sessions#destroy"
