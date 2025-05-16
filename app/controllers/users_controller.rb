@@ -20,26 +20,26 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
       @teas = @user.teas
     end
-    
+
     def check_username
       # Check if a username is already taken
       username = params[:username].to_s.strip.downcase
-      
+
       # Validate format
       if username.length < 3 || username.length > 30
         render json: { valid: false, message: "Username must be 3-30 characters" }
         return
       end
-      
+
       # Check if the username contains invalid characters
       unless username =~ /\A[a-zA-Z0-9_.-]+\z/
         render json: { valid: false, message: "Username can only contain letters, numbers, and the characters _ . -" }
         return
       end
-      
+
       # Check if the username is already taken
       user_exists = User.where("lower(username) = ?", username).exists?
-      
+
       if user_exists
         render json: { valid: false, message: "Username is already taken" }
       else

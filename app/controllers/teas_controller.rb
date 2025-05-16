@@ -145,7 +145,7 @@ class TeasController < ApplicationController
     end
 
     normalize_category_param
-    
+
     # Check for potential misspelling
     check_for_category_misspelling(@tea)
 
@@ -230,7 +230,7 @@ class TeasController < ApplicationController
 
   def check_for_category_misspelling(tea)
     return if tea.category.blank? || tea.canonical_category?
-    
+
     if suggestion = tea.category_suggestion
       # Only suggest if the edit distance is small (likely a typo)
       if tea.send(:levenshtein_distance, tea.category, suggestion) <= 2
