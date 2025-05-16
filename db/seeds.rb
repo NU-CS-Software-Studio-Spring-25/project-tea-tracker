@@ -182,7 +182,7 @@ csv_teas.each_with_index do |tea_data, index|
   region = tea_data[:region] || tea_data[:ship_from]
   # Ensure year is present
   year = tea_data[:year] || 2023
-  
+
   tea = Tea.create!(
     name: tea_data[:name],
     category: tea_data[:category],

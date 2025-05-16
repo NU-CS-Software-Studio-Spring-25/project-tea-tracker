@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
-  
+
   # Dashboard route
   get "dashboard", to: "home#dashboard", as: :dashboard
   get "analytics", to: "home#analytics", as: :tea_analytics
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
       get :check_username
     end
   end
-  
+
   # User profile routes
   get "/profile", to: "users#profile", as: :profile
   patch "/profile", to: "users#update_profile"

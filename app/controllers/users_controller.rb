@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-    before_action :authenticate_user!, only: [:profile, :update_profile, :update_password, :destroy_account]
-    
+    before_action :authenticate_user!, only: [ :profile, :update_profile, :update_password, :destroy_account ]
+
     def new
       # New user object for the registration form.
       @user = User.new
@@ -22,12 +22,12 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
       @teas = @user.teas
     end
-    
+
     def profile
       # User profile page with forms for editing
       @user = current_user
     end
-    
+
     def update_profile
       @user = current_user
       if @user.update(profile_params)
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
         render :profile
       end
     end
-    
+
     def update_password
       @user = current_user
       if !@user.authenticate(params[:user][:current_password])
@@ -55,7 +55,7 @@ class UsersController < ApplicationController
         render :profile
       end
     end
-    
+
     def destroy_account
       @user = current_user
       if params[:confirm_delete] == "DELETE" && @user.authenticate(params[:user][:password])
@@ -95,7 +95,7 @@ class UsersController < ApplicationController
     end
 
     private
-    
+
     def authenticate_user!
       redirect_to login_path, alert: "Please log in to access this page" unless current_user
     end
@@ -104,12 +104,12 @@ class UsersController < ApplicationController
       # Strong parameters for user registration.
       params.require(:user).permit(:username, :bio, :avatar_url, :password, :password_confirmation, :avatar)
     end
-    
+
     def profile_params
       # Strong parameters for profile updates
       params.require(:user).permit(:bio, :avatar_url, :avatar)
     end
-    
+
     def password_params
       # Strong parameters for password updates
       params.require(:user).permit(:password, :password_confirmation)

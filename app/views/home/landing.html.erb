@@ -1,16 +1,48 @@
 <%= render 'shared/header' %>
 
 <div class="landing-container">
+  <!-- Animated Background Elements -->
+  <div class="retro-background">
+    <div class="grid-lines"></div>
+    <div class="floating-shapes">
+      <div class="shape shape1"></div>
+      <div class="shape shape2"></div>
+      <div class="shape shape3"></div>
+      <div class="shape shape4"></div>
+      <div class="shape shape5"></div>
+    </div>
+    <div class="pixel-stars">
+      <div class="star s1"></div>
+      <div class="star s2"></div>
+      <div class="star s3"></div>
+      <div class="star s4"></div>
+      <div class="star s5"></div>
+    </div>
+  </div>
+
   <section class="hero-section">
+    <!-- Decorative pixel corners -->
+    <div class="pixel-corner top-left"></div>
+    <div class="pixel-corner top-right"></div>
+    <div class="pixel-corner bottom-left"></div>
+    <div class="pixel-corner bottom-right"></div>
+    
     <div class="hero-content">
+      <div class="blink-text">Welcome to</div>
       <h1 class="hero-title">
-        <span class="gradient-text">Track Your Tea</span>
-        <span class="subtitle">Journey One Cup at a Time</span>
+        <span class="gradient-text">Tea Tracker</span>
+        <span class="subtitle">Your Journey One Cup at a Time</span>
       </h1>
       
       <p class="hero-description">
-        Discover, track, and visualize your tea consumption habits with our fun, retro-inspired tracker!
+        Discover, track, and visualize your tea consumption habits with our fun, new tracker!
       </p>
+      
+      <div class="hero-badges">
+        <span class="retro-badge">New!</span>
+        <span class="retro-badge">BREW STATS</span>
+        <span class="retro-badge">Tea Lovers</span>
+      </div>
       
       <div class="hero-actions">
         <%= link_to "Sign Up", new_user_path, class: "cta-button primary-btn" %>
@@ -29,10 +61,17 @@
           <div class="cup-steam s3"></div>
         </div>
       </div>
+      <div class="rotating-ring"></div>
     </div>
   </section>
   
   <section class="features-section">
+    <div class="section-divider">
+      <div class="divider-line"></div>
+      <div class="divider-icon">🍵</div>
+      <div class="divider-line"></div>
+    </div>
+    
     <h2 class="section-title">Why Tea Tracker?</h2>
     
     <div class="features-grid">
@@ -40,18 +79,30 @@
         <div class="feature-icon">📊</div>
         <h3 class="feature-title">Track Consumption</h3>
         <p class="feature-description">Log your daily cups and see your brewing trends over time</p>
+        <div class="feature-glare"></div>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon">🌎</div>
         <h3 class="feature-title">Discover Origins</h3>
         <p class="feature-description">Explore teas from different regions and vendors worldwide</p>
+        <div class="feature-glare"></div>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon">⭐</div>
         <h3 class="feature-title">Rate &amp; Review</h3>
         <p class="feature-description">Build your personal tea database with ratings and notes</p>
+        <div class="feature-glare"></div>
+      </div>
+    </div>
+    
+    <div class="marquee-container">
+      <div class="marquee-content">
+        <span>✨ Track Your Favorite Teas ✨</span>
+        <span>🍵 Discover New Flavors 🍵</span>
+        <span>📊 Visualize Your Journey 📊</span>
+        <span>🌎 Explore Tea Origins 🌎</span>
       </div>
     </div>
   </section>
@@ -61,6 +112,7 @@
       <h2 class="cta-title">Ready to begin your tea journey?</h2>
       <p class="cta-description">Join our community of tea enthusiasts today!</p>
       <%= link_to "Get Started", new_user_path, class: "cta-button primary-btn large" %>
+      <div class="pixel-tea-set"></div>
     </div>
     
     <div class="decorative-elements">
