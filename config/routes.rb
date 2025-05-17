@@ -52,4 +52,7 @@ Rails.application.routes.draw do
   # Sharing routes
   post "/shares", to: "shares#create", as: "create_share"
   get "/share/:share_id", to: "shares#show", as: "show_share"
+
+  # changing ranks
+  post 'teas/update_ranks', to: 'teas#update_ranks'
 end

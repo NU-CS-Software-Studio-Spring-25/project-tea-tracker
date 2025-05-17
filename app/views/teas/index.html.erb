@@ -1,4 +1,3 @@
-
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Your Tea Collection</h1>
@@ -45,15 +44,28 @@
     </div>
   </div>
   
-  <!-- Tea Collection Grid -->
-  <div class="row">
+  <!-- Ranking Instructions -->
+  <div class="alert alert-info mb-4">
+    <i class="bi bi-info-circle me-2"></i>
+    Drag and drop teas to change their ranking. Higher ranked teas appear at the top.
+  </div>
+  
+  <!-- Tea Collection Grid with Drag and Drop -->
+  <div id="tea-ranking-container" class="row">
     <% if @teas.any? %>
       <% @teas.each do |tea| %>
-        <div class="col-md-4 col-lg-3 mb-4">
+        <div class="col-md-4 col-lg-3 mb-4 tea-rank-item" data-tea-id="<%= tea.id %>" draggable="true">
           <div class="card h-100 shadow-sm tea-card">
             <div class="card-header bg-light">
-              <span class="badge bg-<%= tea_category_color(tea.category) %> float-end"><%= tea.category %></span>
-              <h5 class="card-title mb-0 text-truncate"><%= tea.name %></h5>
+              <div class="d-flex align-items-center">
+                <div class="drag-handle me-2">
+                  <i class="bi bi-grip-vertical"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <span class="badge bg-<%= tea_category_color(tea.category) %> float-end"><%= tea.category %></span>
+                  <h5 class="card-title mb-0 text-truncate"><%= tea.name %></h5>
+                </div>
+              </div>
             </div>
             <div class="card-body">
               <div class="mb-3">
@@ -69,7 +81,7 @@
               <div class="d-flex justify-content-between">
                 <div>
                   <small class="text-muted">Rank:</small>
-                  <p class="mb-0"><%= current_user.entries.find_by(tea: tea)&.rank || "N/A" %></p>
+                  <p class="mb-0 current-rank"><%= current_user.entries.find_by(tea: tea)&.rank || "N/A" %></p>
                 </div>
                 <div>
                   <small class="text-muted">Price:</small>
@@ -102,3 +114,129 @@
     </div>
   <% end %>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initDragAndDrop();
+});
+
+function initDragAndDrop() {
+  const container = document.getElementById('tea-ranking-container');
+  if (!container) return;
+  
+  const items = container.querySelectorAll('.tea-rank-item');
+  let draggedItem = null;
+  
+  // Add event listeners to each item
+  items.forEach(item => {
+    // Drag start
+    item.addEventListener('dragstart', function(e) {
+      draggedItem = this;
+      setTimeout(() => {
+        this.classList.add('dragging');
+      }, 0);
+    });
+    
+    // Drag end
+    item.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+      draggedItem = null;
+      updateRanks();
+    });
+    
+    // Drag over
+    item.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      if (this === draggedItem) return;
+      
+      const mouseY = e.clientY;
+      const mouseX = e.clientX;
+      
+      // Find the closest item to the mouse position
+      const closestItem = findClosestItem(mouseX, mouseY, items, draggedItem);
+      
+      if (closestItem) {
+        const rect = closestItem.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Determine if we should insert before or after the closest item
+        if (mouseY < centerY || (mouseY === centerY && mouseX < centerX)) {
+          container.insertBefore(draggedItem, closestItem);
+        } else {
+          container.insertBefore(draggedItem, closestItem.nextSibling);
+        }
+      }
+    });
+    
+    // Prevent default behavior for drop
+    item.addEventListener('drop', function(e) {
+      e.preventDefault();
+    });
+  });
+  
+  // Function to find the closest item to the mouse position
+  function findClosestItem(x, y, items, excludeItem) {
+    let closestItem = null;
+    let closestDistance = Infinity;
+    
+    items.forEach(item => {
+      if (item === excludeItem) return;
+      
+      const rect = item.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Calculate distance using Pythagorean theorem
+      const distance = Math.sqrt(
+        Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)
+      );
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestItem = item;
+      }
+    });
+    
+    return closestItem;
+  }
+  
+  // Function to update ranks after drag
+  function updateRanks() {
+    const teaItems = container.querySelectorAll('.tea-rank-item');
+    const totalItems = teaItems.length;
+    const teaRanks = {};
+    
+    // Assign ranks based on position (top item gets highest rank)
+    teaItems.forEach((item, index) => {
+      const teaId = item.dataset.teaId;
+      const rank = totalItems - index; // Highest rank at the top
+      teaRanks[teaId] = rank;
+      
+      // Update the displayed rank
+      const rankElement = item.querySelector('.current-rank');
+      if (rankElement) {
+        rankElement.textContent = rank;
+      }
+    });
+    
+    // Send the updated ranks to the server
+    fetch('/teas/update_ranks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ tea_ranks: teaRanks })
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error('Failed to update ranks');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating ranks:', error);
+    });
+  }
+}
+</script>

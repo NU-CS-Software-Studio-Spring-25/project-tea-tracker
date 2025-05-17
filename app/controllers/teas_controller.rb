@@ -202,6 +202,16 @@ class TeasController < ApplicationController
     }
   end
 
+  # update the ranks
+  def update_ranks
+    params[:tea_ranks].each do |tea_id, rank|
+      entry = current_user.entries.find_by(tea_id: tea_id)
+      entry.update(rank: rank) if entry
+    end
+    
+    head :ok
+  end
+
   private
 
   def set_tea

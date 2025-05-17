@@ -133,6 +133,8 @@ canvas, .chart-js-render-monitor {
 /* Tea Cards */
 .tea-card {
     height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 .tea-card .card-header {
@@ -2636,6 +2638,50 @@ h1.gradient-text {
 }
 
 
+/* rank updates */
+.tea-rank-item {
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
+.tea-rank-item:active {
+  cursor: grabbing;
+}
 
+.tea-rank-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+  z-index: 1000;
+}
 
+.drag-handle {
+  cursor: grab;
+  color: #6c757d;
+  font-size: 1.2rem;
+}
+
+.drag-placeholder {
+  border: 2px dashed #dee2e6;
+  background-color: #f8f9fa;
+  height: 100px;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+
+.card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make sure the container has proper width */
+.container-fluid {
+  max-width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Ensure drag and drop doesn't break layout */
+.tea-rank-item {
+  width: 100%;
+}
