@@ -8,7 +8,7 @@ Entry.destroy_all
 # Create fake users
 10.times do
   User.create!(
-    username: Faker::Internet.unique.username,
+    username: Faker::Internet.unique.username(specifier: 4..16),
     password: "Password123",
     bio: Faker::Lorem.sentence,
     avatar_url: Faker::Avatar.image

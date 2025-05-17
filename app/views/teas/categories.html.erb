@@ -12,7 +12,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <h3 class="mb-0"><%= category %></h3>
           <span class="badge bg-white text-<%= tea_category_color(category) %>">
-            <%= @teas_by_category[category].count %> teas
+            <%= @teas_by_category[category].total_count %> teas
           </span>
         </div>
       </div>
@@ -42,6 +42,13 @@
             </div>
           <% end %>
         </div>
+        
+        <!-- Pagination controls -->
+        <% if @teas_by_category[category].total_pages > 1 %>
+          <div class="d-flex justify-content-center mt-4">
+            <%= paginate @teas_by_category[category], param_name: "page_#{category}" %>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>
