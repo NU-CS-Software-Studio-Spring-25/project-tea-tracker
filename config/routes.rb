@@ -55,4 +55,9 @@ Rails.application.routes.draw do
 
   # changing ranks
   post 'teas/update_ranks', to: 'teas#update_ranks'
+
+  # vendors
+  resources :vendors, only: [:index, :show]
+  resources :categories, only: [:index, :show]
+  resources :origins, only: [:index, :show]
 end

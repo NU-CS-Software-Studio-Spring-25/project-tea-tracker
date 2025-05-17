@@ -204,69 +204,6 @@
     </div>
   </div>
 
-  <!-- Tea Categories Breakdown -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-success text-white">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Tea Categories</h5>
-            <button class="btn btn-sm btn-light share-chart-btn" data-chart="categoriesSection" data-title="My Tea Categories">
-              <i class="bi bi-share"></i> Share
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <% @tea_type_counts.each do |category, count| %>
-            <div class="d-flex align-items-center mb-3">
-              <div class="me-3 text-end" style="width: 100px;">
-                <strong><%= category %></strong>
-              </div>
-              <div class="progress flex-grow-1" style="height: 25px;">
-                <div class="progress-bar bg-success" role="progressbar"
-                     style="width: <%= (count.to_f / @tea_type_counts.values.sum) * 100 %>%;"
-                     aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= @tea_type_counts.values.sum %>">
-                  <%= count %> (<%= ((count.to_f / @tea_type_counts.values.sum) * 100).round(1) %>%)
-                </div>
-              </div>
-            </div>
-          <% end %>
-          <div class="text-end mt-3">
-            <%= link_to "View by Category", categories_path, class: "btn btn-sm btn-outline-success" %>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-primary text-white">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Tea Origins</h5>
-            <button class="btn btn-sm btn-light share-chart-btn" data-chart="originsSection" data-title="My Tea Origins">
-              <i class="bi bi-share"></i> Share
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="list-group">
-            <% @popular_ship_from.each do |location, count| %>
-              <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <i class="bi bi-geo-alt me-2"></i>
-                  <%= location %>
-                </div>
-                <span class="badge bg-primary rounded-pill"><%= count %> teas</span>
-              </div>
-            <% end %>
-          </div>
-          <div class="text-end mt-3">
-            <%= link_to "View by Origin", origins_path, class: "btn btn-sm btn-outline-primary" %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Tea Collection Summary -->
   <div class="row mb-4">
     <div class="col-md-12">
@@ -314,6 +251,137 @@
       </div>
     </div>
   </div>
+
+  <!-- Tea Categories and Origins -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-success text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tea Categories</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="categoriesSection" data-title="My Tea Categories">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <% @tea_type_counts.each do |category, count| %>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3 text-end" style="width: 100px;">
+                <strong><%= category %></strong>
+              </div>
+              <div class="progress flex-grow-1" style="height: 25px;">
+                <div class="progress-bar bg-success" role="progressbar"
+                     style="width: <%= (count.to_f / @tea_type_counts.values.sum) * 100 %>%;"
+                     aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= @tea_type_counts.values.sum %>">
+                  <%= count %> (<%= ((count.to_f / @tea_type_counts.values.sum) * 100).round(1) %>%)
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <div class="text-end mt-3">
+            <%= link_to "View by Category", categories_path, class: "btn btn-sm btn-outline-success", title: "Category view not implemented yet" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tea Origins</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="originsSection" data-title="My Tea Origins">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <% @popular_ship_from.each do |location, count| %>
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="bi bi-geo-alt me-2"></i>
+                  <%= location %>
+                </div>
+                <span class="badge bg-primary rounded-pill"><%= count %> teas</span>
+              </div>
+            <% end %>
+          </div>
+          <div class="text-end mt-3">
+            <%= link_to "View by Origin", origins_path, class: "btn btn-sm btn-outline-primary", title: "Origin view not implemented yet" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tea Vendors and Age -->
+  <div class="row mb-4">
+    <!-- Top Vendors -------------------------------------------->
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-success text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Top Vendors</h5>
+            <button class="btn btn-sm btn-light share-chart-btn"
+                    data-chart="vendorsSection" data-title="My Tea Vendors">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body scroll-box"><!-- <— limit & scroll here -->
+          <div class="list-group">
+            <% @vendor_tea_counts.each do |vendor, count| %>
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="bi bi-shop me-2"></i>
+                  <%= vendor %>
+                </div>
+                <span class="badge bg-success rounded-pill"><%= count %> teas</span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tea by Age --------------------------------------------->
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tea by Age</h5>
+            <button class="btn btn-sm btn-light share-chart-btn"
+                    data-chart="ageSection" data-title="My Tea by Age">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body scroll-box"><!-- <— limit & scroll here -->
+          <% @tea_by_age.each do |age, count| %>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3 text-end" style="width: 100px;">
+                <strong><%= age == "Unknown" ? "Unknown" : "#{age} years" %></strong>
+              </div>
+              <div class="progress flex-grow-1" style="height: 25px;">
+                <div class="progress-bar bg-primary"
+                    role="progressbar"
+                    style="width: <%= (count.to_f / @tea_by_age.values.sum) * 100 %>%;"
+                    aria-valuenow="<%= count %>"
+                    aria-valuemin="0"
+                    aria-valuemax="<%= @tea_by_age.values.sum %>">
+                  <%= count %> (<%= ((count.to_f / @tea_by_age.values.sum) * 100).round(1) %>%)
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Tea Highlights -->
   <div class="row mb-4 tea-highlights-row">
@@ -382,111 +450,143 @@
       </div>
     </div>
 
-    <!-- Hidden Gem -->
+    <!-- Recent Addition -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100 tea-highlight-card">
         <div class="card-header bg-dark text-white">
-          <h5 class="mb-0">Hidden Gem</h5>
+          <h5 class="mb-0">Recent Addition</h5>
         </div>
         <div class="card-body d-flex flex-column align-items-center justify-content-between">
-          <% if @least_popular_tea %>
+          <% if @recent_teas.first %>
+            <% recent_tea = @recent_teas.first %>
             <div class="text-center mb-3">
-              <h4 class="mb-1"><%= @least_popular_tea.year %> <%= @least_popular_tea.name %></h4>
-              <p class="text-muted mb-3"><%= @least_popular_tea.category %></p>
+              <h4 class="mb-1"><%= recent_tea.year %> <%= recent_tea.name %></h4>
+              <p class="text-muted mb-3"><%= recent_tea.category %></p>
             </div>
 
-            <div class="my-3">
-              <div class="progress mb-2" style="height: 8px; width: 150px;">
-                <div class="progress-bar bg-dark" role="progressbar"
-                     style="width: <%= (@least_popular_tea.popularity.to_f) %>%;" 
-                     aria-valuenow="<%= @least_popular_tea.popularity %>" aria-valuemin="0" aria-valuemax="100">
-                </div>
-              </div>
-              <p class="text-center">Popularity: <%= @least_popular_tea.popularity %>/<%= @total_teas%></p>
-              <p class="small text-center">Vendor: <%= @least_popular_tea.vendor %></p>
+            <div class="my-3 text-center">
+              <h3 class="text-dark mb-2"><%= number_to_currency(recent_tea.price) %>/g</h3>
+              <p class="">From <%= recent_tea.vendor %></p>
+              <p class="text-muted">Added <%= time_ago_in_words(recent_tea.created_at) %> ago</p>
             </div>
 
             <div class="mt-auto">
-              <%= link_to "View Details", tea_path(@least_popular_tea), class: "btn btn-sm btn-outline-dark" %>
+              <%= link_to "View Details", tea_path(recent_tea), class: "btn btn-sm btn-outline-dark" %>
             </div>
           <% else %>
-            <p class="text-muted">No teas with a popularity score yet.</p>
+            <p class="text-muted">No recent teas added.</p>
           <% end %>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Additional Tea Stats -->
+  <!-- Price Range Distribution -->
   <div class="row mb-4">
-
-    <div class="col-md-6">
-      <div class="card text-center shadow-sm h-100">
-        <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Most Expensive Tea</h5>
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Price Range Distribution</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceRangeSection" data-title="My Tea Price Ranges">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
         </div>
         <div class="card-body">
-          <% most_expensive = @teas.order(price: :desc).first %>
-          <% if most_expensive %>
-            <h4 class="mb-2"><%= most_expensive.name %></h4>
-            <p class="text-muted mb-3"><%= most_expensive.category %></p>
-            <h3 class="text-success mb-0">
-              <%= number_to_currency(most_expensive.price) %>
-            </h3>
-          <% else %>
-            <p class="text-muted">No teas available</p>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card text-center shadow-sm h-100">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Least Popular Tea</h5>
-        </div>
-        <div class="card-body">
-          <% least_popular = @teas.order(popularity: :asc).first %>
-          <% if least_popular %>
-            <h4 class="mb-2"><%= least_popular.name %></h4>
-            <p class="text-muted mb-3"><%= least_popular.category %></p>
-            <div class="progress mb-2" style="height: 8px; width: 150px; margin: 0 auto;">
-              <div class="progress-bar bg-primary" role="progressbar"
-                   style="width: <%= (least_popular.popularity.to_f) %>%;" 
-                   aria-valuenow="<%= least_popular.popularity %>" aria-valuemin="0" aria-valuemax="100">
+          <div class="row">
+            <% @price_ranges.each do |range, count| %>
+              <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= range %></h5>
+                    <h2 class="display-4 mb-0"><%= count %></h2>
+                    <p class="text-muted">teas</p>
+                    <div class="progress mt-2">
+                      <div class="progress-bar bg-warning" role="progressbar"
+                           style="width: <%= (count.to_f / @price_ranges.values.sum) * 100 %>%;"
+                           aria-valuenow="<%= count %>" aria-valuemin="0" aria-valuemax="<%= @price_ranges.values.sum %>">
+                        <%= ((count.to_f / @price_ranges.values.sum) * 100).round(1) %>%
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <p>Popularity Score: <%= least_popular.popularity %>/<%= @total_teas%></p>
-          <% else %>
-            <p class="text-muted">No teas available</p>
-          <% end %>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-<!-- === Your Price Distribution ================================ -->
-<div class="card shadow-sm mb-4">
-  <div class="card-header bg-info text-white">
-    <div class="d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Your Price Distribution</h5>
-      <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceChart" data-title="My Tea Price Distribution">
-        <i class="bi bi-share"></i> Share
-      </button>
-    </div>
-  </div>
-
-  <div class="card-body p-3">
-    <div class="row">
-      <div class="col-md-8">
-    <div class="border rounded p-3" style="height:400px;">
-      <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
-    </div>
+  <!-- Price Distribution Chart -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-info text-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Your Price Distribution</h5>
+        <button class="btn btn-sm btn-light share-chart-btn" data-chart="priceChart" data-title="My Tea Price Distribution">
+          <i class="bi bi-share"></i> Share
+        </button>
       </div>
+    </div>
+
+    <div class="card-body p-3">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="border rounded p-3" style="height:400px;">
+            <canvas id="priceChart" style="width:100%;height:100%;"></canvas>
+          </div>
+        </div>
         <div class="col-md-4">
           <!-- Price Statistics -->
           <div id="price-statistics">
             <%= render partial: 'price_statistics' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Additions -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Additions</h5>
+            <button class="btn btn-sm btn-light share-chart-btn" data-chart="recentSection" data-title="My Recent Tea Additions">
+              <i class="bi bi-share"></i> Share
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Vendor</th>
+                  <th>Price</th>
+                  <th>Added</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @recent_teas.each do |tea| %>
+                  <tr>
+                    <td><%= tea.year %> <%= tea.name %></td>
+                    <td><%= tea.category %></td>
+                    <td><%= tea.vendor %></td>
+                    <td><%= number_to_currency(tea.price) %>/g</td>
+                    <td><%= time_ago_in_words(tea.created_at) %> ago</td>
+                    <td>
+                      <%= link_to "View", tea_path(tea), class: "btn btn-sm btn-outline-info" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1459,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Go up two levels to likely find a container
         targetElement = buttonContext.parentElement.parentElement;
       }
-            } else {
+    } else {
       // Try to find by attribute
       const button = document.querySelector(`[data-chart="${elementType}"]`);
       console.log('Looking for button with data-chart:', elementType, button);
@@ -1641,7 +1741,7 @@ document.addEventListener('DOMContentLoaded', function() {
               console.error('Clipboard error:', err);
               showError('Could not copy to clipboard. Try downloading instead.');
             });
-    } catch (err) {
+          } catch (err) {
             console.error('Clipboard API not available:', err);
             showError('Your browser does not support copying images. Try downloading instead.');
           }
@@ -1651,15 +1751,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Social sharing
-  document.getElementById('shareFacebook').addEventListener('click', function() {
+    document.getElementById('shareFacebook').addEventListener('click', function() {
       shareToSocial('facebook');
-  });
+    });
   
     document.getElementById('shareTwitter').addEventListener('click', function() {
       shareToSocial('twitter');
-  });
+    });
   
-  document.getElementById('shareWhatsApp').addEventListener('click', function() {
+    document.getElementById('shareWhatsApp').addEventListener('click', function() {
       shareToSocial('whatsapp');
     });
     
@@ -1686,20 +1786,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Platform-specific sharing
     let shareLink;
-          switch (platform) {
-            case 'facebook':
+    switch (platform) {
+      case 'facebook':
         shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-              break;
+        break;
       case 'twitter':
         shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`;
-              break;
-            case 'whatsapp':
+        break;
+      case 'whatsapp':
         shareLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`;
         break;
       case 'email':
         shareLink = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent('Check out my tea collection: ' + shareUrl)}`;
-              break;
-          }
+        break;
+    }
           
     if (shareLink) {
       window.open(shareLink, '_blank');

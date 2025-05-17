@@ -21,20 +21,43 @@ class HomeController < ApplicationController
     @tea_categories = @teas.pluck(:category).uniq
 
     # Gauge metrics (avg $ and percentile vs all teas)
-    user_prices   = @teas.map(&:price)
-    all_prices    = Tea.pluck(:price).compact.sort
-    @user_avg     = user_prices.sum.to_f / [user_prices.size, 1].max
+    user_prices = @teas.map(&:price)
+    all_prices = Tea.pluck(:price).compact.sort
+    @user_avg = user_prices.sum.to_f / [user_prices.size, 1].max
     @global_qtiles = all_prices.each_slice((all_prices.size / 4.0).ceil).map(&:last)
     @percentile = (all_prices.count { |p| p < @user_avg } * 100.0 / all_prices.size)
 
-    @tea_type_counts   = @teas.group(:category).count
-    @average_tea_cost  = @teas.average(:price).to_f
+    # Collection statistics
+    @tea_type_counts = @teas.group(:category).count
+    @average_tea_cost = @teas.average(:price).to_f
     @popular_ship_from = @teas.group(:ship_from).count.sort_by { |_loc, c| -c }.first(5).to_h
-    @top_entry         = current_user.entries.order(rank: :desc).first
-    @top_ranked_tea    = @top_entry&.tea
-    @total_teas        = @teas.count
+    @total_teas = @teas.count
+    
+    # Highlight teas
+    @top_entry = current_user.entries.order(rank: :desc).first
+    @top_ranked_tea = @top_entry&.tea
     @most_expensive_tea = @teas.order(price: :desc).first
-    @least_popular_tea = @teas.order(:popularity).first
+    
+    # Vendor statistics
+    @vendors = @teas.pluck(:vendor).uniq
+    @vendor_tea_counts = @teas.group(:vendor).count.sort_by { |_vendor, count| -count }.first(5).to_h
+    
+    # Age statistics
+    current_year = Date.today.year
+    @tea_by_age = @teas.group(:year).count.transform_keys { |year| year.present? ? current_year - year.to_i : "Unknown" }
+    @tea_by_age = @tea_by_age.sort_by { |age, _| age == "Unknown" ? 999 : age }.to_h
+    
+    # Price range statistics
+    @price_ranges = {
+      "Budget (< $0.10/g)" => @teas.where("price < 0.10").count,
+      "Mid-range ($0.10-0.25/g)" => @teas.where("price >= 0.10 AND price <= 0.25").count,
+      "Premium ($0.25-0.50/g)" => @teas.where("price > 0.25 AND price <= 0.50").count,
+      "Luxury (> $0.50/g)" => @teas.where("price > 0.50").count
+    }
+    
+    # Recent additions
+    @recent_teas = @teas.order(created_at: :desc).limit(5)
+    
   end
 
   def analytics

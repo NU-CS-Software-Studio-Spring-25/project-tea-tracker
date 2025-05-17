@@ -2685,3 +2685,8 @@ h1.gradient-text {
 .tea-rank-item {
   width: 100%;
 }
+
+.scroll-box {
+  max-height: 18rem;   /* ≈288 px – adjust to taste */
+  overflow-y: auto;    /* vertical scrollbar appears only if needed */
+}
