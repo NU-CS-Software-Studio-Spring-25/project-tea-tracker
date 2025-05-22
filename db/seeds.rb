@@ -53,7 +53,7 @@ end
 # === User 1 ===
 user1 = User.create!(
   username: "testuser",
-  password: "SecurePass1!",
+  password: "Password123",
   bio: "I love exploring oolongs and pu'er teas.",
   avatar_url: "https://example.com/avatar.jpg"
 )
@@ -61,7 +61,7 @@ user1 = User.create!(
 # === User 2 ===
 user2 = User.create!(
   username: "oolongfan",
-  password: "AnotherSecure1!",
+  password: "Password123",
   bio: "Big fan of Taiwanese oolongs.",
   avatar_url: "https://example.com/avatar2.jpg"
 )
@@ -69,7 +69,7 @@ user2 = User.create!(
 # === User 3 (Tea Collection) ===
 user3 = User.create!(
   username: "skylarke",
-  password: "TeaPassword1!",
+  password: "Password123",
   bio: "Building a diverse tea collection.",
   avatar_url: "https://www.erinpark.org/assets/icon.webp"
 )
