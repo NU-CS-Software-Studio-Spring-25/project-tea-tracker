@@ -15,7 +15,7 @@ class EntriesController < ApplicationController
         category_comparator = TeasHelper::RankComparator.new(@tea, @this_category.map(&:tea))
         @category_rank_comparison = category_comparator.compare
       else
-        @category_rank_comparison = "N/A – not enough teas in this category"
+        @category_rank_comparison = 'N/A – not enough teas in this category'
       end
 
       # Closest price comparison
@@ -29,7 +29,7 @@ class EntriesController < ApplicationController
         price_comparator = TeasHelper::RankComparator.new(@tea, @closest_price_entries.map(&:tea))
         @price_rank_comparison = price_comparator.compare
       else
-        @price_rank_comparison = "N/A – no other teas to compare price with"
+        @price_rank_comparison = 'N/A – no other teas to compare price with'
       end
 
       # Closest rank comparison
@@ -40,10 +40,10 @@ class EntriesController < ApplicationController
         .limit(3)
 
       if @closest_rank_entries.any?
-        rank_comparator = TeasHelper::RankComparator.new(@tea, @closest_rank_entries.map(&:tea), "price")
+        rank_comparator = TeasHelper::RankComparator.new(@tea, @closest_rank_entries.map(&:tea), 'price')
         @rank_price_comparison = rank_comparator.compare
       else
-        @rank_price_comparison = "N/A – no other teas to compare rank with"
+        @rank_price_comparison = 'N/A – no other teas to compare rank with'
       end
     end
 
@@ -55,9 +55,9 @@ class EntriesController < ApplicationController
       @entry = current_user.entries.build(entry_params)
 
       if @entry.save
-        redirect_to entries_path, notice: "Entry was successfully created."
+        redirect_to entries_path, notice: 'Entry was successfully created.'
       else
-        flash.now[:alert] = "There was an error creating the entry."
+        flash.now[:alert] = 'There was an error creating the entry.'
         render :new, status: :unprocessable_entity
       end
     end
@@ -67,7 +67,7 @@ class EntriesController < ApplicationController
 
     def update
       if @entry.update(entry_params)
-        redirect_to entry_path(@entry), notice: "Entry updated successfully."
+        redirect_to entry_path(@entry), notice: 'Entry updated successfully.'
       else
         render :edit, status: :unprocessable_entity
       end
@@ -75,7 +75,7 @@ class EntriesController < ApplicationController
 
     def destroy
       @entry.destroy
-      redirect_to entries_path, notice: "Entry was successfully deleted."
+      redirect_to entries_path, notice: 'Entry was successfully deleted.'
     end
 
     private

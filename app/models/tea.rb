@@ -14,7 +14,7 @@ class Tea < ApplicationRecord
   validates :popularity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validates :shopping_platform, presence: true, length: { maximum: 100 }
   validates :product_url, presence: true, length: { maximum: 500 },
-                        format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid URL" },
+                        format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: 'must be a valid URL' },
                         allow_blank: true # Allow blank to prevent double validation errors
 
   # Define canonical categories as a class constant

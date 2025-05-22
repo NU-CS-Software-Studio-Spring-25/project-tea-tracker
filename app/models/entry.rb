@@ -8,7 +8,7 @@ class Entry < ApplicationRecord
 
     def rank
         # Calculate rank based on position order, scoped to user
-        user.entries.where("position < ?", position).count + 1
+        user.entries.where('position < ?', position).count + 1
     end
 
     private

@@ -20,19 +20,19 @@ class TeasController < ApplicationController
 
     # Apply sorting
     @teas = case params[:sort]
-            when 'name_asc'
+    when 'name_asc'
               @teas.order(name: :asc)
-            when 'rank_desc'
+    when 'rank_desc'
               @teas.joins(:entries).where(entries: { user_id: current_user.id }).order('entries.rank DESC')
-            when 'price_asc'
+    when 'price_asc'
               @teas.order(price: :asc)
-            when 'price_desc'
+    when 'price_desc'
               @teas.order(price: :desc)
-            when 'created_at_asc'
+    when 'created_at_asc'
               @teas.order(created_at: :asc)
-            else
+    else
               @teas.order(created_at: :desc) # Default sort
-            end
+    end
 
     # Paginate results if Kaminari is available [installed it in gemfile so try bunbdle install if you see an error]
     return unless @teas.respond_to?(:page)
@@ -97,9 +97,9 @@ class TeasController < ApplicationController
 
     @rank_price_comparison = if @entry.rank > avg_rank
                                "#{(@entry.rank - avg_rank).round(0)} places lower on average than"
-                             else
+    else
                                "#{(avg_rank - @entry.rank).round(0)} places higher on average than"
-                             end
+    end
   end
 
   def new
@@ -208,7 +208,7 @@ class TeasController < ApplicationController
       entry = current_user.entries.find_by(tea_id: tea_id)
       entry.update(rank: rank) if entry
     end
-    
+
     head :ok
   end
 

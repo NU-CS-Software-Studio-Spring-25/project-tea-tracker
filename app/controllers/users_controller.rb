@@ -31,10 +31,10 @@ class UsersController < ApplicationController
     def update_profile
       @user = current_user
       if @user.update(profile_params)
-        redirect_to profile_path, notice: "Your profile has been updated successfully!"
+        redirect_to profile_path, notice: 'Your profile has been updated successfully!'
       else
         # Add error message
-        flash.now[:alert] = "There was a problem updating your profile."
+        flash.now[:alert] = 'There was a problem updating your profile.'
         render :profile
       end
     end
@@ -42,13 +42,13 @@ class UsersController < ApplicationController
     def update_password
       @user = current_user
       if !@user.authenticate(params[:user][:current_password])
-        flash.now[:alert] = "Current password is incorrect"
+        flash.now[:alert] = 'Current password is incorrect'
         render :profile
       elsif params[:user][:password].blank?
         flash.now[:alert] = "New password can't be blank"
         render :profile
       elsif @user.update(password_params)
-        redirect_to profile_path, notice: "Your password has been updated successfully!"
+        redirect_to profile_path, notice: 'Your password has been updated successfully!'
       else
         # Return to profile page with errors
         flash.now[:alert] = "There was a problem updating your password: #{@user.errors.full_messages.join(', ')}"
@@ -58,10 +58,10 @@ class UsersController < ApplicationController
 
     def destroy_account
       @user = current_user
-      if params[:confirm_delete] == "DELETE" && @user.authenticate(params[:user][:password])
+      if params[:confirm_delete] == 'DELETE' && @user.authenticate(params[:user][:password])
         @user.destroy
         session.delete(:user_id)
-        redirect_to root_path, notice: "Your account has been successfully deleted."
+        redirect_to root_path, notice: 'Your account has been successfully deleted.'
       else
         flash.now[:alert] = "Account deletion failed. Please make sure you typed 'DELETE' and entered your password correctly."
         render :profile
@@ -74,30 +74,30 @@ class UsersController < ApplicationController
 
       # Validate format
       if username.length < 3 || username.length > 30
-        render json: { valid: false, message: "Username must be 3-30 characters" }
+        render json: { valid: false, message: 'Username must be 3-30 characters' }
         return
       end
 
       # Check if the username contains invalid characters
       unless username =~ /\A[a-zA-Z0-9_.-]+\z/
-        render json: { valid: false, message: "Username can only contain letters, numbers, and the characters _ . -" }
+        render json: { valid: false, message: 'Username can only contain letters, numbers, and the characters _ . -' }
         return
       end
 
       # Check if the username is already taken
-      user_exists = User.where("lower(username) = ?", username).exists?
+      user_exists = User.where('lower(username) = ?', username).exists?
 
       if user_exists
-        render json: { valid: false, message: "Username is already taken" }
+        render json: { valid: false, message: 'Username is already taken' }
       else
-        render json: { valid: true, message: "Username is available" }
+        render json: { valid: true, message: 'Username is available' }
       end
     end
 
     private
 
     def authenticate_user!
-      redirect_to login_path, alert: "Please log in to access this page" unless current_user
+      redirect_to login_path, alert: 'Please log in to access this page' unless current_user
     end
 
     def user_params
