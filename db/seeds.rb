@@ -6,7 +6,7 @@ Tea.destroy_all
 Entry.destroy_all
 
 # Create fake users
-10.times do
+1000.times do
   User.create!(
     username: Faker::Internet.unique.username(specifier: 4..16),
     password: "Password123",
@@ -16,7 +16,7 @@ Entry.destroy_all
 end
 
 # Create teas
-200.times do
+100.times do
   region = Faker::Address.state
   Tea.create!(
     name: Faker::Tea.variety,
@@ -38,8 +38,8 @@ users = User.all
 teas = Tea.all
 
 users.each do |user|
-  # Each user rates 20 random teas
-  teas.sample(20).each_with_index do |tea, index|
+  # Each user rates 1 random teas
+  teas.sample(1).each_with_index do |tea, index|
     Entry.create!(
       position: (index + 1) * 1000,  # Use floating island method
       user: user,
