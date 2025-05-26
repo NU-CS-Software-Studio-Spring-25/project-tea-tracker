@@ -13,7 +13,7 @@ We’re active in a niche community of loose leaf tea lovers, where some of us d
 Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea journey over time!
 
 ## Current Minimum (Viable) Valuable Product Features
-- Frontend visualizations 
+ - Frontend visualizations (graphs, trend lines, comparisons)
  - Average price per category
  - Average rank per category
  - Average price for 'rank range'
@@ -22,7 +22,6 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
  - View tea categories and origins
  - View high level tea highlight stats such as highest priced, avg prices, unique teas etc.
  - Backend processing of tea ratings and attributes  
- - Frontend visualizations (graphs, trend lines, comparisons)  
  - Map of where tea is from
  - Custom (set palette) colors
 
