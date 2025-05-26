@@ -6,34 +6,31 @@ We’re active in a niche community of loose leaf tea lovers, where some of us d
 
 ## The Vision  
 **Tea Tracker** aims to fix that. It’ll be a lightweight web app where tea drinkers can:  
-- Upload a CSV/Excel file of their tasting notes  
+- Add teas and track information like type, price, and ranking
 - Automatically generate visualizations and insights  
 - Explore personal tea trends, favorites, and category comparisons
 
 Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea journey over time!
 
-## Minimum (Viable) Valuable Product Features
-- Upload CSV/Excel files (4 fields: rank, name, price, category)
+## Current Minimum (Viable) Valuable Product Features
 - Frontend visualizations 
  - Average price per category
  - Average rank per category
  - Average price for 'rank range'
- - User login/sign up
+ - User login/sign up + saved profiles
  - A single user dashboard
  - View tea categories and origins
  - View high level tea highlight stats such as highest priced, avg prices, unique teas etc.
-
-Make entry with 4 fields, view that displays it, way to edit entry. 
+ - Backend processing of tea ratings and attributes  
+ - Frontend visualizations (graphs, trend lines, comparisons)  
+ - Map of where tea is from
+ - Custom (set palette) colors
 
 ## Features (WIP)  
 - Upload CSV/Excel files  
-- Backend processing of tea ratings and attributes  
-- Frontend visualizations (graphs, trend lines, comparisons)  
-- Optional account login + saved profiles  
 - Feedback loop with early testers from the tea community
-- Map of where tea is from
-- Custom (set palette) colors
- 
+- Integrate relevent tea ads
+
 A fun way to blend data viz and a shared love of tea 🍵😸
 
 The app is deployed [here](https://tea-tracker-f25a3c23e82f.herokuapp.com/).
