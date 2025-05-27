@@ -3,27 +3,28 @@
 # Get the latest commit message
 commit_msg=$(git log -1 --pretty=%B)
 
-echo "Updating Heroku..."
-
-# Check if working directory is clean
-git fetch heroku main || { echo "Failed to fetch latest changes."; exit 1; }
-git pull heroku main || { echo "Failed to pull latest changes."; exit 1; }
-
-git add .
-git commit -m "Auto-sync from Repo A commit: $commit_msg"
-git push heroku main --force
-
-echo "Heroku updated."
-
-echo "Updating from seed..."
-bundle install
-rails db:create
-rails db:migrate
-rails db:seed
+echo "Checking for heroku login..."
 
 # Check if the user is logged in to Heroku
 if heroku auth:whoami > /dev/null 2>&1; then
-    echo "Logged in to Heroku, proceeding with database update."
+    echo "Logged in to Heroku, proceeding with git update."
+    # Check if working directory is clean
+    git fetch heroku main || { echo "Failed to fetch latest changes."; exit 1; }
+    git pull heroku main || { echo "Failed to pull latest changes."; exit 1; }
+
+    git add .
+    git commit -m "Auto-sync from Repo A commit: $commit_msg"
+    git push heroku main --force
+
+    echo "Commit $commit_msg pushed to heroku/main."
+
+    echo "Updating from seed..."
+    bundle install
+    rails db:create
+    rails db:migrate
+    rails db:seed
+
+    echo "Proceeding with database update."
     # Try pushing the database
     if ! heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker; then
         echo "Failed to push data to Heroku. Resetting the database and retrying."
@@ -36,4 +37,8 @@ if heroku auth:whoami > /dev/null 2>&1; then
 
 else
     echo "Not logged in to Heroku, skipping database update."
+    echo "To login, run heroku login"
+    echo "If that doesn't work, run heroku -v and if it errors go to https://devcenter.heroku.com/articles/heroku-cli and install."
 fi
+
+exit 0
