@@ -1,0 +1,24 @@
+#!/bin/bash
+if heroku auth:whoami > /dev/null 2>&1; then
+    echo "Updating heroku database."
+
+    echo "Updating local database from seed..."
+    bundle install
+    rails db:reset
+
+    echo "Proceeding with database update."
+    # Try pushing the database
+    if ! heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker; then
+        echo "Failed to push data to Heroku. Resetting the database and retrying."
+        heroku pg:reset --confirm tea-tracker
+        heroku pg:push tea_tracker_development DATABASE_URL --app tea-tracker
+        echo "Data pushed successfully after reset."
+    else
+        echo "Data pushed successfully to Heroku."
+    fi
+
+else
+    echo "Not logged in to Heroku, skipping database update."
+    echo "To login, run heroku login"
+    echo "If that doesn't work, run heroku -v and if it errors go to https://devcenter.heroku.com/articles/heroku-cli and install."
+fi
