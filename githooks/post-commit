@@ -17,12 +17,12 @@ if heroku auth:whoami > /dev/null 2>&1; then
 
     echo "Commit $commit_msg pushed to heroku/main."
 
-    echo "Resetting heroku database"
+    echo "Resetting database on heroku..."
     heroku pg:reset --confirm tea-tracker
     echo "Running migrations..."
     heroku run rails db:migrate
     echo "Seeding database..."
-    heroku run rails db:seed || {echo "Failed to seed database. Rerun commands, as databases are empty."; exit 1;}
+    heroku run rails db:seed || { echo "Failed to seed database. Rerun commands, as databases are empty."; exit 1; }
 
 else
     echo "Not logged in to Heroku, skipping database update."

@@ -1,6 +1,6 @@
 #!/bin/bash
 if heroku auth:whoami > /dev/null 2>&1; then
-    echo "Updating heroku database."
+    echo "Updating heroku database by copying manually from local."
 
     echo "Updating local database from seed..."
     bundle install
