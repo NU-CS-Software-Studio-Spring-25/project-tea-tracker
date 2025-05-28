@@ -9,43 +9,44 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-/* Import pixel fonts from Google Fonts */
+/* Import pixel fonts & josefin sans from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Silkscreen:wght@400;700&family=Press+Start+2P&family=VT323&family=Pixelify+Sans&family=DotGothic16&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 /* Global Variables */
 :root {
-    --tea-primary: #4CAF50;
-    --tea-primary-dark: #388E3C;
-    --tea-primary-light: #A5D6A7;
-    --tea-secondary: #2196F3;
-    --tea-accent: #FF9800;
+    --tea-primary: #624ee7;
+    --tea-primary-dark: #3B2A9E;
+    --tea-primary-light: #7e26d6;
+    --tea-secondary: #889efe;
+    --tea-accent: #c93fe8;
     --tea-text: #333333;
     --tea-text-light: #757575;
     --tea-background: #FFFFFF;
     --tea-card-bg: #F9F9F9;
     --tea-border: #E0E0E0;
-    --tea-success: #4CAF50;
+    --tea-success: #42bc44;
     --tea-info: #2196F3;
     --tea-warning: #FF9800;
     --tea-danger: #F44336;
     
     /* Pixel font variables - define preferred order */
     --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
+    --font-body: 'Roboto', sans-serif;
 }
 
 /* Global font override - ensure this applies everywhere */
 html, body {
-    font-family: var(--font-pixel) !important;
+    font-family: var(--font-body) !important;
 }
 
 /* Apply to all text elements with high specificity */
-body *:not(i):not(.bi) {
-    font-family: var(--font-pixel) !important;
+body *:not(i):not(.bi):not(.logo-text):not(.logo-text *) {
+    font-family: var(--font-body) !important;
 }
 
 /* Bootstrap overrides */
 .btn, .form-control, .form-select, .alert, .card, .modal, .dropdown-menu, .nav-link, .navbar {
-    font-family: var(--font-pixel) !important;
+    font-family: var(--font-body) !important;
 }
 
 /* Typography */
@@ -93,7 +94,7 @@ h3 {
 
 /* Chart labels and other canvas text */
 canvas, .chart-js-render-monitor {
-    font-family: var(--font-pixel) !important;
+    font-family: var(--font-body) !important;
 }
 
 /* Card Styles */
@@ -232,11 +233,11 @@ canvas, .chart-js-render-monitor {
 /* Y2K/Retro Landing Page Styles */
 /* Header Styles */
 .tea-header {
+    color:white;
     position: relative;
-    background: linear-gradient(90deg, #d9c5ff 0%, #c5e0ff 100%);
+    background: linear-gradient(90deg, var(--tea-primary) 0%, var(--tea-secondary) 100%);
     padding: 1rem 0;
     overflow: hidden;
-    border-bottom: 3px solid #c5c5ff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -256,25 +257,27 @@ canvas, .chart-js-render-monitor {
 }
 
 .logo-text {
-    font-size: 2rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 3rem;
+    font-weight: semibold;
+    letter-spacing: 3px;
 }
 
 .logo-tea {
-    color: #6a5acd;
-    text-shadow: 2px 2px 0 #5271ff;
+    color: white;
+    text-shadow: 2px 2px 0 var(--tea-secondary);
 }
 
 .logo-tracker {
-    color: #5271ff;
-    text-shadow: 2px 2px 0 #6a5acd;
+    color: white;
+    text-shadow: 2px 2px 0 var(--tea-secondary);
 }
 
 .logo-icon {
+    color: white;
+    text-shadow: 2px 2px 0 var(--tea-secondary);
     font-size: 2.5rem;
-    transform: rotate(-10deg);
-    animation: float 3s ease-in-out infinite;
+    /* transform: rotate(-10deg);
+    animation: float 3s ease-in-out infinite; */
 }
 
 .tea-nav {
@@ -311,7 +314,8 @@ canvas, .chart-js-render-monitor {
     height: 3px;
     bottom: -5px;
     left: 0;
-    background: linear-gradient(90deg, #6a5acd, #5271ff);
+    background: white;
+    opacity: 0.6;
     transform: scaleX(0);
     transition: transform 0.3s;
 }
@@ -321,20 +325,21 @@ canvas, .chart-js-render-monitor {
 }
 
 .nav-btn {
-    background-color: #6a5acd;
-    color: white;
-    border: none;
+    background-color: white;
+    color: var(--tea-primary);
     padding: 0.5rem 1.25rem;
     border-radius: 25px;
     font-weight: bold;
     text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 3px 3px 0 #5271ff;
+    box-shadow: 3px 3px 0 var(--tea-primary);
 }
 
 .nav-btn:hover {
-    background-color: #5271ff;
-    box-shadow: 3px 3px 0 #6a5acd;
+    opacity: 0.8;
+    background-color: var(--tea-accent);
+    color:white;
+    box-shadow: 3px 3px 0 var(--tea-primary);
     transform: translateY(-3px);
 }
 
@@ -348,8 +353,8 @@ canvas, .chart-js-render-monitor {
 .header-bubbles .b1 {
     width: 80px;
     height: 80px;
-    background-color: #d9c5ff;
-    top: -20px;
+    background-color: #d9c5ff6a;
+    top: -40px;
     right: 15%;
     animation: float 6s ease-in-out infinite;
 }
@@ -357,7 +362,7 @@ canvas, .chart-js-render-monitor {
 .header-bubbles .b2 {
     width: 50px;
     height: 50px;
-    background-color: #c4e0ff;
+    background-color: #c4e0ff77;
     bottom: -15px;
     right: 30%;
     animation: float 4s ease-in-out infinite 1s;
@@ -366,7 +371,7 @@ canvas, .chart-js-render-monitor {
 .header-bubbles .b3 {
     width: 35px;
     height: 35px;
-    background-color: #ffd6a5;
+    background-color: #ffd6a568;
     top: 50%;
     left: 10%;
     animation: float 5s ease-in-out infinite 0.5s;
@@ -588,19 +593,6 @@ canvas, .chart-js-render-monitor {
     position: relative;
 }
 
-.primary-btn {
-    background: linear-gradient(90deg, #6a5acd, #9370db);
-    color: white;
-    border: 2px solid #6a5acd;
-    box-shadow: 4px 4px 0 #5271ff;
-}
-
-.primary-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #5271ff;
-    color: white;
-}
-
 .secondary-btn {
     background: white;
     color: #5271ff;
@@ -639,7 +631,6 @@ canvas, .chart-js-render-monitor {
     position: absolute;
     width: 100%;
     height: 140px;
-    background-color: #fff;
     border: 4px solid #5271ff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -647,7 +638,23 @@ canvas, .chart-js-render-monitor {
     border-bottom-right-radius: 70px;
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(82, 113, 255, 0.3);
+    z-index: 50;
 }
+.cup-background {
+    position: absolute;
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(0deg, #6a5acd 0%, var(--tea-accent) 100%);
+    border: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 70px;
+    border-bottom-right-radius: 70px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(82, 113, 255, 0.3);
+    z-index: 0;
+}
+ 
 
 .cup-handle {
     position: absolute;
@@ -664,11 +671,13 @@ canvas, .chart-js-render-monitor {
 .tea-liquid {
     position: absolute;
     width: 100%;
-    height: 100px;
-    bottom: 0;
-    background: linear-gradient(0deg, #6a5acd 0%, #9370db 100%);
-    border-bottom-left-radius: 65px;
-    border-bottom-right-radius: 65px;
+    height: 30px;
+    top: 0;
+    z-index: 2;
+    background: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    transform-origin: top;
     animation: tea-wave 3s ease-in-out infinite;
 }
 
@@ -1100,10 +1109,10 @@ canvas, .chart-js-render-monitor {
 
 @keyframes tea-wave {
     0%, 100% {
-        transform: translateY(0);
+        transform: scaleY(1);
     }
     50% {
-        transform: translateY(-5px);
+        transform: scaleY(1.40);
     }
 }
 
@@ -2119,9 +2128,8 @@ h1.gradient-text {
 
 .profile-link {
   display: flex;
-  align-items: center;
   gap: 8px;
-  color: #5271ff;
+  color: white;
   font-weight: bold;
   text-decoration: none;
   position: relative;
@@ -2219,20 +2227,23 @@ h1.gradient-text {
   transition: all 0.3s;
   position: relative;
   border: none;
-  font-family: var(--font-pixel) !important;
+  font-family: var(--font-body) !important;
   cursor: pointer;
 }
 
+/* this is also in the hero? */
 .primary-btn {
-  background: linear-gradient(90deg, #6a5acd, #9370db);
+  background: var(--tea-accent);
   color: white;
-  border: 2px solid #6a5acd;
-  box-shadow: 4px 4px 0 #5271ff;
+  border: none;
+  box-shadow: 4px 4px 0 var(--tea-primary-light);
 }
 
 .primary-btn:hover {
+    background: var(--tea-primary-light);
+    color: white;
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #5271ff;
+  box-shadow: 6px 6px 0 var(--tea-accent);
 }
 
 .info-btn {
