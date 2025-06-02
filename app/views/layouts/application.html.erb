@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Tea Tracker" %></title>
+    <title><%= content_for(:title) || "Tea Tracker - Track Your Tea Journey" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Track, rate, and discover your favorite teas with Tea Tracker">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -98,25 +99,27 @@
   <body>
     <% if current_page?(root_path) && !current_user %>
       <% if flash[:notice] %>
-        <div class="alert alert-success"><%= flash[:notice] %></div>
+        <div class="alert alert-success" role="alert" aria-live="polite"><%= flash[:notice] %></div>
       <% elsif flash[:alert] %>
-        <div class="alert alert-danger"><%= flash[:alert] %></div>
+        <div class="alert alert-danger" role="alert" aria-live="assertive"><%= flash[:alert] %></div>
       <% end %>
       
-      <%= yield %>
+      <main id="main-content">
+        <%= yield %>
+      </main>
     <% else %>
       <%= render 'shared/header' %>
       
       <div class="content-wrapper">
-        <div class="container mt-4 mb-5">
+        <main id="main-content" class="container mt-4 mb-5">
           <% if flash[:notice] %>
-            <div class="alert alert-success"><%= flash[:notice] %></div>
+            <div class="alert alert-success" role="alert" aria-live="polite"><%= flash[:notice] %></div>
           <% elsif flash[:alert] %>
-            <div class="alert alert-danger"><%= flash[:alert] %></div>
+            <div class="alert alert-danger" role="alert" aria-live="assertive"><%= flash[:alert] %></div>
           <% end %>
 
           <%= yield %>
-        </div>
+        </main>
       </div>
       
       <%= render 'shared/footer' %>

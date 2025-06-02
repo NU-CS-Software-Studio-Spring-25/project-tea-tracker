@@ -1,51 +1,49 @@
 <!-- Y2K/Retro-Style Header -->
-<header class="tea-header">
+<header class="tea-header" role="banner">
   <div class="tea-header-container">
-    <%= link_to root_path, class: "tea-logo-link" do %>
-      <div class="tea-logo">
-        <div class="logo-icon"><i class="bi bi-cup-hot-fill"></i></div>
-        <div class="logo-text">
-          <span class="logo-tea">Tea</span>
-          <span class="logo-tracker">Tracker</span>
-        </div>
+    <div class="tea-logo">
+      <div class="logo-text">
+        <span class="logo-tea">Tea</span>
+        <span class="logo-tracker">Tracker</span>
       </div>
-    <% end %>
+      <div class="logo-icon" aria-hidden="true">🍵</div>
+    </div>
     
-    <nav class="tea-nav">
+    <nav class="tea-nav" role="navigation" aria-label="Main navigation">
       <ul class="nav-links">
         <% if current_user %>
-          <li><%= link_to "Dashboard", dashboard_path, class: "nav-link" %></li>
-          <li><%= link_to "Collection", teas_path, class: "nav-link" %></li>
-          <li><%= link_to "Analytics", tea_analytics_path, class: "nav-link" %></li>
-          <li><%= link_to "Add Tea", new_tea_path, class: "nav-btn" %></li>
+          <li><%= link_to "Dashboard", dashboard_path, :class => "nav-link", "aria-current" => (current_page?(dashboard_path) ? "page" : nil) %></li>
+          <li><%= link_to "Collection", teas_path, :class => "nav-link", "aria-current" => (current_page?(teas_path) ? "page" : nil) %></li>
+          <li><%= link_to "Analytics", tea_analytics_path, :class => "nav-link", "aria-current" => (current_page?(tea_analytics_path) ? "page" : nil) %></li>
+          <li><%= link_to "Add Tea", new_tea_path, :class => "nav-btn" %></li>
           <li class="profile-nav-item">
-            <%= link_to profile_path, class: "profile-link" do %>
+            <%= link_to profile_path, :class => "profile-link", "aria-label" => "View profile for #{current_user.username}" do %>
               <div class="mini-avatar">
                 <% if current_user.avatar.attached? %>
-                  <%= image_tag current_user.avatar, alt: current_user.username %>
+                  <%= image_tag current_user.avatar, :alt => "#{current_user.username}'s avatar" %>
                 <% elsif current_user.avatar_url.present? %>
-                  <img src="<%= current_user.avatar_url %>" alt="<%= current_user.username %>">
+                  <img src="<%= current_user.avatar_url %>" alt="<%= current_user.username %>'s avatar">
                 <% else %>
-                  <i class="bi bi-person-circle"></i>
+                  <i class="bi bi-person-circle" aria-hidden="true"></i>
                 <% end %>
               </div>
               <span>Profile</span>
             <% end %>
           </li>
-          <li><%= link_to "Logout", logout_path, method: :delete, class: "nav-link" %></li>
+          <li><%= link_to "Logout", logout_path, :method => :delete, :class => "nav-link" %></li>
         <% else %>
-          <li><%= link_to "Home", root_path, class: "nav-link" %></li>
-          <li><%= link_to "Login", new_session_path, class: "nav-link" %></li>
-          <li><%= link_to "Sign Up", new_user_path, class: "nav-btn" %></li>
+          <li><%= link_to "Home", root_path, :class => "nav-link", "aria-current" => (current_page?(root_path) ? "page" : nil) %></li>
+          <li><%= link_to "Login", new_session_path, :class => "nav-link", "aria-current" => (current_page?(new_session_path) ? "page" : nil) %></li>
+          <li><%= link_to "Sign Up", new_user_path, :class => "nav-btn" %></li>
         <% end %>
       </ul>
     </nav>
   </div>
   
   <!-- Decorative Elements -->
-  <div class="header-bubbles">
+  <div class="header-bubbles" aria-hidden="true">
     <div class="bubble b1"></div>
     <div class="bubble b2"></div>
-    <!--<div class="bubble b3"></div> -->
+    <div class="bubble b3"></div>
   </div>
-</header> 
+</header>
