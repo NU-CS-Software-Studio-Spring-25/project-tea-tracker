@@ -48,8 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_173822) do
     t.bigint "tea_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 0, null: false
-    t.index ["position"], name: "index_entries_on_position"
+    t.integer "position"
     t.index ["tea_id"], name: "index_entries_on_tea_id"
     t.index ["user_id"], name: "index_entries_on_user_id"
   end
@@ -66,12 +65,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_173822) do
     t.integer "popularity", null: false
     t.string "shopping_platform", null: false
     t.string "product_url", null: false
+    t.integer "grams"
     t.string "price_mode"
     t.decimal "total_price", precision: 10, scale: 2
     t.decimal "weight", precision: 10, scale: 2
     t.integer "year", null: false
     t.string "ship_from", null: false
-    t.integer "grams"
   end
 
   create_table "users", force: :cascade do |t|

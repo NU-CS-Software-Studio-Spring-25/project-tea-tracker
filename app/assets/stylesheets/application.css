@@ -250,6 +250,17 @@ canvas, .chart-js-render-monitor {
     z-index: 2;
 }
 
+.tea-logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.tea-logo-link:hover {
+    transform: scale(1.05);
+}
+
 .tea-logo {
     display: flex;
     align-items: center;

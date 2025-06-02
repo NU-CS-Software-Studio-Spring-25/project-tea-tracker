@@ -1,14 +1,15 @@
 <!-- Y2K/Retro-Style Header -->
 <header class="tea-header">
   <div class="tea-header-container">
-    <div class="tea-logo">
-      <div class="logo-icon"><i class="bi bi-cup-hot-fill"></i></div>
-      <div class="logo-text">
-        <span class="logo-tea">Tea</span>
-        <span class="logo-tracker">Tracker</span>
+    <%= link_to root_path, class: "tea-logo-link" do %>
+      <div class="tea-logo">
+        <div class="logo-icon"><i class="bi bi-cup-hot-fill"></i></div>
+        <div class="logo-text">
+          <span class="logo-tea">Tea</span>
+          <span class="logo-tracker">Tracker</span>
+        </div>
       </div>
-      
-    </div>
+    <% end %>
     
     <nav class="tea-nav">
       <ul class="nav-links">
