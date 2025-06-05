@@ -29,12 +29,12 @@
     --tea-warning: #FF9800;
     --tea-danger: #F44336;
     
-    /* Pixel font variables - define preferred order */
+    /* Pixel font variables */
     --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
     --font-body: 'Roboto', sans-serif;
 }
 
-/* Global font override - ensure this applies everywhere */
+/* Global font override - everywhere */
 html, body {
     font-family: var(--font-body) !important;
 }
@@ -65,13 +65,13 @@ h6 {
     font-family: var(--font-pixel) !important;
 }
 
-/* Adjust specific element sizes for better readability with pixel fonts */
+/* Adjusting specific element sizes for better readability with pixel fonts */
 p, .text-muted, .btn, .form-control, .form-label, .form-select, .card-text {
     font-size: 1.1rem;
     letter-spacing: 0.02em;
 }
 
-/* Headers should be more prominent with pixel fonts */
+/* Headers more prominent with pixel fonts */
 h1 {
     font-size: 2.2rem;
     letter-spacing: 0.05em;
@@ -773,7 +773,7 @@ canvas, .chart-js-render-monitor {
     box-shadow: 5px 5px 0 #6a5acd;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    z-index: 1; /* Ensure it's above the background */
+    z-index: 1; /* above the background */
 }
 
 .feature-card:hover {

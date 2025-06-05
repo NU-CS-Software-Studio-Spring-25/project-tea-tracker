@@ -1,8 +1,10 @@
+<% content_for :title, "Edit #{@tea.name} - Tea Tracker" %>
+
 <h1>Edit Tea</h1>
 
 <% if @tea.errors.any? %>
-  <div id="error-modal" class="alert alert-danger">
-    <h4>There were errors with your submission:</h4>
+  <div id="error-modal" class="alert alert-danger" role="alert" aria-live="assertive">
+    <h2>There were errors with your submission:</h2>
     <ul>
       <% @tea.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -41,97 +43,118 @@
 
 <%= form_with model: @tea, local: true do |form| %>
   <div class="form-group required-field">
-    <%= form.label :name %>
-    <%= form.text_field :name, required: true, class: "form-control", maxlength: 100 %>
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, required: true, class: "form-control", maxlength: 100, 
+        "aria-describedby": "name-help" %>
+    <div id="name-help" class="form-text">Enter the name of your tea</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :category %>
+    <%= form.label :category, class: "form-label" %>
     <%= form.text_field :category, 
                       required: true, 
                       class: "form-control", 
                       list: "tea-categories", 
-                      placeholder: "Choose from suggestions or enter your own custom category" %>
+                      placeholder: "Choose from suggestions or enter your own custom category",
+                      "aria-describedby": "category-help" %>
     <datalist id="tea-categories">
       <% Tea::CANONICAL_CATEGORIES.each do |cat| %>
         <option value="<%= cat %>"><%= cat.humanize %></option>
       <% end %>
     </datalist>
-    <small class="form-text text-muted">Select from common types or enter your own custom tea variety</small>
+    <div id="category-help" class="form-text">Select from common types or enter your own custom tea variety</div>
   </div>
 
-  <div class="form-group required-field">
+  <fieldset class="form-group required-field">
+    <legend class="sr-only">Price Information</legend>
     <div class="row">
       <div class="col">
-        <%= form.label :price, "Price per Gram ($/g)" %>
-        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price", min: 0.01, max: 999.99, required: true %>
+        <%= form.label :price, "Price per Gram ($/g)", class: "form-label" %>
+        <%= form.number_field :price, step: 0.01, class: "form-control", id: "direct-price", 
+            min: 0.01, max: 999.99, required: true, "aria-describedby": "price-help" %>
+        <div id="price-help" class="form-text">Price per gram in USD</div>
       </div>
       <div class="col required-field">
-        <%= form.label :total_price, "Total Price ($)" %>
-        <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price", min: 0.01, max: 9999.99, required: true %>
+        <%= form.label :total_price, "Total Price ($)", class: "form-label" %>
+        <%= form.number_field :total_price, step: 0.01, class: "form-control", id: "total-price", 
+            min: 0.01, max: 9999.99, required: true, "aria-describedby": "total-price-help" %>
+        <div id="total-price-help" class="form-text">Total amount paid</div>
       </div>
       <div class="col required-field">
-        <%= form.label :weight, "Weight (g)" %>
-        <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight", min: 0.01, max: 9999.99, required: true %>
+        <%= form.label :weight, "Weight (g)", class: "form-label" %>
+        <%= form.number_field :weight, step: 0.01, class: "form-control", id: "weight", 
+            min: 0.01, max: 9999.99, required: true, "aria-describedby": "weight-help" %>
+        <div id="weight-help" class="form-text">Weight in grams</div>
       </div>
     </div>
+  </fieldset>
+
+  <div class="form-group required-field">
+    <%= form.label :vendor, class: "form-label" %>
+    <%= form.text_field :vendor, class: "form-control", maxlength: 100, required: true,
+        "aria-describedby": "vendor-help" %>
+    <div id="vendor-help" class="form-text">Store or company selling the tea</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :vendor %>
-    <%= form.text_field :vendor, class: "form-control", maxlength: 100, required: true %>
-    <small class="form-text text-muted">Store or company selling the tea</small>
+    <%= form.label :known_for, class: "form-label" %>
+    <%= form.text_field :known_for, class: "form-control", maxlength: 200, required: true,
+        "aria-describedby": "known-for-help" %>
+    <div id="known-for-help" class="form-text">What makes this tea special?</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :known_for %>
-    <%= form.text_field :known_for, class: "form-control", maxlength: 200, required: true %>
-    <small class="form-text text-muted">What makes this tea special?</small>
+    <%= form.label :year, class: "form-label" %>
+    <%= form.number_field :year, step: 1, class: "form-control", min: 1800, max: Date.current.year, 
+        required: true, "aria-describedby": "year-help" %>
+    <div id="year-help" class="form-text">Year the tea was produced (1800-present)</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :year %>
-    <%= form.number_field :year, step: 1, class: "form-control", min: 1800, max: Date.current.year, required: true %>
-    <small class="form-text text-muted">Year the tea was produced (1800-present)</small>
+    <%= form.label :region, class: "form-label" %>
+    <%= form.text_field :region, class: "form-control", maxlength: 100, required: true,
+        "aria-describedby": "region-help" %>
+    <div id="region-help" class="form-text">Region where the tea was grown</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :region %>
-    <%= form.text_field :region, class: "form-control", maxlength: 100, required: true %>
-    <small class="form-text text-muted">Region where the tea was grown</small>
+    <%= form.label :ship_from, class: "form-label" %>
+    <%= form.text_field :ship_from, class: "form-control", maxlength: 100, required: true,
+        "aria-describedby": "ship-from-help" %>
+    <div id="ship-from-help" class="form-text">Country or location the tea ships from</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :ship_from %>
-    <%= form.text_field :ship_from, class: "form-control", maxlength: 100, required: true %>
-    <small class="form-text text-muted">Country or location the tea ships from</small>
+    <%= form.label :popularity, class: "form-label" %>
+    <%= form.number_field :popularity, step: 1, class: "form-control", min: 0, max: 100, 
+        required: true, placeholder: "0-100", "aria-describedby": "popularity-help" %>
+    <div id="popularity-help" class="form-text">How popular is this tea? (0-100)</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :popularity %>
-    <%= form.number_field :popularity, step: 1, class: "form-control", min: 0, max: 100, required: true, placeholder: "0-100" %>
-    <small class="form-text text-muted">How popular is this tea? (0-100)</small>
+    <%= form.label :shopping_platform, class: "form-label" %>
+    <%= form.text_field :shopping_platform, class: "form-control", maxlength: 100, required: true,
+        "aria-describedby": "platform-help" %>
+    <div id="platform-help" class="form-text">Website or platform where you bought the tea</div>
   </div>
 
   <div class="form-group required-field">
-    <%= form.label :shopping_platform %>
-    <%= form.text_field :shopping_platform, class: "form-control", maxlength: 100, required: true %>
-    <small class="form-text text-muted">Website or platform where you bought the tea</small>
-  </div>
-
-  <div class="form-group required-field">
-    <%= form.label :product_url %>
-    <%= form.url_field :product_url, class: "form-control", maxlength: 500, required: true, pattern: "https?://.+" %>
-    <small class="form-text text-muted">Direct link to the product page (must start with http:// or https://)</small>
+    <%= form.label :product_url, class: "form-label" %>
+    <%= form.url_field :product_url, class: "form-control", maxlength: 500, required: true, 
+        pattern: "https?://.+", "aria-describedby": "url-help" %>
+    <div id="url-help" class="form-text">Direct link to the product page (must start with http:// or https://)</div>
   </div>
 
   <div class="form-group">
-    <%= form.label :rank, "Rank" %>
-    <div class="form-control-plaintext"><%= @entry.rank %></div>
+    <%= form.label :rank, "Rank", class: "form-label" %>
+    <div class="form-control-plaintext" aria-describedby="rank-help"><%= @entry.rank %></div>
+    <div id="rank-help" class="form-text">Current ranking in your collection</div>
   </div>
 
-  <%= link_to "Back", tea_path(@tea), class: "btn btn-secondary mt-3" %>
-  <%= form.submit "Update Tea", class: "btn btn-primary mt-3" %>
+  <div class="mt-3">
+    <%= link_to "Back", tea_path(@tea), class: "btn btn-secondary" %>
+    <%= form.submit "Update Tea", class: "btn btn-primary" %>
+  </div>
 <% end %>
 
 <script>
@@ -186,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
       const feedbackDiv = document.createElement('div');
       feedbackDiv.className = 'invalid-feedback';
+      feedbackDiv.setAttribute('role', 'alert');
       field.parentNode.insertBefore(feedbackDiv, field.nextElementSibling);
     }
     
@@ -203,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Check validity and show appropriate message
       if (!this.validity.valid) {
         this.classList.add('is-invalid');
+        this.setAttribute('aria-invalid', 'true');
         
         if (this.validity.valueMissing) {
           feedbackDiv.textContent = `${this.labels[0].textContent.replace(' *', '')} is required`;
@@ -235,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       } else {
         this.classList.add('is-valid');
+        this.setAttribute('aria-invalid', 'false');
         feedbackDiv.textContent = '';
       }
     });
@@ -258,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (year > currentYear) {
         this.classList.add('is-invalid');
+        this.setAttribute('aria-invalid', 'true');
         const feedbackDiv = this.nextElementSibling.classList.contains('invalid-feedback') 
           ? this.nextElementSibling 
           : this.parentNode.querySelector('.invalid-feedback');
@@ -275,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
     urlField.addEventListener('blur', function() {
       if (this.value && !this.value.match(/^https?:\/\/.+/)) {
         this.classList.add('is-invalid');
+        this.setAttribute('aria-invalid', 'true');
         const feedbackDiv = this.nextElementSibling.classList.contains('invalid-feedback') 
           ? this.nextElementSibling 
           : this.parentNode.querySelector('.invalid-feedback');
