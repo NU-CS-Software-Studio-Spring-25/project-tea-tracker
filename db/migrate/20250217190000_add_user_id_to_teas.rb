@@ -19,4 +19,4 @@ class AddUserIdToTeas < ActiveRecord::Migration[7.1]
     # Finally, add the not-null constraint
     change_column_null :teas, :user_id, false
   end
-end 
+end

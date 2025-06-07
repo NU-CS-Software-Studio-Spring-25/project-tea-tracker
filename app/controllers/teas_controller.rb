@@ -3,7 +3,7 @@ class TeasController < ApplicationController
 
   before_action :require_login
   before_action :set_tea, only: %i[show edit update destroy]
-  before_action :check_csv_prompt, only: [:initial_upload]
+  before_action :check_csv_prompt, only: [ :initial_upload ]
 
   MAX_ROWS = 200
   REQUIRED_COLUMNS = %w[
@@ -243,7 +243,7 @@ class TeasController < ApplicationController
 
     CSV.parse(params[:file].read, headers: true) do |row|
       tea_data = row.to_h
-      
+
       # Convert string values to appropriate types
       tea_data['price'] = tea_data['price'].to_f if tea_data['price'].present?
       tea_data['year'] = tea_data['year'].to_i if tea_data['year'].present?
@@ -272,11 +272,11 @@ class TeasController < ApplicationController
 
   def sample_csv
     require 'csv'
-    
+
     headers = %w[name category price vendor known_for year region ship_from popularity shopping_platform product_url weight total_price]
     sample_data = [
-      ['Da Hong Pao', 'Oolong', '0.5', 'Fang Shun', 'roasted oolong', '2022', 'Wuyi Mountain', 'China', '85', 'Taobao', 'https://example.com/tea1', '100', '50.00'],
-      ['Silver Needle', 'White', '1.2', 'One River Tea', 'Dabaihao', '2024', 'Fujian', 'Fuding', '90', 'One River Tea', 'https://example.com/tea2', '25', '30.00']
+      [ 'Da Hong Pao', 'Oolong', '0.5', 'Fang Shun', 'roasted oolong', '2022', 'Wuyi Mountain', 'China', '85', 'Taobao', 'https://example.com/tea1', '100', '50.00' ],
+      [ 'Silver Needle', 'White', '1.2', 'One River Tea', 'Dabaihao', '2024', 'Fujian', 'Fuding', '90', 'One River Tea', 'https://example.com/tea2', '25', '30.00' ]
     ]
 
     csv_data = CSV.generate do |csv|
@@ -285,9 +285,9 @@ class TeasController < ApplicationController
     end
 
     send_data csv_data,
-              filename: "tea_import_template.csv",
-              type: "text/csv",
-              disposition: "attachment"
+              filename: 'tea_import_template.csv',
+              type: 'text/csv',
+              disposition: 'attachment'
   end
 
   def initial_upload
@@ -348,7 +348,7 @@ class TeasController < ApplicationController
       # Process the CSV file
       CSV.foreach(params[:file].path, headers: true).with_index(1) do |row, index|
         row_count += 1
-        
+
         # Check row count limit
         if row_count > MAX_ROWS
           redirect_to new_tea_path, alert: "CSV file cannot contain more than #{MAX_ROWS} rows"

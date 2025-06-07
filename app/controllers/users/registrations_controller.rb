@@ -8,4 +8,4 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   # ... rest of existing code ...
-end 
+end
