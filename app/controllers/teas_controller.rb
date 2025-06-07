@@ -296,68 +296,57 @@ class TeasController < ApplicationController
 
   def upload_csv
     if params[:file].blank?
-      redirect_to new_tea_path, alert: 'Please select a CSV file to upload.'
+      if request.referer&.include?('/users/onboarding')
+        redirect_to onboarding_users_path, alert: "Please select a CSV file to upload"
+      else
+        redirect_to new_tea_path, alert: "Please select a CSV file to upload"
+      end
       return
     end
 
-    # Validate file size (1MB limit)
     if params[:file].size > 1.megabyte
-      redirect_to new_tea_path, alert: 'File size must be less than 1MB'
+      if request.referer&.include?('/users/onboarding')
+        redirect_to onboarding_users_path, alert: "File size must be less than 1MB"
+      else
+        redirect_to new_tea_path, alert: "File size must be less than 1MB"
+      end
       return
     end
 
-    # Validate file extension
-    unless params[:file].original_filename.end_with?('.csv')
-      redirect_to new_tea_path, alert: 'Please upload a valid CSV file.'
+    unless params[:file].content_type == 'text/csv'
+      if request.referer&.include?('/users/onboarding')
+        redirect_to onboarding_users_path, alert: "Please upload a valid CSV file"
+      else
+        redirect_to new_tea_path, alert: "Please upload a valid CSV file"
+      end
       return
     end
-
-    require 'csv'
-    valid_rows = []
-    row_count = 0
 
     begin
-      # Read first line to validate headers
-      first_line = CSV.parse_line(params[:file].read)
-      params[:file].rewind # Reset file pointer to beginning
-
-      # Validate headers
-      if first_line.nil?
-        redirect_to new_tea_path, alert: 'The CSV file appears to be empty.'
-        return
-      end
-
-      # Check for missing or extra columns
-      missing_columns = REQUIRED_COLUMNS - first_line
-      extra_columns = first_line - REQUIRED_COLUMNS
-
-      if missing_columns.any? || extra_columns.any?
-        error_message = []
-        error_message << "Missing columns: #{missing_columns.join(', ')}" if missing_columns.any?
-        error_message << "Extra columns: #{extra_columns.join(', ')}" if extra_columns.any?
-        redirect_to new_tea_path, alert: "Invalid CSV format: #{error_message.join('; ')}"
-        return
-      end
-
-      # Check column order
-      if first_line != REQUIRED_COLUMNS
-        redirect_to new_tea_path, alert: "Columns must be in this order: #{REQUIRED_COLUMNS.join(', ')}"
-        return
-      end
+      valid_rows = []
+      row_count = 0
 
       # Process the CSV file
       CSV.foreach(params[:file].path, headers: true).with_index(1) do |row, index|
         row_count += 1
-
+        
         # Check row count limit
         if row_count > MAX_ROWS
-          redirect_to new_tea_path, alert: "CSV file cannot contain more than #{MAX_ROWS} rows"
+          if request.referer&.include?('/users/onboarding')
+            redirect_to onboarding_users_path, alert: "CSV file cannot contain more than #{MAX_ROWS} rows"
+          else
+            redirect_to new_tea_path, alert: "CSV file cannot contain more than #{MAX_ROWS} rows"
+          end
           return
         end
 
         # Validate required fields
         if row['name'].blank?
-          redirect_to new_tea_path, alert: "Row #{index}: Name is required"
+          if request.referer&.include?('/users/onboarding')
+            redirect_to onboarding_users_path, alert: "Row #{index}: Name is required"
+          else
+            redirect_to new_tea_path, alert: "Row #{index}: Name is required"
+          end
           return
         end
 
@@ -368,7 +357,11 @@ class TeasController < ApplicationController
           weight = Float(row['weight']) if row['weight'].present?
           total_price = Float(row['total_price']) if row['total_price'].present?
         rescue ArgumentError
-          redirect_to new_tea_path, alert: "Row #{index}: Invalid numeric value in price, year, weight, or total_price"
+          if request.referer&.include?('/users/onboarding')
+            redirect_to onboarding_users_path, alert: "Row #{index}: Invalid numeric value in price, year, weight, or total_price"
+          else
+            redirect_to new_tea_path, alert: "Row #{index}: Invalid numeric value in price, year, weight, or total_price"
+          end
           return
         end
 
@@ -404,7 +397,11 @@ class TeasController < ApplicationController
       redirect_to root_path, notice: "Successfully added #{valid_rows.size} #{'tea'.pluralize(valid_rows.size)} to your collection."
 
     rescue => e
-      redirect_to new_tea_path, alert: "An error occurred while processing the file: #{e.message}"
+      if request.referer&.include?('/users/onboarding')
+        redirect_to onboarding_users_path, alert: "An error occurred while processing the file: #{e.message}"
+      else
+        redirect_to new_tea_path, alert: "An error occurred while processing the file: #{e.message}"
+      end
     end
   end
 

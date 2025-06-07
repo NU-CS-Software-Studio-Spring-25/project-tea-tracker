@@ -11,7 +11,7 @@ class UsersController < ApplicationController
       @user = User.new(user_params)
       if @user.save
         session[:user_id] = @user.id
-        redirect_to root_path, notice: "Welcome, #{@user.username}!"
+        redirect_to onboarding_users_path
       else
         render :new
       end
@@ -92,6 +92,10 @@ class UsersController < ApplicationController
       else
         render json: { valid: true, message: 'Username is available' }
       end
+    end
+
+    def onboarding
+      redirect_to root_path if current_user.csv_prompt_seen?
     end
 
     private

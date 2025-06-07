@@ -1,0 +1,73 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body text-center">
+          <h2 class="card-title mb-4">Welcome to Tea Tracker!</h2>
+          <p class="lead mb-4">Let's get started with your tea collection. Choose how you'd like to begin:</p>
+
+          <div class="row g-4">
+            <!-- CSV Upload Option -->
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+                    Import from CSV
+                  </h5>
+                  <p class="card-text">Have a spreadsheet of your teas? Upload it here to import your collection.</p>
+                  
+                  <div class="alert alert-info small">
+                    <p class="mb-2">Your CSV must include:</p>
+                    <div class="text-start small">
+                      <code class="d-block">name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price</code>
+                    </div>
+                  </div>
+
+                  <%= form_with url: upload_csv_teas_path, multipart: true do |form| %>
+                    <div class="mb-3">
+                      <%= form.file_field :file, 
+                          accept: '.csv',
+                          class: "form-control form-control-sm" %>
+                    </div>
+                    <%= form.submit "Upload CSV", class: "btn btn-primary" %>
+                  <% end %>
+
+                  <div class="mt-2">
+                    <%= link_to sample_csv_teas_path, class: "btn btn-link btn-sm" do %>
+                      <i class="bi bi-download me-1"></i>Download Template
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual Entry Option -->
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Add Tea Manually
+                  </h5>
+                  <p class="card-text">Add your first tea entry manually with our easy-to-use form.</p>
+                  <div class="mt-4">
+                    <%= link_to new_tea_path, class: "btn btn-primary" do %>
+                      <i class="bi bi-plus me-2"></i>Add Your First Tea
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <%= link_to root_path, class: "btn btn-link" do %>
+              Skip for now <i class="bi bi-arrow-right ms-1"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

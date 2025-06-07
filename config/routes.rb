@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :users, only: [ :new, :create, :show ] do
     collection do
       get :check_username
+      get 'onboarding'
     end
   end
 
