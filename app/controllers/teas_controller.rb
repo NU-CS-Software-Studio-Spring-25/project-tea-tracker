@@ -297,27 +297,27 @@ class TeasController < ApplicationController
   def upload_csv
     if params[:file].blank?
       if request.referer&.include?('/users/onboarding')
-        redirect_to onboarding_users_path, alert: "Please select a CSV file to upload"
+        redirect_to onboarding_users_path, alert: 'Please select a CSV file to upload'
       else
-        redirect_to new_tea_path, alert: "Please select a CSV file to upload"
+        redirect_to new_tea_path, alert: 'Please select a CSV file to upload'
       end
       return
     end
 
     if params[:file].size > 1.megabyte
       if request.referer&.include?('/users/onboarding')
-        redirect_to onboarding_users_path, alert: "File size must be less than 1MB"
+        redirect_to onboarding_users_path, alert: 'File size must be less than 1MB'
       else
-        redirect_to new_tea_path, alert: "File size must be less than 1MB"
+        redirect_to new_tea_path, alert: 'File size must be less than 1MB'
       end
       return
     end
 
     unless params[:file].content_type == 'text/csv'
       if request.referer&.include?('/users/onboarding')
-        redirect_to onboarding_users_path, alert: "Please upload a valid CSV file"
+        redirect_to onboarding_users_path, alert: 'Please upload a valid CSV file'
       else
-        redirect_to new_tea_path, alert: "Please upload a valid CSV file"
+        redirect_to new_tea_path, alert: 'Please upload a valid CSV file'
       end
       return
     end
@@ -329,7 +329,7 @@ class TeasController < ApplicationController
       # Process the CSV file
       CSV.foreach(params[:file].path, headers: true).with_index(1) do |row, index|
         row_count += 1
-        
+
         # Check row count limit
         if row_count > MAX_ROWS
           if request.referer&.include?('/users/onboarding')
