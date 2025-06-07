@@ -53,7 +53,7 @@ end
 # === User 1 ===
 user1 = User.create!(
   username: "testuser",
-  password: "Password123",
+  password: "Password1234",
   bio: "I love exploring oolongs and pu'er teas.",
   avatar_url: "https://example.com/avatar.jpg"
 )
