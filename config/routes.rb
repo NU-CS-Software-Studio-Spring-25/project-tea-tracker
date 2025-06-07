@@ -23,6 +23,9 @@ Rails.application.routes.draw do
       get :count
       get 'categories'
       get 'origins'
+      get 'sample_csv'
+      post 'upload_csv'
+      get 'initial_upload'
     end
   end
   resources :entries
@@ -55,6 +58,11 @@ Rails.application.routes.draw do
 
   # changing ranks
   post 'teas/update_ranks', to: 'teas#update_ranks'
+
+  # CSV import
+  post 'teas/import', to: 'teas#import'
+  get 'teas/sample_csv', to: 'teas#sample_csv'
+  post 'teas/upload_csv', to: 'teas#upload_csv'
 
   # vendors
   resources :vendors, only: [ :index, :show ]

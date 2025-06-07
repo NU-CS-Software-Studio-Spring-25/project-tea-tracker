@@ -3,6 +3,24 @@ class TeasController < ApplicationController
 
   before_action :require_login
   before_action :set_tea, only: %i[show edit update destroy]
+  before_action :check_csv_prompt, only: [:initial_upload]
+
+  MAX_ROWS = 200
+  REQUIRED_COLUMNS = %w[
+    name
+    category
+    price
+    vendor
+    known_for
+    year
+    region
+    ship_from
+    popularity
+    shopping_platform
+    product_url
+    weight
+    total_price
+  ]
 
   def index
     @teas = current_user.teas.includes(:entries)
@@ -212,6 +230,184 @@ class TeasController < ApplicationController
     head :ok
   end
 
+  def import
+    if params[:file].blank?
+      redirect_to new_tea_path, alert: 'Please select a CSV file to import.'
+      return
+    end
+
+    require 'csv'
+    success_count = 0
+    error_count = 0
+    error_messages = []
+
+    CSV.parse(params[:file].read, headers: true) do |row|
+      tea_data = row.to_h
+      
+      # Convert string values to appropriate types
+      tea_data['price'] = tea_data['price'].to_f if tea_data['price'].present?
+      tea_data['year'] = tea_data['year'].to_i if tea_data['year'].present?
+      tea_data['popularity'] = tea_data['popularity'].to_i if tea_data['popularity'].present?
+      tea_data['weight'] = tea_data['weight'].to_f if tea_data['weight'].present?
+      tea_data['total_price'] = tea_data['total_price'].to_f if tea_data['total_price'].present?
+
+      tea = Tea.new(tea_data)
+      tea.user = current_user
+
+      if tea.save
+        Entry.create!(tea: tea, user: current_user)
+        success_count += 1
+      else
+        error_count += 1
+        error_messages << "Row #{row.to_h['name']}: #{tea.errors.full_messages.join(', ')}"
+      end
+    end
+
+    if error_count > 0
+      redirect_to new_tea_path, alert: "Imported #{success_count} teas. #{error_count} failed: #{error_messages.join('; ')}"
+    else
+      redirect_to teas_path, notice: "Successfully imported #{success_count} teas."
+    end
+  end
+
+  def sample_csv
+    require 'csv'
+    
+    headers = %w[name category price vendor known_for year region ship_from popularity shopping_platform product_url weight total_price]
+    sample_data = [
+      ['Da Hong Pao', 'Oolong', '0.5', 'Fang Shun', 'roasted oolong', '2022', 'Wuyi Mountain', 'China', '85', 'Taobao', 'https://example.com/tea1', '100', '50.00'],
+      ['Silver Needle', 'White', '1.2', 'One River Tea', 'Dabaihao', '2024', 'Fujian', 'Fuding', '90', 'One River Tea', 'https://example.com/tea2', '25', '30.00']
+    ]
+
+    csv_data = CSV.generate do |csv|
+      csv << headers
+      sample_data.each { |row| csv << row }
+    end
+
+    send_data csv_data,
+              filename: "tea_import_template.csv",
+              type: "text/csv",
+              disposition: "attachment"
+  end
+
+  def initial_upload
+    # This action just renders the initial_upload view
+  end
+
+  def upload_csv
+    if params[:file].blank?
+      redirect_to new_tea_path, alert: 'Please select a CSV file to upload.'
+      return
+    end
+
+    # Validate file size (1MB limit)
+    if params[:file].size > 1.megabyte
+      redirect_to new_tea_path, alert: 'File size must be less than 1MB'
+      return
+    end
+
+    # Validate file extension
+    unless params[:file].original_filename.end_with?('.csv')
+      redirect_to new_tea_path, alert: 'Please upload a valid CSV file.'
+      return
+    end
+
+    require 'csv'
+    valid_rows = []
+    row_count = 0
+
+    begin
+      # Read first line to validate headers
+      first_line = CSV.parse_line(params[:file].read)
+      params[:file].rewind # Reset file pointer to beginning
+
+      # Validate headers
+      if first_line.nil?
+        redirect_to new_tea_path, alert: 'The CSV file appears to be empty.'
+        return
+      end
+
+      # Check for missing or extra columns
+      missing_columns = REQUIRED_COLUMNS - first_line
+      extra_columns = first_line - REQUIRED_COLUMNS
+
+      if missing_columns.any? || extra_columns.any?
+        error_message = []
+        error_message << "Missing columns: #{missing_columns.join(', ')}" if missing_columns.any?
+        error_message << "Extra columns: #{extra_columns.join(', ')}" if extra_columns.any?
+        redirect_to new_tea_path, alert: "Invalid CSV format: #{error_message.join('; ')}"
+        return
+      end
+
+      # Check column order
+      if first_line != REQUIRED_COLUMNS
+        redirect_to new_tea_path, alert: "Columns must be in this order: #{REQUIRED_COLUMNS.join(', ')}"
+        return
+      end
+
+      # Process the CSV file
+      CSV.foreach(params[:file].path, headers: true).with_index(1) do |row, index|
+        row_count += 1
+        
+        # Check row count limit
+        if row_count > MAX_ROWS
+          redirect_to new_tea_path, alert: "CSV file cannot contain more than #{MAX_ROWS} rows"
+          return
+        end
+
+        # Validate required fields
+        if row['name'].blank?
+          redirect_to new_tea_path, alert: "Row #{index}: Name is required"
+          return
+        end
+
+        # Validate numeric fields
+        begin
+          price = Float(row['price']) if row['price'].present?
+          year = Integer(row['year']) if row['year'].present?
+          weight = Float(row['weight']) if row['weight'].present?
+          total_price = Float(row['total_price']) if row['total_price'].present?
+        rescue ArgumentError
+          redirect_to new_tea_path, alert: "Row #{index}: Invalid numeric value in price, year, weight, or total_price"
+          return
+        end
+
+        # Add valid row to array
+        valid_rows << {
+          name: row['name'],
+          category: row['category'],
+          price: price,
+          vendor: row['vendor'],
+          known_for: row['known_for'],
+          year: year,
+          region: row['region'],
+          ship_from: row['ship_from'],
+          popularity: row['popularity'],
+          shopping_platform: row['shopping_platform'],
+          product_url: row['product_url'],
+          weight: weight,
+          total_price: total_price,
+          user_id: current_user.id
+        }
+      end
+
+      # Create records in a transaction
+      Tea.transaction do
+        valid_rows.each do |row|
+          tea = Tea.create!(row)
+          Entry.create!(tea: tea, user: current_user)
+        end
+      end
+
+      # If we get here, the upload was successful
+      current_user.update(csv_prompt_seen: true)
+      redirect_to root_path, notice: "Successfully added #{valid_rows.size} #{'tea'.pluralize(valid_rows.size)} to your collection."
+
+    rescue => e
+      redirect_to new_tea_path, alert: "An error occurred while processing the file: #{e.message}"
+    end
+  end
+
   private
 
   def set_tea
@@ -244,5 +440,9 @@ class TeasController < ApplicationController
 
     flash.now[:warning] =
       "Did you mean '#{suggestion}' instead of '#{tea.category}'? We've kept your entry, but it might be a typo."
+  end
+
+  def check_csv_prompt
+    redirect_to root_path if current_user.csv_prompt_seen?
   end
 end
