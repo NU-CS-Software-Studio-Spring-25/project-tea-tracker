@@ -15,33 +15,28 @@ Entry.destroy_all
   )
 end
 
-# Create teas
-100.times do
-  region = Faker::Address.state
-  Tea.create!(
-    name: Faker::Tea.variety,
-    category: Faker::Tea.type,
-    price: Faker::Commerce.price(range: 2.0..10.0),
-    vendor: Faker::Company.name,
-    known_for: Faker::Marketing.buzzwords,
-    ship_from: Faker::Address.city,
-    region: region,
-    popularity: rand(1..10),
-    shopping_platform: Faker::Company.name,
-    product_url: Faker::Internet.url,
-    year: rand(2000..2025)  # Random year between 2000-2025
-  )
-end
-
-# Create entries for each user
+# Create entries with teas for each user
 users = User.all
-teas = Tea.all
-
 users.each do |user|
-  # Each user rates 1 random teas
-  teas.sample(1).each_with_index do |tea, index|
+  # Each user gets 1-3 random teas
+  rand(1..3).times do
+    tea = Tea.create!(
+      name: Faker::Tea.variety,
+      category: Faker::Tea.type,
+      price: Faker::Commerce.price(range: 2.0..10.0),
+      vendor: Faker::Company.name,
+      known_for: Faker::Marketing.buzzwords,
+      ship_from: Faker::Address.city,
+      region: Faker::Address.state,
+      popularity: rand(1..10),
+      shopping_platform: Faker::Company.name,
+      product_url: Faker::Internet.url,
+      year: rand(2000..2025),  # Random year between 2000-2025
+      user_id: user.id  # Add the user_id
+    )
+    
     Entry.create!(
-      position: (index + 1) * 1000,  # Use floating island method
+      position: rand(1..1000),  # Random position
       user: user,
       tea: tea
     )
@@ -133,7 +128,7 @@ sample_teas = [
 
 # Create sample teas and entries for user1
 sample_teas.each_with_index do |tea_data, index|
-  tea = Tea.create!(tea_data)
+  tea = Tea.create!(tea_data.merge(user_id: user1.id))
   Entry.create!(
     user: user1,
     tea: tea,
@@ -195,7 +190,8 @@ csv_teas.each_with_index do |tea_data, index|
     grams: tea_data[:grams],
     popularity: rand(1..100),
     shopping_platform: tea_data[:vendor] || "Various",
-    product_url: "https://example.com"
+    product_url: "https://example.com",
+    user_id: user3.id
   )
   Entry.create!(
     user: user3,
