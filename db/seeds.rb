@@ -34,7 +34,7 @@ users.each do |user|
       year: rand(2000..2025),  # Random year between 2000-2025
       user_id: user.id  # Add the user_id
     )
-    
+
     Entry.create!(
       position: rand(1..1000),  # Random position
       user: user,
