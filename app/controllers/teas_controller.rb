@@ -126,6 +126,7 @@ class TeasController < ApplicationController
 
   def create
     @tea = Tea.new(tea_params)
+    @tea.user = current_user  # Explicitly set the user
     normalize_category_param
 
     # Check for potential misspelling
@@ -413,7 +414,7 @@ class TeasController < ApplicationController
 
   def tea_params
     params.require(:tea).permit(:name, :price, :category, :vendor, :known_for, :ship_from, :popularity,
-                                :shopping_platform, :product_url)
+                                :shopping_platform, :product_url, :total_price, :weight, :year, :region)
   end
 
   def require_login
