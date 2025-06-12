@@ -24,10 +24,10 @@
     --tea-background: #FFFFFF;
     --tea-card-bg: #F9F9F9;
     --tea-border: #5271ff;
-    --tea-success: #42bc44;
+    --tea-success: #24b08b;
     --tea-info: #2196F3;
-    --tea-warning: #FF9800;
-    --tea-danger: #F44336;
+    --tea-warning: #b825d9;
+    --tea-danger: #7e26d6;
     
     /* Pixel font variables */
     --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
@@ -1207,7 +1207,7 @@ canvas, .chart-js-render-monitor {
 
 /* Form Controls */
 .form-control {
-    border-radius: 8px;
+    border-radius: 8px; 
     border: 1px solid var(--tea-border);
     padding: 0.75rem 1rem;
 }

@@ -17,8 +17,7 @@ if heroku auth:whoami > /dev/null 2>&1; then
     # Check if working directory is clean
     git fetch heroku main || { echo "Failed to fetch latest changes."; exit 1; }
 
-    git add .
-    git commit -m "Auto-sync from Repo A commit: $commit_msg"
+    git commit --no-verify -am  "Auto-sync from Repo A commit: $commit_msg"
     git push heroku main --force
 
     echo "Commit $commit_msg pushed to heroku/main."

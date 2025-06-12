@@ -36,7 +36,43 @@
     border-left: 3px solid #28a745;
   }
 </style>
-
+<div class="mt-5">
+  <h3>Upload Multiple Teas via CSV</h3>
+  
+  <div class="alert alert-info mb-4">
+    <h5 class="alert-heading">CSV File Requirements</h5>
+    <p class="mb-2">Your CSV file must:</p>
+    <ul class="mb-0">
+      <li>Be less than 1MB in size</li>
+      <li>Contain no more than 200 rows</li>
+      <li>Have the following columns in this exact order:</li>
+    </ul>
+    <div class="mt-2">
+      <code>name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price</code>
+    </div>
+    <div class="mt-3">
+      <%= link_to sample_csv_teas_path, class: "btn btn-outline-primary" do %>
+        <i class="bi bi-download me-2"></i>Download Sample Template
+      <% end %>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <%= form_with url: upload_csv_teas_path, multipart: true do |form| %>
+        <div class="form-group">
+          <%= form.label :file, "Choose CSV File" %>
+          <%= form.file_field :file, accept: '.csv', class: "form-control", required: true %>
+          <small class="form-text text-muted">
+            Upload a CSV file with the following columns: name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price
+          </small>
+        </div>
+        <div class="mt-3">
+          <%= form.submit "Upload Teas", class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<h3>Add Singular Tea</h3>
 <div class="form-text required-hint mb-3">Fields marked with * are required</div>
 
 <%= form_with model: @tea, local: true do |form| %>
@@ -134,43 +170,6 @@
   <%= form.submit "Create Tea", class: "btn btn-primary mt-3" %>
 <% end %>
 
-<div class="mt-5">
-  <h3>Or Upload Multiple Teas via CSV</h3>
-  
-  <div class="alert alert-info mb-4">
-    <h5 class="alert-heading">CSV File Requirements</h5>
-    <p class="mb-2">Your CSV file must:</p>
-    <ul class="mb-0">
-      <li>Be less than 1MB in size</li>
-      <li>Contain no more than 200 rows</li>
-      <li>Have the following columns in this exact order:</li>
-    </ul>
-    <div class="mt-2">
-      <code>name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price</code>
-    </div>
-    <div class="mt-3">
-      <%= link_to sample_csv_teas_path, class: "btn btn-outline-primary" do %>
-        <i class="bi bi-download me-2"></i>Download Sample Template
-      <% end %>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-body">
-      <%= form_with url: upload_csv_teas_path, multipart: true do |form| %>
-        <div class="form-group">
-          <%= form.label :file, "Choose CSV File" %>
-          <%= form.file_field :file, accept: '.csv', class: "form-control", required: true %>
-          <small class="form-text text-muted">
-            Upload a CSV file with the following columns: name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price
-          </small>
-        </div>
-        <div class="mt-3">
-          <%= form.submit "Upload Teas", class: "btn btn-success" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
 </div>
 
 <script>
