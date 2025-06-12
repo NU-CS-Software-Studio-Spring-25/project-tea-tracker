@@ -6,4 +6,4 @@ end
 After do
   # Clean up after each scenario
   DatabaseCleaner.clean
-end 
+end

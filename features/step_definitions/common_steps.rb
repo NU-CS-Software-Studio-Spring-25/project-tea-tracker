@@ -3,7 +3,7 @@ require 'rspec/expectations'
 Before do
   # Clean up in the correct order to respect foreign key constraints
   ActiveRecord::Base.connection.execute("TRUNCATE entries, teas, users CASCADE")
-  
+
   # Create only the skylarke user
   User.create!(
     username: "skylarke",
@@ -28,7 +28,7 @@ end
 Given(/^I am signed in as "([^"]*)"$/) do |username|
   # Only allow skylarke
   expect(username).to eq("skylarke")
-  
+
   visit new_session_path
   fill_in "username", with: username
   fill_in "password", with: "Password123"
@@ -57,7 +57,7 @@ end
 Given(/^a tea exists with name "([^"]*)"$/) do |name|
   # Use skylarke as the user
   user = User.find_by(username: "skylarke")
-  
+
   Tea.create!(
     name: name,
     category: "black",
@@ -110,4 +110,4 @@ end
 
 Then(/^I should still see "([^"]*)"$/) do |text|
   expect(page).to have_content(text)
-end 
+end
