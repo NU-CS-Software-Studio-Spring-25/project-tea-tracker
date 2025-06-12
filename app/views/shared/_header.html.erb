@@ -1,13 +1,15 @@
 <!-- Y2K/Retro-Style Header -->
 <header class="tea-header" role="banner">
   <div class="tea-header-container">
-    <div class="tea-logo">
-      <div class="logo-text">
-        <span class="logo-tea">Tea</span>
-        <span class="logo-tracker">Tracker</span>
+    <%= link_to (current_user ? dashboard_path : root_path), class: "tea-logo-link", "aria-label": "Tea Tracker Home" do %>
+      <div class="tea-logo">
+        <div class="logo-text">
+          <span class="logo-tea">Tea</span>
+          <span class="logo-tracker">Tracker</span>
+        </div>
+        <div class="logo-icon" aria-hidden="true">🍵</div>
       </div>
-      <div class="logo-icon" aria-hidden="true">🍵</div>
-    </div>
+    <% end %>
     
     <nav class="tea-nav" role="navigation" aria-label="Main navigation">
       <ul class="nav-links">
