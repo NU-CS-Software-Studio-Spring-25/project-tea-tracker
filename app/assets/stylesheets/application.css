@@ -999,8 +999,7 @@ canvas, .chart-js-render-monitor {
     height: 40px;
     border-radius: 50%;
     background: white;
-    color: var(--tea-border);
-    font-size: 1.2rem;
+    color: var(--tea-primary) !important;
     transition: all 0.3s;
     border: 2px solid white;
 }
@@ -1009,6 +1008,12 @@ canvas, .chart-js-render-monitor {
     background: var(--tea-secondary);
     color: white;
     transform: translateY(5px);
+}
+
+.social-link svg.github-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
 }
 
 .footer-copyright {
