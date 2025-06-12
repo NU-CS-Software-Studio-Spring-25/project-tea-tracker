@@ -1,9 +1,9 @@
 require 'faker'
 
 # Clear existing records
-User.destroy_all
-Tea.destroy_all
 Entry.destroy_all
+Tea.destroy_all
+User.destroy_all
 
 # Create fake users
 1000.times do
@@ -48,7 +48,7 @@ end
 # === User 1 ===
 user1 = User.create!(
   username: "testuser",
-  password: "Password1234",
+  password: "Password123",
   bio: "I love exploring oolongs and pu'er teas.",
   avatar_url: "https://example.com/avatar.jpg"
 )
@@ -198,4 +198,37 @@ csv_teas.each_with_index do |tea_data, index|
     tea: tea,
     position: (index + 1) * 1000  # Use floating island method
   )
+end
+
+# requirement for 5 meaningful users with 20 teas each
+5.times do |i|
+  user = User.create!(
+    username: "collector#{i + 1}",
+    password: "StrongPass123!",
+    bio: Faker::Quote.famous_last_words,
+    avatar_url: Faker::Avatar.image
+  )
+
+  20.times do |j|
+    tea = Tea.create!(
+      name: "#{Faker::Tea.variety} #{j + 1}",
+      category: Faker::Tea.type,
+      price: Faker::Commerce.price(range: 3.0..15.0),
+      vendor: Faker::Company.name,
+      known_for: Faker::Marketing.buzzwords,
+      ship_from: Faker::Address.city,
+      region: Faker::Address.state,
+      popularity: rand(1..10),
+      shopping_platform: Faker::Company.name,
+      product_url: Faker::Internet.url,
+      year: rand(2005..2025),
+      user_id: user.id
+    )
+
+    Entry.create!(
+      user: user,
+      tea: tea,
+      position: ((j + 1) * 100) + i  # Slightly staggered positions
+    )
+  end
 end
