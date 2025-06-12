@@ -1,3 +1,5 @@
+require 'csv'
+
 class TeasController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
@@ -238,7 +240,6 @@ class TeasController < ApplicationController
       return
     end
 
-    require 'csv'
     success_count = 0
     error_count = 0
     error_messages = []
