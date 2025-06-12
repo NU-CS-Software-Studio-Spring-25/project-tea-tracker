@@ -9,6 +9,7 @@ We’re active in a niche community of loose leaf tea lovers, where some of us d
 - Add teas and track information like type, price, and ranking
 - Automatically generate visualizations and insights  
 - Explore personal tea trends, favorites, and category comparisons
+- Share with your friends!
 
 Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea journey over time!
 
@@ -24,9 +25,9 @@ Think of it as **"Tea Wrapped"**—a personal, data-driven look at your tea jour
  - Backend processing of tea ratings and attributes  
  - Map of where tea is from
  - Custom (set palette) colors
+ - Upload CSV/Excel files  
 
-## Features (WIP)  
-- Upload CSV/Excel files  
+## Features (WIP) 
 - Feedback loop with early testers from the tea community
 - Integrate relevent tea ads
 
