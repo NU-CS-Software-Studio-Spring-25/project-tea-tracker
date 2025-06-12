@@ -508,12 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add the base map layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
-
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      noWrap: true
+    }).addTo(map);
 
     // Tea icon style with proper scaling
     function createTeaIcon(zoomLevel) {
@@ -900,48 +898,26 @@ document.addEventListener('DOMContentLoaded', () => {
     window.teaMap = map;
 
     // Add the base map layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-    
-    // Home location
-    const homeLocation = [40, -95]; // US center
-    
-    // Add home marker
-    const homeMarker = L.marker(homeLocation, {
-      icon: L.divIcon({
-        className: 'home-icon',
-        html: '<i class="bi bi-house-fill" style="color: blue; font-size: 24px;"></i>',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      })
-    }).addTo(map).bindPopup('Your Location');
-    
-    // Process and display origins
-    const origins = Object.keys(originData);
-    
-    // Populate the details panel
-    const originsList = document.getElementById('originsList');
-    if (originsList) {
-      originsList.innerHTML = origins.map(origin => 
-        `<div class="mb-1">
-           <strong>${origin}</strong>: ${originData[origin]} teas
-         </div>`
-      ).join('');
+    // Tea icon style with proper scaling
+    function createTeaIcon(zoomLevel) {
+      const baseSize = 24;
+      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
+      const size = Math.round(baseSize * scale);
+      
+      return L.divIcon({
+        className: 'tea-icon',
+        html: `<div style="font-size: ${size}px;">📍</div>`,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2],
+        popupAnchor: [0, -size/2]
+      });
     }
-    
-    // Tea icon style
-    const teaIcon = L.divIcon({
-      className: 'tea-icon',
-      html: '<i class="bi bi-cup-hot-fill" style="color: green; font-size: 20px;"></i>',
-      iconSize: [20, 20],
-      iconAnchor: [10, 10]
-    });
-    
-    // Create a layer group for all tea markers and lines
+
+    // Create a layer group for all tea markers
     const teaGroup = L.layerGroup().addTo(map);
 
     // Track unmapped origins
