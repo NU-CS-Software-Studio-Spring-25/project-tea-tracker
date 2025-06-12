@@ -1,62 +1,63 @@
 <div class="container-fluid py-4">
+  <!-- Add required CSS and JS libraries -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
   <!-- Theme Styles -->
   <style>
     :root {
       --chart-text-color: #333333;
+      --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
     }
     
     /* Theme Styles */
-    
     body.theme-dark .text-muted {
       color: #a0aec0 !important;
     }
     
-
-
-        /* Dark Theme */
+    /* Dark Theme */
     body.theme-dark {
-      background-color: #1e272e; /* Darker background for better contrast */
-      color: #dcdde1; /* Light gray text for readability */
+      background-color: #1e272e;
+      color: #dcdde1;
     }
     
     body.theme-dark .card {
-      background-color: #2f3640; /* Slightly lighter card background */
-      border-color: #353b48; /* Subtle border for cards */
-      color: #dcdde1; /* Light gray text for readability */
+      background-color: #2f3640;
+      border-color: #353b48;
+      color: #dcdde1;
     }
 
     body.theme-dark .card-header {
-      background-color: #353b48; /* Dark gray header background */
-      color: #f5f6fa; /* White text for better contrast */
-      border-bottom: 1px solid #444; /* Subtle border for separation */
+      background-color: #353b48;
+      color: #f5f6fa;
+      border-bottom: 1px solid #444;
     }
     
     body.theme-dark .text-muted {
-      color: #a4b0be !important; /* Softer gray for muted text */
+      color: #a4b0be !important;
     }
     
     body.theme-dark .progress-bar {
-      background-color: #487eb0 !important; /* Consistent muted blue for progress bars */
+      background-color: #487eb0 !important;
     }
     
     /* Pastel Theme */
     body.theme-pastel {
-      background-color: #f8f9fa; /* Light background */
-      color: #5a6268; /* Neutral text color for readability */
+      background-color: #f8f9fa;
+      color: #5a6268;
     }
 
     body.theme-pastel .card {
-      background-color: #ffffff; /* White card background */
-      border-color: #e9ecef; /* Light border for cards */
-      color: #4b0082; /* Neutral text color for readability */
+      background-color: #ffffff;
+      border-color: #e9ecef;
+      color: #4b0082;
     }
 
     body.theme-pastel .card-header {
-      background-color: #e6e6fa; /* Lavender background */
-      color: #4b0082; /* Indigo text for readability */
-      border-bottom: 1px solid #d8bfd8; /* Thistle border for subtle separation */
+      background-color: #e6e6fa;
+      color: #4b0082;
+      border-bottom: 1px solid #d8bfd8;
     }
-    
     
     /* Vivid Theme */
     body.theme-vivid {
@@ -65,45 +66,177 @@
     }
     
     body.theme-vivid .card {
-      background-color: #ffffff; /* White card background */
-      border-color: #dee2e6; /* Light border for cards */
-      color: #212529; /* Black text for readability */
+      background-color: #ffffff;
+      border-color: #dee2e6;
+      color: #212529;
     }
     
     body.theme-vivid .card-header {
-      background-color: #007bff; /* Bright blue header background */
-      color: #ffffff; /* White text for contrast */
-      border-bottom: 1px solid #0056b3; /* Subtle border for separation */
+      background-color: #007bff;
+      color: #ffffff;
+      border-bottom: 1px solid #0056b3;
     }
     
-    
-    /* Default theme and other themes */
+    /* Default theme */
     .card-header {
-      color: #212529 !important; /* Black text for all themes */
+      color: #212529 !important;
     }
     
-
-  
+    /* Map specific styles */
+    .leaflet-container {
+      height: 100%;
+      width: 100%;
+      border-radius: 8px;
+    }
+    
+    /* Custom tooltip styles */
+    .custom-tooltip {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 200px;
+    }
+    
+    /* Stats cards */
+    .stats-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stats-card.bg-success {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .stats-card.bg-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .stats-card.bg-warning {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .stats-card.bg-info {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stats-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stats-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+    
+    /* Control buttons */
+    .control-btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .control-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .control-btn.active {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    /* Share button styles */
+    .share-chart-btn, .retro-share-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .share-chart-btn:hover, .retro-share-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Retro card styles */
+    .retro-card {
+      background: #ffffff;
+      border: 2px solid #dee2e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .retro-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .retro-share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      background: #f8f9fa;
+      color: #495057;
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+    
+    .retro-share-btn:hover {
+      background: #e9ecef;
+      color: #495057;
+      text-decoration: none;
+    }
+    
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: bold;
+    }
     
     /* Transition effects */
     body, .card, .card-header {
       transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     
-    /* Keep the custom font loading but we'll use it for our pixel fonts */
+    /* Custom font loading */
     @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans&display=swap');
-
-    .custom-tooltip {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .custom-tooltip:before {
-      border-top-color: #ccc;
-    }
   </style>
 
   <h1 class="mt-3 mb-4 text-center gradient-text">Tea Collection Analytics</h1>
@@ -160,7 +293,7 @@
           </div>
           
           <div class="mb-3">
-            <label for="cardHeadersColor" class="form-label">Card Headers Style</label>
+            <label for="cardHeadersStyle" class="form-label">Card Headers Style</label>
             <select class="form-select" id="cardHeadersStyle">
               <option value="default" selected>Default</option>
               <option value="solid">Solid Colors</option>
@@ -195,7 +328,7 @@
             <input type="color" class="form-control form-control-color" id="chartTextColor" value="#333333" title="Choose chart text color">
           </div>
           <div class="mb-3">
-            <label for="dashboardTitle" class="form-label">Dashboard Title Color</label>
+            <label for="dashboardTitleColor" class="form-label">Dashboard Title Color</label>
             <input type="color" class="form-control form-control-color" id="dashboardTitleColor" value="#212529" title="Choose dashboard title color">
           </div>
         </div>
@@ -311,7 +444,7 @@
         </div>
         <div class="card-body">
           <div class="origins-map" style="height: 400px; position: relative;">
-            <div id="worldMap" style="width:100%;height:400px;"></div>
+            <div id="worldMap" style="width:100%;height:100%;"></div>
             <div id="mapDetails" class="bg-white shadow-sm border rounded p-2" style="position: absolute; bottom: 10px; right: 10px; max-width: 300px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000; font-size: 12px;">
               <h6 class="mb-2">Tea Origins</h6>
               <div id="originsList"></div>
@@ -362,451 +495,82 @@
   </div>
 </div>
 
-<!-- OpenLayers CSS and JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
-<script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
+<!-- Sharing Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shareModalLabel">Share</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <div id="sharePreview" class="border rounded mb-3 mx-auto" style="max-width: 100%; overflow: hidden;">
+            <!-- Preview content will be injected here -->
+          </div>
+          <div id="shareSpinner" class="text-center my-5 d-none">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Generating image...</p>
+          </div>
+        </div>
+        <div class="share-options">
+          <div class="d-grid gap-2">
+            <button id="downloadImage" class="btn btn-primary">
+              <i class="bi bi-download"></i> Download as Image
+            </button>
+            <button id="copyToClipboard" class="btn btn-secondary">
+              <i class="bi bi-clipboard"></i> Copy to Clipboard
+            </button>
+            <button id="generateShareLink" class="btn btn-info">
+              <i class="bi bi-link-45deg"></i> Generate Shareable Link
+            </button>
+            <div class="btn-group mt-2" role="group">
+              <button id="shareTwitter" class="btn btn-outline-dark">
+                <i class="bi bi-twitter"></i>
+              </button>
+              <button id="shareFacebook" class="btn btn-outline-dark">
+                <i class="bi bi-facebook"></i>
+              </button>
+              <button id="shareReddit" class="btn btn-outline-dark">
+                <i class="bi bi-reddit"></i>
+              </button>
+              <button id="shareWhatsApp" class="btn btn-outline-dark">
+                <i class="bi bi-whatsapp"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="shareLinkContainer" class="mt-3 d-none">
+          <div class="input-group">
+            <input type="text" id="shareLink" class="form-control" readonly>
+            <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">Copy</button>
+          </div>
+          <small class="text-muted">This link will expire in 30 days</small>
+        </div>
+        <div id="shareResult" class="alert mt-3 d-none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Load required libraries in correct order -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Prepare your data
-  const originData = <%= raw @popular_ship_from.to_json %>;
-  const originCoords = <%= raw @origin_coords.to_json %>;
-
-  // Create features for each origin
-  const features = [];
-  Object.entries(originData).forEach(([origin, count]) => {
-    const coords = originCoords[origin];
-    if (!coords) {
-      console.warn(`No coordinates found for ${origin}`);
-      return;
-    }
-    // OpenLayers uses [lon, lat]
-    const feature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([coords[1], coords[0]])),
-      name: origin,
-      count: count
-    });
-    feature.setStyle(new ol.style.Style({
-      text: new ol.style.Text({
-        text: '📍',
-        font: '24px Arial',
-        offsetY: -12,
-        textAlign: 'center'
-      })
-    }));
-    features.push(feature);
-  });
-
-  // Create vector layer
-  const vectorSource = new ol.source.Vector({ features });
-  const vectorLayer = new ol.layer.Vector({ source: vectorSource });
-
-  // Create the map
-  const map = new ol.Map({
-    target: 'worldMap',
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM()
-      }),
-      vectorLayer
-    ],
-    view: new ol.View({
-      center: ol.proj.fromLonLat([105, 30]), // Center on Asia
-      zoom: 3,
-      minZoom: 2,
-      maxZoom: 10
-    })
-  });
-
-  // Popup overlay
-  const popup = document.createElement('div');
-  popup.className = 'ol-popup';
-  popup.style.background = 'white';
-  popup.style.padding = '8px';
-  popup.style.borderRadius = '6px';
-  popup.style.border = '1px solid #ccc';
-  popup.style.position = 'absolute';
-  popup.style.display = 'none';
-  popup.style.zIndex = 1000;
-  document.body.appendChild(popup);
-
-  map.on('singleclick', function(evt) {
-    const feature = map.forEachFeatureAtPixel(evt.pixel, f => f);
-    if (feature) {
-      const coords = feature.getGeometry().getCoordinates();
-      popup.innerHTML = `
-        <div class="text-center">
-          <h6 class="mb-2">${feature.get('name')}</h6>
-          <span class="badge bg-success">${feature.get('count')} ${feature.get('count') === 1 ? 'tea' : 'teas'}</span>
-        </div>
-      `;
-      popup.style.display = 'block';
-      // Position popup near the clicked point
-      const pixel = map.getPixelFromCoordinate(coords);
-      popup.style.left = (pixel[0] + map.getTargetElement().getBoundingClientRect().left) + 'px';
-      popup.style.top = (pixel[1] + map.getTargetElement().getBoundingClientRect().top - 40) + 'px';
-    } else {
-      popup.style.display = 'none';
-    }
-  });
-
-  // Hide popup when clicking elsewhere
-  map.on('pointermove', function(evt) {
-    if (evt.dragging) {
-      popup.style.display = 'none';
-    }
-  });
-
-  // Populate the details panel
-  const originsList = document.getElementById('originsList');
-  if (originsList) {
-    Object.entries(originData).forEach(([origin, count]) => {
-      const originDiv = document.createElement('div');
-      originDiv.className = 'mb-2';
-      originDiv.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center">
-          <span>📍 ${origin}</span>
-          <span class="badge bg-success">${count} teas</span>
-        </div>
-      `;
-      originsList.appendChild(originDiv);
-    });
-  }
-
-  // Add event listener for the toggle button
-  document.getElementById('toggleMapDetails').addEventListener('click', function() {
-    const detailsPanel = document.getElementById('mapDetails');
-    if (detailsPanel.style.display === 'none') {
-      detailsPanel.style.display = 'block';
-      this.textContent = 'Hide Details';
-    } else {
-      detailsPanel.style.display = 'none';
-      this.textContent = 'Show Details';
-    }
-  });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the data from controller
-  const originData = <%= raw @popular_ship_from.to_json %>;
-  const originCoords = <%= raw @origin_coords.to_json %>;
-  
-  // Initialize the map with a delay to ensure container is ready
-  setTimeout(() => {
-    // Initialize the map with proper bounds and no wrapping
-    const map = L.map('worldMap', {
-      center: [30, 100],
-      zoom: 2,
-      worldCopyJump: false,
-      maxBounds: [
-        [-90, -180],  // Southwest coordinates
-        [90, 180]     // Northeast coordinates
-      ],
-      maxBoundsViscosity: 1.0
-    });
-
-    // Add the base map layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      noWrap: true
-    }).addTo(map);
-
-    // Tea icon style with proper scaling
-    function createTeaIcon(zoomLevel) {
-      const baseSize = 24;
-      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
-      const size = Math.round(baseSize * scale);
-      
-      return L.divIcon({
-        className: 'tea-icon',
-        html: `<div style="font-size: ${size}px;">📍</div>`,
-        iconSize: [size, size],
-        iconAnchor: [size/2, size/2],
-        popupAnchor: [0, -size/2]
-      });
-    }
-
-    // Create a layer group for all tea markers
-    const teaGroup = L.layerGroup().addTo(map);
-    
-    // Track unmapped origins
-    const unmappedOrigins = [];
-    
-    // Process each origin
-    Object.entries(originData).forEach(([origin, count]) => {
-      if (!origin || origin.trim() === '') return;
-      
-      // Add to the details panel immediately
-      const originsList = document.getElementById('originsList');
-      if (originsList) {
-        const originDiv = document.createElement('div');
-        originDiv.className = 'mb-2';
-        originDiv.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <span>📍 ${origin}</span>
-            <span class="badge bg-success">${count} teas</span>
-          </div>
-        `;
-        originsList.appendChild(originDiv);
-      }
-
-      // Try to get coordinates from our predefined list first
-      let coords = originCoords[origin];
-      
-      if (coords) {
-        // Add marker for this origin using predefined coordinates
-        const marker = L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
-          .bindPopup(`
-            <div class="text-center">
-              <h6 class="mb-2">${origin}</h6>
-              <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
-            </div>
-          `)
-          .bindTooltip(`
-            <div class="text-center">
-              <strong>${origin}</strong><br>
-              ${count} ${count === 1 ? 'tea' : 'teas'}
-            </div>
-          `, {
-            permanent: false,
-            direction: 'top',
-            className: 'custom-tooltip'
-          })
-          .addTo(teaGroup);
-      } else {
-        // If not in predefined list, try geocoding
-        const query = `${origin}, tea region`;
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`, {
-          headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'TeaTracker/1.0'
-          }
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data && data.length > 0) {
-              const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-              console.log(`Geocoded ${origin} to:`, coords); // Debug log
-              
-              // Add marker for this origin
-              const marker = L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
-                .bindPopup(`
-                  <div class="text-center">
-                    <h6 class="mb-2">${origin}</h6>
-                    <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
-                  </div>
-                `)
-                .bindTooltip(`
-                  <div class="text-center">
-                    <strong>${origin}</strong><br>
-                    ${count} ${count === 1 ? 'tea' : 'teas'}
-                  </div>
-                `, {
-                  permanent: false,
-                  direction: 'top',
-                  className: 'custom-tooltip'
-                })
-                .addTo(teaGroup);
-            } else {
-              console.warn(`Could not geocode location: ${origin}`);
-              unmappedOrigins.push(origin);
-            }
-          })
-          .catch(error => {
-            console.error(`Error geocoding ${origin}:`, error);
-            unmappedOrigins.push(origin);
-          });
-      }
-    });
-
-    // Show unmapped origins warning if any
-    if (unmappedOrigins.length > 0) {
-      const warningDiv = document.createElement('div');
-      warningDiv.className = 'alert alert-warning mt-2';
-      warningDiv.innerHTML = `
-        <small>
-          <strong>Could not map these locations:</strong><br>
-          ${unmappedOrigins.join(', ')}
-        </small>
-      `;
-      document.getElementById('originsList').appendChild(warningDiv);
-    }
-
-    // Add event listener for the toggle button
-    document.getElementById('toggleMapDetails').addEventListener('click', function() {
-      const detailsPanel = document.getElementById('mapDetails');
-      if (detailsPanel.style.display === 'none') {
-        detailsPanel.style.display = 'block';
-        this.textContent = 'Hide Details';
-      } else {
-        detailsPanel.style.display = 'none';
-        this.textContent = 'Show Details';
-      }
-    });
-
-    // Force a map resize to ensure all is displaying properly
-    setTimeout(() => map.invalidateSize(), 100);
-  }, 500); // Delay map initialization
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the data from controller
+  // Get data from controller with error handling
   const categoryData = <%= raw @tea_type_counts.to_json %>;
   const originData = <%= raw @popular_ship_from.to_json %>;
+  const originCoords = <%= raw @origin_coords.to_json %>;
   const teasData = <%= raw @teas.to_json(only: [:id, :name, :price, :grams, :vendor, :category, :ship_from]) %>;
   
-  console.log('Origin data:', originData); // Debug log
-  
-  // Initialize map after a short delay to ensure DOM is ready
-  setTimeout(() => {
-    const mapElement = document.getElementById('worldMap');
-    if (!mapElement) {
-      console.error('Map element not found');
-      return;
-    }
-    
-    // Initialize the map
-    const map = L.map('worldMap').setView([30, 100], 2);
-    
-    // Add the base map layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    
-    // Tea icon style with proper scaling
-    function createTeaIcon(zoomLevel) {
-      const baseSize = 24;
-      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
-      const size = Math.round(baseSize * scale);
-      
-      return L.divIcon({
-        className: 'tea-icon',
-        html: `<div style="font-size: ${size}px;">📍</div>`,
-        iconSize: [size, size],
-        iconAnchor: [size/2, size/2],
-        popupAnchor: [0, -size/2]
-      });
-    }
-
-    // Create a layer group for all tea markers
-    const teaGroup = L.layerGroup().addTo(map);
-    
-    // Track unmapped origins
-    const unmappedOrigins = [];
-    
-    // Store markers for updating
-    const markers = [];
-    
-    // Process each origin
-    Object.entries(originData).forEach(([origin, count]) => {
-      if (!origin || origin.trim() === '') return;
-      
-      // Add to the details panel immediately
-      const originsList = document.getElementById('originsList');
-      if (originsList) {
-        const originDiv = document.createElement('div');
-        originDiv.className = 'mb-2';
-        originDiv.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <span>📍 ${origin}</span>
-            <span class="badge bg-success">${count} teas</span>
-          </div>
-        `;
-        originsList.appendChild(originDiv);
-      }
-
-      // Use OpenStreetMap Nominatim for geocoding
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origin)}&limit=1`, {
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'TeaTracker/1.0'
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-            console.log(`Geocoded ${origin} to:`, coords); // Debug log
-            
-            // Add marker for this origin
-            const marker = L.marker(coords, { 
-              icon: createTeaIcon(map.getZoom())
-            })
-              .bindPopup(`
-                <div class="text-center">
-                  <h6 class="mb-2">${origin}</h6>
-                  <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
-                </div>
-              `)
-              .bindTooltip(`
-                <div class="text-center">
-                  <strong>${origin}</strong><br>
-                  ${count} ${count === 1 ? 'tea' : 'teas'}
-                </div>
-              `, {
-                permanent: false,
-                direction: 'top',
-                className: 'custom-tooltip'
-              })
-              .addTo(teaGroup);
-              
-            markers.push(marker);
-          } else {
-            console.warn(`Could not geocode location: ${origin}`);
-            unmappedOrigins.push(origin);
-          }
-        })
-        .catch(error => {
-          console.error(`Error geocoding ${origin}:`, error);
-          unmappedOrigins.push(origin);
-        });
-    });
-
-    // Update marker sizes on zoom
-    map.on('zoomend', () => {
-      const newIcon = createTeaIcon(map.getZoom());
-      markers.forEach(marker => {
-        marker.setIcon(newIcon);
-      });
-    });
-
-    // Show unmapped origins warning if any
-    if (unmappedOrigins.length > 0) {
-      const warningDiv = document.createElement('div');
-      warningDiv.className = 'alert alert-warning mt-2';
-      warningDiv.innerHTML = `
-        <small>
-          <strong>Could not map these locations:</strong><br>
-          ${unmappedOrigins.join(', ')}
-        </small>
-      `;
-      document.getElementById('originsList').appendChild(warningDiv);
-    }
-
-    // Add event listener for the toggle button
-    document.getElementById('toggleMapDetails').addEventListener('click', function() {
-      const detailsPanel = document.getElementById('mapDetails');
-      if (detailsPanel.style.display === 'none') {
-        detailsPanel.style.display = 'block';
-        this.textContent = 'Hide Details';
-      } else {
-        detailsPanel.style.display = 'none';
-        this.textContent = 'Show Details';
-      }
-    });
-
-    // Force a map resize to ensure all is displaying properly
-    setTimeout(() => map.invalidateSize(), 100);
-  }, 500); // Delay map initialization
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the data from controller
-  const categoryData = <%= raw @tea_type_counts.to_json %>;
-  const originData = <%= raw @popular_ship_from.to_json %>;
-  const teasData = <%= raw @teas.to_json(only: [:id, :name, :price, :grams, :vendor, :category, :ship_from]) %>;
+  console.log('Origin data:', originData);
+  console.log('Origin coordinates:', originCoords);
   
   // Create a mapping of tea ranks directly from entries
   const rankData = {};
@@ -882,115 +646,178 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.categoryChart;
   }
   
-  // New Simplified World Map Implementation
+  // World Map Implementation
   function renderWorldMap() {
     const mapElement = document.getElementById('worldMap');
-    if (!mapElement) return;
-
-    // Remove any existing map instance to avoid double initialization
-    if (window.teaMap) {
-      window.teaMap.remove();
-      window.teaMap = null;
+    if (!mapElement) {
+      console.error('Map element not found');
+      return;
     }
-
-    // Initialize the map
-    const map = L.map('worldMap').setView([30, 100], 2);
-    window.teaMap = map;
-
-    // Add the base map layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    // Tea icon style with proper scaling
-    function createTeaIcon(zoomLevel) {
-      const baseSize = 24;
-      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
-      const size = Math.round(baseSize * scale);
-      
-      return L.divIcon({
-        className: 'tea-icon',
-        html: `<div style="font-size: ${size}px;">📍</div>`,
-        iconSize: [size, size],
-        iconAnchor: [size/2, size/2],
-        popupAnchor: [0, -size/2]
+    
+    // Clear any existing map
+    mapElement.innerHTML = '';
+    
+    try {
+      // Initialize the map
+      const map = L.map('worldMap', {
+        center: [30, 100],
+        zoom: 2,
+        zoomControl: true,
+        scrollWheelZoom: true
       });
-    }
-
-    // Create a layer group for all tea markers
-    const teaGroup = L.layerGroup().addTo(map);
-
-    // Track unmapped origins
-    const unmappedOrigins = [];
-
-    // Add markers for each origin
-    const origins = Object.keys(originData);
-    origins.forEach(origin => {
-      if (!origin || origin.trim() === '') return;
-      const count = originData[origin];
-      const coords = originCoords[origin];
-      if (!coords) {
-        unmappedOrigins.push(origin);
-        return;
+      
+      // Store map reference globally for sharing
+      window.teaMap = map;
+      
+      // Add tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+      }).addTo(map);
+      
+      // Home location (adjust as needed)
+      const homeLocation = [40.7128, -74.0060]; // New York as example
+      
+      // Add home marker
+      const homeIcon = L.divIcon({
+        className: 'home-marker',
+        html: '<i class="bi bi-house-fill" style="color: #007bff; font-size: 20px;"></i>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      });
+      
+      L.marker(homeLocation, { icon: homeIcon })
+        .addTo(map)
+        .bindPopup('<strong>Your Location</strong>')
+        .bindTooltip('Home', { permanent: false, direction: 'top' });
+      
+      // Process origins and add markers
+      const origins = Object.keys(originData);
+      const unmappedOrigins = [];
+      
+      // Populate details panel
+      const originsList = document.getElementById('originsList');
+      if (originsList) {
+        originsList.innerHTML = origins.map(origin => 
+          `<div class="mb-2 d-flex justify-content-between">
+             <span><i class="bi bi-geo-alt-fill text-success me-1"></i>${origin}</span>
+             <span class="badge bg-success">${originData[origin]}</span>
+           </div>`
+        ).join('');
       }
-      L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
-        .bindPopup(`<strong>${origin}</strong><br>${count} teas`)
-        .bindTooltip(`
-          <div class="text-center">
-            <strong>${origin}</strong><br>
-            ${count} ${count === 1 ? 'tea' : 'teas'}
-          </div>
-        `, {
-          permanent: false,
-          direction: 'top',
-          className: 'custom-tooltip'
-        })
-        .addTo(teaGroup);
-    });
-
-    // Populate the details panel
-    const originsList = document.getElementById('originsList');
-    if (originsList) {
-      originsList.innerHTML = origins.map(origin => 
-        `<div class="mb-1">
-           <strong>${origin}</strong>: ${originData[origin]} teas
-         </div>`
-      ).join('');
-    }
-
-    // Show unmapped origins warning if any (after a delay to allow geocoding)
-    setTimeout(() => {
+      
+      // Add markers for each origin
+      origins.forEach(origin => {
+        if (!origin || origin.trim() === '') return;
+        
+        const count = originData[origin];
+        let coords = null;
+        
+        // Try exact match first
+        if (originCoords[origin]) {
+          coords = originCoords[origin];
+        } else {
+          // Try case-insensitive match
+          const originLower = origin.toLowerCase();
+          for (const [key, value] of Object.entries(originCoords)) {
+            if (key.toLowerCase() === originLower) {
+              coords = value;
+              break;
+            }
+          }
+        }
+        
+        if (coords) {
+          // Create tea marker
+          const teaIcon = L.divIcon({
+            className: 'tea-marker',
+            html: `<i class="bi bi-cup-hot-fill" style="color: #28a745; font-size: 16px;"></i>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+          });
+          
+          const marker = L.marker(coords, { icon: teaIcon })
+            .addTo(map)
+            .bindPopup(`
+              <div class="text-center">
+                <h6 class="mb-1">${origin}</h6>
+                <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
+              </div>
+            `)
+            .bindTooltip(`${origin}: ${count} teas`, {
+              permanent: false,
+              direction: 'top',
+              className: 'custom-tooltip'
+            });
+          
+          // Add line from origin to home
+          const line = L.polyline([coords, homeLocation], {
+            color: '#ff6b6b',
+            weight: Math.max(1, Math.min(count / 2, 4)),
+            opacity: 0.7,
+            dashArray: '5, 10'
+          }).addTo(map);
+          
+          // Add popup to line as well
+          line.bindPopup(`
+            <div class="text-center">
+              <strong>${origin} → Home</strong><br>
+              <small>${count} ${count === 1 ? 'tea' : 'teas'} shipped</small>
+            </div>
+          `);
+          
+        } else {
+          unmappedOrigins.push(origin);
+          console.warn(`No coordinates found for: ${origin}`);
+        }
+      });
+      
+      // Show warning for unmapped origins
       if (unmappedOrigins.length > 0) {
         const warningDiv = document.createElement('div');
-        warningDiv.className = 'bg-warning text-dark p-2 rounded';
+        warningDiv.className = 'alert alert-warning alert-sm';
         warningDiv.style.position = 'absolute';
-        warningDiv.style.bottom = '10px';
+        warningDiv.style.top = '10px';
         warningDiv.style.left = '10px';
         warningDiv.style.zIndex = '1000';
         warningDiv.style.maxWidth = '250px';
-        warningDiv.style.fontSize = '12px';
+        warningDiv.style.fontSize = '11px';
         warningDiv.innerHTML = `
-          <p class="mb-1"><strong>Could not map these locations:</strong></p>
-          <p class="mb-0">${unmappedOrigins.join(', ')}</p>
+          <strong>Unmapped origins:</strong><br>
+          ${unmappedOrigins.join(', ')}
         `;
-        document.querySelector('.origins-map').appendChild(warningDiv);
+        mapElement.appendChild(warningDiv);
       }
-    }, 2000);
-
-    // Add event listener for the toggle button
-    document.getElementById('toggleMapDetails').addEventListener('click', function() {
-      const detailsPanel = document.getElementById('mapDetails');
-      if (detailsPanel.style.display === 'none') {
-        detailsPanel.style.display = 'block';
-        this.textContent = 'Hide Details';
-      } else {
-        detailsPanel.style.display = 'none';
-        this.textContent = 'Show Details';
+      
+      // Fit map to show all markers
+      if (origins.length > 0) {
+        const group = new L.featureGroup();
+        map.eachLayer(layer => {
+          if (layer instanceof L.Marker) {
+            group.addLayer(layer);
+          }
+        });
+        
+        if (group.getLayers().length > 0) {
+          map.fitBounds(group.getBounds().pad(0.1));
+        }
       }
-    });
-
-    // Force a map resize to ensure all is displaying properly
-    setTimeout(() => map.invalidateSize(), 100);
+      
+      // Force map resize after a short delay
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error initializing map:', error);
+      mapElement.innerHTML = `
+        <div class="alert alert-danger text-center">
+          <h6>Map Error</h6>
+          <p>Unable to load the map. Please refresh the page.</p>
+          <small>Error: ${error.message}</small>
+        </div>
+      `;
+    }
   }
   
   // Price vs Rank Correlation Chart (Scatter Plot)
@@ -1002,16 +829,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Tea data received:', teasData);
     console.log('Rank data mapping:', rankData);
     
-    // Try to identify fields - different models might name them differently
-    const sampleTea = teasData.length > 0 ? teasData[0] : null;
-    if (sampleTea) {
-      console.log('Sample tea structure:', Object.keys(sampleTea));
-      console.log('Sample tea data:', sampleTea);
-    }
-    
-    // CRITICAL FIX: Use the rankData mapping to get ranks for each tea
+    // Use the rankData mapping to get ranks for each tea
     const validTeas = teasData.filter(tea => {
-      // Get price, which we know exists on the tea directly
       let price = 0, grams = 0;
       
       try {
@@ -1020,19 +839,16 @@ document.addEventListener('DOMContentLoaded', () => {
         price = 0;
       }
 
-      // Try to get grams
       try {
         grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
       } catch (e) {
         grams = 1;
       }
       
-      // Get rank from our rankData mapping
       const rank = rankData[tea.id] || 0;
       
       console.log(`Tea: ${tea.name || 'unknown'}, ID: ${tea.id}, Price: ${price}, Grams: ${grams}, Rank: ${rank}`);
       
-      // Include tea in chart if we can calculate price per gram and have some rank info
       return price > 0 && rank > 0;
     });
     
@@ -1040,31 +856,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (validTeas.length === 0) {
       console.warn('No valid teas with price and rank data for the scatter plot');
-      // Display a more informative message
       const chartContainer = document.querySelector('.price-rank-chart');
       if (chartContainer) {
         chartContainer.innerHTML = `
           <div class="alert alert-warning text-center my-5">
             <p>No teas with complete price and rank data could be processed.</p>
-            <p>Rank data likely exists in the entries relation, not on tea objects directly.</p>
-            <p class="small text-muted">Received ${teasData.length} teas, but couldn't extract rank information.</p>
-            <button id="debugDataBtn" class="btn btn-sm btn-outline-primary mt-2">Show Sample Data</button>
+            <p>Please ensure your teas have both price and ranking information.</p>
           </div>
         `;
-        
-        // Add event listener for the debug button
-        setTimeout(() => {
-          const debugBtn = document.getElementById('debugDataBtn');
-          if (debugBtn) {
-            debugBtn.addEventListener('click', () => {
-              if (sampleTea) {
-                alert(JSON.stringify(sampleTea, null, 2));
-              } else {
-                alert('No sample tea data available');
-              }
-            });
-          }
-        }, 100);
       }
       return;
     }
@@ -1073,29 +872,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const scatterData = validTeas.map(tea => {
       let price, grams;
       
-      // Get price
       try {
         price = typeof tea.price === 'number' ? tea.price : parseFloat(tea.price || 0);
       } catch (e) {
         price = 0;
       }
       
-      // Get grams
       try {
         grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
-        if (grams <= 0) grams = 1; // Avoid division by zero
+        if (grams <= 0) grams = 1;
       } catch (e) {
         grams = 1;
       }
       
-      // Get rank from rankData mapping
       const rank = rankData[tea.id] || 0;
-      
-      // Calculate price per gram
       const pricePerGram = grams > 0 ? price / grams : price;
       
       return {
-        x: pricePerGram, // Price per gram
+        x: pricePerGram,
         y: rank,
         label: tea.name || 'Unnamed Tea',
         category: tea.category || 'Unknown',
@@ -1107,12 +901,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get unique categories for color coding
     const uniqueCategories = [...new Set(validTeas.map(tea => tea.category || 'Unknown'))];
     const colorPalette = [
-      'rgba(255, 99, 132, 0.6)',  // pink
-      'rgba(54, 162, 235, 0.6)',  // blue
-      'rgba(255, 206, 86, 0.6)',  // yellow
-      'rgba(75, 192, 192, 0.6)',  // green
-      'rgba(153, 102, 255, 0.6)', // purple
-      'rgba(255, 159, 64, 0.6)'   // orange
+      'rgba(255, 99, 132, 0.6)',
+      'rgba(54, 162, 235, 0.6)',
+      'rgba(255, 206, 86, 0.6)',
+      'rgba(75, 192, 192, 0.6)',
+      'rgba(153, 102, 255, 0.6)',
+      'rgba(255, 159, 64, 0.6)'
     ];
     
     // Create datasets, one for each category
@@ -1205,17 +999,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.priceRankChart;
   }
   
-  // Vendor Price Distribution Chart (Box Plot-like using bar chart)
+  // Vendor Price Distribution Chart
   function renderVendorPriceChart() {
     const ctx = document.getElementById('vendorPriceChart').getContext('2d');
     if (!ctx) return;
     
     console.log('Rendering vendor price chart...');
     
-    // Create a more flexible grouping function to handle different data structures
     const vendorGroups = {};
     teasData.forEach(tea => {
-      // Convert potential string values to numbers
       let price = 0, grams = 0;
       const vendor = tea.vendor || tea.company || '';
       
@@ -1227,7 +1019,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         grams = typeof tea.grams === 'number' ? tea.grams : parseFloat(tea.grams || 1);
-        if (grams <= 0) grams = 1; // Avoid division by zero
+        if (grams <= 0) grams = 1;
       } catch (e) {
         grams = 1;
       }
@@ -1237,7 +1029,6 @@ document.addEventListener('DOMContentLoaded', () => {
           vendorGroups[vendor] = [];
         }
         
-        // Always store price per gram
         const pricePerGram = price / grams;
         vendorGroups[vendor].push({
           price: price,
@@ -1248,20 +1039,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    // Check if we have vendor data
     const vendorCount = Object.keys(vendorGroups).length;
     console.log(`Found ${vendorCount} vendors with price data`);
     
     if (vendorCount === 0) {
       console.warn('No vendor price data available');
-      // Display a message in the chart area
       const chartContainer = document.querySelector('.vendor-price-chart');
       if (chartContainer) {
         chartContainer.innerHTML = `
           <div class="alert alert-warning text-center my-5">
             <p>No teas with vendor and price data available.</p>
             <p>Please add vendor and price information to your teas.</p>
-            <p class="small text-muted">Received ${teasData.length} teas, but none had valid vendor and price.</p>
           </div>
         `;
       }
@@ -1280,21 +1068,16 @@ document.addEventListener('DOMContentLoaded', () => {
       vendorAvgPrices[b] - vendorAvgPrices[a]
     );
     
-    // Show ALL vendors - no cap
     const displayVendors = sortedVendors;
     const displayAvgPrices = displayVendors.map(vendor => vendorAvgPrices[vendor]);
     const teaCounts = displayVendors.map(vendor => vendorGroups[vendor].length);
-    
-    // Always use price per gram for consistency
-    const priceLabel = 'Average Price per Gram';
-    const yAxisTitle = 'Price per Gram ($/g)';
     
     window.vendorPriceChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: displayVendors,
         datasets: [{
-          label: priceLabel,
+          label: 'Average Price per Gram',
           data: displayAvgPrices,
           backgroundColor: 'rgba(255, 99, 132, 0.6)',
           borderColor: 'rgba(255, 99, 132, 1)',
@@ -1309,7 +1092,7 @@ document.addEventListener('DOMContentLoaded', () => {
             callbacks: {
               label: function(context) {
                 const vendor = context.label;
-                const avgPrice = context.raw.toFixed(2); // Fixed to 2 decimal places for price formatting
+                const avgPrice = context.raw.toFixed(2);
                 const count = teaCounts[context.dataIndex];
                 return [
                   `Price/Gram: $${avgPrice}/g`,
@@ -1332,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ticks: {
               maxRotation: 45,
               minRotation: 45,
-              autoSkip: false, // Ensure all vendors are shown
+              autoSkip: false,
               font: {
                 family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
               }
@@ -1342,14 +1125,13 @@ document.addEventListener('DOMContentLoaded', () => {
             beginAtZero: true,
             title: {
               display: true,
-              text: yAxisTitle,
+              text: 'Price per Gram ($/g)',
               font: {
                 family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace",
                 weight: 'bold'
               }
             },
             ticks: {
-              // Fixed to 2 decimal places for price formatting
               callback: value => `$${value.toFixed(2)}`,
               font: {
                 family: getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace"
@@ -1363,42 +1145,47 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.vendorPriceChart;
   }
   
-  // Call all chart rendering functions
-  if (document.getElementById('categoryChart')) renderCategoryChart();
-  if (document.getElementById('priceRankChart')) renderPriceRankChart();
-  if (document.getElementById('vendorPriceChart')) renderVendorPriceChart();
-  renderWorldMap();
+  // Toggle map details
+  document.getElementById('toggleMapDetails').addEventListener('click', function() {
+    const detailsPanel = document.getElementById('mapDetails');
+    if (detailsPanel.style.display === 'none') {
+      detailsPanel.style.display = 'block';
+      this.textContent = 'Hide Details';
+    } else {
+      detailsPanel.style.display = 'none';
+      this.textContent = 'Show Details';
+    }
+  });
   
   // Dashboard Customization Feature
   const customizePanel = document.getElementById('customizePanel');
   const toggleCustomizePanel = document.getElementById('toggleCustomizePanel');
-  let charts = {}; // Store chart instances for re-rendering
   
   // Color theme palettes
   const colorThemes = {
     default: [
-      'rgba(54, 162, 235, 0.6)', // blue
-      'rgba(255, 99, 132, 0.6)', // pink
-      'rgba(75, 192, 192, 0.6)', // green
-      'rgba(255, 206, 86, 0.6)', // yellow
-      'rgba(153, 102, 255, 0.6)', // purple
-      'rgba(255, 159, 64, 0.6)'  // orange
+      'rgba(54, 162, 235, 0.6)',
+      'rgba(255, 99, 132, 0.6)',
+      'rgba(75, 192, 192, 0.6)',
+      'rgba(255, 206, 86, 0.6)',
+      'rgba(153, 102, 255, 0.6)',
+      'rgba(255, 159, 64, 0.6)'
     ],
     tea: [
-      'rgba(183, 110, 39, 0.6)',  // brown
-      'rgba(104, 160, 99, 0.6)',  // green
-      'rgba(196, 145, 2, 0.6)',   // yellow
-      'rgba(181, 71, 82, 0.6)',   // red
-      'rgba(76, 40, 30, 0.6)',    // dark brown
-      'rgba(192, 171, 142, 0.6)'  // beige
+      'rgba(183, 110, 39, 0.6)',
+      'rgba(104, 160, 99, 0.6)',
+      'rgba(196, 145, 2, 0.6)',
+      'rgba(181, 71, 82, 0.6)',
+      'rgba(76, 40, 30, 0.6)',
+      'rgba(192, 171, 142, 0.6)'
     ],
     pastels: [
-      'rgba(255, 179, 198, 0.6)', // pink
-      'rgba(181, 234, 215, 0.6)', // mint
-      'rgba(255, 241, 179, 0.6)', // light yellow
-      'rgba(199, 206, 234, 0.6)', // lavender
-      'rgba(235, 179, 255, 0.6)', // light purple
-      'rgba(181, 228, 255, 0.6)'  // sky blue
+      'rgba(255, 179, 198, 0.6)',
+      'rgba(181, 234, 215, 0.6)',
+      'rgba(255, 241, 179, 0.6)',
+      'rgba(199, 206, 234, 0.6)',
+      'rgba(235, 179, 255, 0.6)',
+      'rgba(181, 228, 255, 0.6)'
     ],
     monochrome: [
       'rgba(44, 62, 80, 0.8)',
@@ -1424,7 +1211,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       localStorage.setItem('teaTrackerDashboardPrefs', JSON.stringify(prefs));
       
-      // Show save confirmation
       const saveBtn = document.getElementById('saveCustomizations');
       const originalText = saveBtn.textContent;
       saveBtn.textContent = 'Saved!';
@@ -1449,35 +1235,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (savedPrefs) {
         const prefs = JSON.parse(savedPrefs);
         
-        // Apply theme
         document.querySelector(`input[name="dashboardTheme"][value="${prefs.dashboardTheme || 'default'}"]`).checked = true;
         
-        // Apply chart colors
         if (prefs.categoryChartColors) {
           document.getElementById('categoryChartColors').value = prefs.categoryChartColors;
         }
         
-        // Apply map color
         if (prefs.mapLineColor) {
           document.getElementById('mapLineColor').value = prefs.mapLineColor;
         }
         
-        // Apply text color
         if (prefs.chartTextColor) {
           document.getElementById('chartTextColor').value = prefs.chartTextColor;
         }
         
-        // Apply card header style
         if (prefs.cardHeadersStyle) {
           document.getElementById('cardHeadersStyle').value = prefs.cardHeadersStyle;
         }
         
-        // Apply dashboard title color
         if (prefs.dashboardTitleColor && document.getElementById('dashboardTitleColor')) {
           document.getElementById('dashboardTitleColor').value = prefs.dashboardTitleColor;
         }
         
-        // Apply all preferences
         applyPreferences();
       }
     } catch (e) {
@@ -1487,7 +1266,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Apply preferences to dashboard
   function applyPreferences() {
-    // Get current preferences
     const theme = document.querySelector('input[name="dashboardTheme"]:checked').value;
     const categoryColors = document.getElementById('categoryChartColors').value;
     const mapColor = document.getElementById('mapLineColor').value;
@@ -1495,180 +1273,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerStyle = document.getElementById('cardHeadersStyle').value;
     const titleColor = document.getElementById('dashboardTitleColor')?.value || '#212529';
     
-    // Apply theme
     applyTheme(theme);
-    
-    // Apply card header styles
     updateCardHeadersAndStats(headerStyle);
     
-    // Update dashboard title color
-    const dashboardTitle = document.querySelector('.container-fluid > .d-flex > h1');
+    const dashboardTitle = document.querySelector('.container-fluid h1');
     if (dashboardTitle) {
       dashboardTitle.style.color = titleColor;
     }
     
-    // Re-render charts with new colors
     updateChartColors(categoryColors, textColor);
-    
-    // Update map colors
     updateMapColors(mapColor);
-  }
-  
-  // Update card headers and statistic cards
-  function updateCardHeadersAndStats(style) {
-    const headers = document.querySelectorAll('.card-header');
-    const statCards = document.querySelectorAll('.row:first-of-type .card');
-    const progressBars = document.querySelectorAll('.progress-bar');
-    const selectedColors = colorThemes[document.getElementById('categoryChartColors').value] || colorThemes.default;
-    
-    // Reset headers to default first
-    headers.forEach(header => {
-      header.style.background = '';
-      header.style.borderBottom = '';
-      header.style.color = '';
-    });
-    
-    // Reset stat cards first
-    statCards.forEach(card => {
-      if (!card.classList.contains('bg-success') && 
-          !card.classList.contains('bg-primary') && 
-          !card.classList.contains('bg-warning') && 
-          !card.classList.contains('bg-info')) return;
-          
-      card.style.background = '';
-      card.style.backgroundColor = '';
-      card.style.color = '';
-    });
-    
-    // Apply header styles
-    if (style === 'solid') {
-      // Solid vibrant colors
-      headers.forEach((header, i) => {
-        const colorIdx = i % selectedColors.length;
-        const color = selectedColors[colorIdx].replace('0.6', '1');
-        header.style.backgroundColor = color;
-        header.style.color = '#ffffff';
-        header.style.borderBottom = 'none';
-      });
-      
-      // Apply to stat cards
-      statCards.forEach((card, i) => {
-        if (!card.classList.contains('bg-success') && 
-            !card.classList.contains('bg-primary') && 
-            !card.classList.contains('bg-warning') && 
-            !card.classList.contains('bg-info')) return;
-            
-        const colorIdx = i % selectedColors.length;
-        card.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.9');
-        card.style.color = '#ffffff';
-      });
-      
-      // Apply to progress bars
-      progressBars.forEach((bar, i) => {
-        const colorIdx = i % selectedColors.length;
-        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
-      });
-    } 
-    else if (style === 'gradient') {
-      // Gradient backgrounds
-      headers.forEach((header, i) => {
-        const colorIdx = i % selectedColors.length;
-        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
-        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
-        header.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
-        header.style.color = '#ffffff';
-        header.style.borderBottom = 'none';
-      });
-      
-      // Apply to stat cards
-      statCards.forEach((card, i) => {
-        if (!card.classList.contains('bg-success') && 
-            !card.classList.contains('bg-primary') && 
-            !card.classList.contains('bg-warning') && 
-            !card.classList.contains('bg-info')) return;
-            
-        const colorIdx = i % selectedColors.length;
-        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
-        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
-        card.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
-        card.style.color = '#ffffff';
-      });
-      
-      // Apply to progress bars
-      progressBars.forEach((bar, i) => {
-        const colorIdx = i % selectedColors.length;
-        const startColor = selectedColors[colorIdx].replace('0.6', '0.8');
-        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.6');
-        bar.style.background = `linear-gradient(90deg, ${startColor}, ${endColor})`;
-      });
-    }
-    else if (style === 'subtle') {
-      // Subtle backgrounds with border
-      headers.forEach((header, i) => {
-        const colorIdx = i % selectedColors.length;
-        const color = selectedColors[colorIdx].replace('0.6', '0.3');
-        const borderColor = selectedColors[colorIdx].replace('0.6', '0.8');
-        header.style.backgroundColor = color;
-        header.style.borderBottom = `2px solid ${borderColor}`;
-        header.style.color = '#333333';
-      });
-      
-      // Apply to stat cards
-      statCards.forEach((card, i) => {
-        if (!card.classList.contains('bg-success') && 
-            !card.classList.contains('bg-primary') && 
-            !card.classList.contains('bg-warning') && 
-            !card.classList.contains('bg-info')) return;
-            
-        const colorIdx = i % selectedColors.length;
-        const color = selectedColors[colorIdx].replace('0.6', '0.7');
-        card.style.backgroundColor = color;
-        card.style.color = '#ffffff';
-      });
-      
-      // Apply to progress bars
-      progressBars.forEach((bar, i) => {
-        const colorIdx = i % selectedColors.length;
-        bar.style.backgroundColor = selectedColors[colorIdx].replace('0.6', '0.8');
-      });
-    }
-    else if (style === 'monochrome') {
-      // Monochrome with different shade levels
-      headers.forEach((header, i) => {
-        const shade = 0.2 + (i % 5) * 0.1; // 0.2, 0.3, 0.4, 0.5, 0.6
-        header.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
-        header.style.color = '#ffffff';
-        header.style.borderBottom = 'none';
-      });
-      
-      // Apply to stat cards
-      statCards.forEach((card, i) => {
-        if (!card.classList.contains('bg-success') && 
-            !card.classList.contains('bg-primary') && 
-            !card.classList.contains('bg-warning') && 
-            !card.classList.contains('bg-info')) return;
-            
-        const shade = 0.5 + (i % 4) * 0.1; // 0.5, 0.6, 0.7, 0.8
-        card.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
-        card.style.color = '#ffffff';
-      });
-      
-      // Apply to progress bars
-      progressBars.forEach((bar, i) => {
-        const shade = 0.5 + (i % 5) * 0.1; // 0.5, 0.6, 0.7, 0.8, 0.9
-        bar.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
-      });
-    }
   }
   
   // Apply overall theme
   function applyTheme(theme) {
     const root = document.documentElement;
-    const cardHeaders = document.querySelectorAll('.card-header');
     const cards = document.querySelectorAll('.card');
     const textColor = document.getElementById('chartTextColor').value;
     
-    // Reset previous theme classes
     document.body.classList.remove('theme-dark', 'theme-pastel', 'theme-vivid');
     
     if (theme === 'dark') {
@@ -1697,17 +1319,7 @@ document.addEventListener('DOMContentLoaded', () => {
       root.style.setProperty('--chart-text-color', '#212529');
       document.body.style.backgroundColor = '#ffffff';
       
-      cardHeaders.forEach(header => {
-        // Make card headers more vibrant
-        if (header.classList.contains('bg-primary')) header.style.backgroundColor = '#007bff';
-        if (header.classList.contains('bg-success')) header.style.backgroundColor = '#28a745'; 
-        if (header.classList.contains('bg-info')) header.style.backgroundColor = '#17a2b8';
-        if (header.classList.contains('bg-warning')) header.style.backgroundColor = '#ffc107';
-        if (header.classList.contains('bg-danger')) header.style.backgroundColor = '#dc3545';
-      });
-      
     } else {
-      // Default theme
       root.style.setProperty('--chart-text-color', '#333333');
       document.body.style.backgroundColor = '';
       document.body.style.color = '';
@@ -1716,26 +1328,65 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.backgroundColor = '';
         card.style.borderColor = '';
       });
-      
-      cardHeaders.forEach(header => {
-        header.style.backgroundColor = '';
-      });
     }
     
-    // Apply text color consistently to chart options
     Chart.defaults.color = textColor;
     Chart.defaults.plugins.legend.labels.color = textColor;
     Chart.defaults.plugins.title.color = textColor;
   }
   
+  // Update card headers and statistic cards
+  function updateCardHeadersAndStats(style) {
+    const headers = document.querySelectorAll('.card-header');
+    const selectedColors = colorThemes[document.getElementById('categoryChartColors').value] || colorThemes.default;
+    
+    headers.forEach(header => {
+      header.style.background = '';
+      header.style.borderBottom = '';
+      header.style.color = '';
+    });
+    
+    if (style === 'solid') {
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '1');
+        header.style.backgroundColor = color;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+    } else if (style === 'gradient') {
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const startColor = selectedColors[colorIdx].replace('0.6', '0.9');
+        const endColor = selectedColors[(i+1) % selectedColors.length].replace('0.6', '0.7');
+        header.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+    } else if (style === 'subtle') {
+      headers.forEach((header, i) => {
+        const colorIdx = i % selectedColors.length;
+        const color = selectedColors[colorIdx].replace('0.6', '0.3');
+        const borderColor = selectedColors[colorIdx].replace('0.6', '0.8');
+        header.style.backgroundColor = color;
+        header.style.borderBottom = `2px solid ${borderColor}`;
+        header.style.color = '#333333';
+      });
+    } else if (style === 'monochrome') {
+      headers.forEach((header, i) => {
+        const shade = 0.2 + (i % 5) * 0.1;
+        header.style.backgroundColor = `rgba(33, 37, 41, ${shade})`;
+        header.style.color = '#ffffff';
+        header.style.borderBottom = 'none';
+      });
+    }
+  }
+  
   // Update chart colors based on selection
   function updateChartColors(colorScheme, textColor = '#333333') {
     const selectedColors = colorThemes[colorScheme] || colorThemes.default;
-    
-    // Get the pixel font
     const pixelFont = getComputedStyle(document.body).getPropertyValue('--font-pixel') || "'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace";
     
-    // Set global chart text color and font
     Chart.defaults.color = textColor;
     Chart.defaults.font.family = pixelFont;
     Chart.defaults.plugins.legend.labels.color = textColor;
@@ -1747,7 +1398,6 @@ document.addEventListener('DOMContentLoaded', () => {
       chart.data.datasets[0].backgroundColor = selectedColors.slice(0, chart.data.labels.length);
       chart.data.datasets[0].borderColor = selectedColors.map(color => color.replace('0.6', '1')).slice(0, chart.data.labels.length);
       
-      // Update text color in options
       if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
         chart.options.plugins.legend.labels.color = textColor;
         chart.options.plugins.legend.labels.font = {
@@ -1759,68 +1409,16 @@ document.addEventListener('DOMContentLoaded', () => {
       chart.update();
     }
     
-    // Update vendor price chart colors
+    // Update other charts similarly...
     if (window.vendorPriceChart && typeof window.vendorPriceChart.data !== 'undefined') {
       const chart = window.vendorPriceChart;
-      
-      // Update bar colors
       chart.data.datasets[0].backgroundColor = selectedColors.map(c => c);
       chart.data.datasets[0].borderColor = selectedColors.map(c => c.replace('0.6', '1'));
-      
-      // Update text colors
-      if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
-        chart.options.plugins.legend.labels.color = textColor;
-        chart.options.plugins.legend.labels.font = {
-          family: pixelFont,
-          size: chart.options.plugins.legend.labels.font?.size || 12
-        };
-      }
-      
-      // Update axis titles and ticks
-      if (chart.options && chart.options.scales) {
-        if (chart.options.scales.x) {
-          chart.options.scales.x.ticks.color = textColor;
-          chart.options.scales.x.ticks.font = {
-            family: pixelFont,
-            size: chart.options.scales.x.ticks.font?.size || 12
-          };
-          
-          if (chart.options.scales.x.title) {
-            chart.options.scales.x.title.color = textColor;
-            chart.options.scales.x.title.font = {
-              family: pixelFont,
-              weight: chart.options.scales.x.title.font?.weight || 'bold',
-              size: chart.options.scales.x.title.font?.size || 12
-            };
-          }
-        }
-        
-        if (chart.options.scales.y) {
-          chart.options.scales.y.ticks.color = textColor;
-          chart.options.scales.y.ticks.font = {
-            family: pixelFont,
-            size: chart.options.scales.y.ticks.font?.size || 12
-          };
-          
-          if (chart.options.scales.y.title) {
-            chart.options.scales.y.title.color = textColor;
-            chart.options.scales.y.title.font = {
-              family: pixelFont,
-              weight: chart.options.scales.y.title.font?.weight || 'bold',
-              size: chart.options.scales.y.title.font?.size || 12
-            };
-          }
-        }
-      }
-      
       chart.update();
     }
     
-    // Update price vs rank chart colors
     if (window.priceRankChart && typeof window.priceRankChart.data !== 'undefined') {
       const chart = window.priceRankChart;
-      
-      // Update scatter plot colors
       if (chart.data && chart.data.datasets) {
         chart.data.datasets.forEach((dataset, i) => {
           const color = selectedColors[i % selectedColors.length];
@@ -1828,65 +1426,21 @@ document.addEventListener('DOMContentLoaded', () => {
           dataset.borderColor = color.replace('0.6', '1');
         });
       }
-      
-      // Update text colors
-      if (chart.options && chart.options.plugins && chart.options.plugins.legend) {
-        chart.options.plugins.legend.labels.color = textColor;
-        chart.options.plugins.legend.labels.font = {
-          family: pixelFont,
-          size: chart.options.plugins.legend.labels.font?.size || 12
-        };
-      }
-      
-      // Update axis titles and ticks
-      if (chart.options && chart.options.scales) {
-        if (chart.options.scales.x) {
-          chart.options.scales.x.ticks.color = textColor;
-          chart.options.scales.x.ticks.font = {
-            family: pixelFont,
-            size: chart.options.scales.x.ticks.font?.size || 12
-          };
-          
-          if (chart.options.scales.x.title) {
-            chart.options.scales.x.title.color = textColor;
-            chart.options.scales.x.title.font = {
-              family: pixelFont,
-              weight: chart.options.scales.x.title.font?.weight || 'bold',
-              size: chart.options.scales.x.title.font?.size || 12
-            };
-          }
-        }
-        
-        if (chart.options.scales.y) {
-          chart.options.scales.y.ticks.color = textColor;
-          chart.options.scales.y.ticks.font = {
-            family: pixelFont,
-            size: chart.options.scales.y.ticks.font?.size || 12
-          };
-          
-          if (chart.options.scales.y.title) {
-            chart.options.scales.y.title.color = textColor;
-            chart.options.scales.y.title.font = {
-              family: pixelFont,
-              weight: chart.options.scales.y.title.font?.weight || 'bold',
-              size: chart.options.scales.y.title.font?.size || 12
-            };
-          }
-        }
-      }
-      
       chart.update();
     }
   }
   
   // Update map colors
   function updateMapColors(color) {
-    // Find all map line elements and update their color
-    const mapLines = document.querySelectorAll('.ol-overlay-container path');
+    const mapLines = document.querySelectorAll('.leaflet-overlay-pane path');
     mapLines.forEach(line => {
       line.style.stroke = color;
-      line.style.fill = color;
-      line.style.fillOpacity = '0.8';
+      
+      if (line.classList.contains('leaflet-polylineDecorator') || 
+          !line.hasAttribute('stroke-dasharray')) {
+        line.style.fill = color;
+        line.style.fillOpacity = '0.8';
+      }
     });
   }
   
@@ -1907,14 +1461,12 @@ document.addEventListener('DOMContentLoaded', () => {
     applyPreferences();
     savePreferences();
     
-    // Close the customization panel automatically
     customizePanel.style.display = 'none';
     toggleCustomizePanel.innerHTML = '<i class="bi bi-palette"></i> <span>Customize</span>';
     toggleCustomizePanel.classList.remove('active');
   });
   
   document.getElementById('resetCustomizations').addEventListener('click', () => {
-    // Reset form to defaults
     document.getElementById('themeDefault').checked = true;
     document.getElementById('categoryChartColors').value = 'default';
     document.getElementById('mapLineColor').value = '#ff637c';
@@ -1924,7 +1476,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('dashboardTitleColor').value = '#212529';
     }
     
-    // Apply defaults
     applyPreferences();
     savePreferences();
   });
@@ -1942,123 +1493,45 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('dashboardTitleColor').addEventListener('change', applyPreferences);
   }
   
-  // Load preferences on page load
-  loadPreferences();
-});
-</script>
-
-<!-- Sharing Modal -->
-<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="shareModalLabel">Share</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="text-center mb-3">
-          <div id="sharePreview" class="border rounded mb-3 mx-auto" style="max-width: 100%; overflow: hidden;">
-            <!-- Preview content will be injected here -->
-          </div>
-          <div id="shareSpinner" class="text-center my-5 d-none">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Generating image...</p>
-          </div>
-        </div>
-        <div class="share-options">
-          <div class="d-grid gap-2">
-            <button id="downloadImage" class="btn btn-primary">
-              <i class="bi bi-download"></i> Download as Image
-            </button>
-            <button id="copyToClipboard" class="btn btn-secondary">
-              <i class="bi bi-clipboard"></i> Copy to Clipboard
-            </button>
-            <button id="generateShareLink" class="btn btn-info">
-              <i class="bi bi-link-45deg"></i> Generate Shareable Link
-            </button>
-            <div class="btn-group mt-2" role="group">
-              <button id="shareTwitter" class="btn btn-outline-dark">
-                <i class="bi bi-twitter"></i>
-              </button>
-              <button id="shareFacebook" class="btn btn-outline-dark">
-                <i class="bi bi-facebook"></i>
-              </button>
-              <button id="shareReddit" class="btn btn-outline-dark">
-                <i class="bi bi-reddit"></i>
-              </button>
-              <button id="shareWhatsApp" class="btn btn-outline-dark">
-                <i class="bi bi-whatsapp"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="shareLinkContainer" class="mt-3 d-none">
-          <div class="input-group">
-            <input type="text" id="shareLink" class="form-control" readonly>
-            <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">Copy</button>
-          </div>
-          <small class="text-muted">This link will expire in 30 days</small>
-        </div>
-        <div id="shareResult" class="alert mt-3 d-none"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Load required libraries -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Store references to chart elements
-  const chartElements = {
-    // Chart containers
-    categoryChart: document.querySelector('.category-chart'),
-    rankByCategory: document.querySelector('.card-header.bg-success')?.closest('.card'),
-    worldMap: document.querySelector('.origins-map'),
-    priceRankChart: document.querySelector('.price-rank-chart'),
-    vendorPriceChart: document.querySelector('.vendor-price-chart')
-  };
-  
+  // Sharing Implementation
   let currentShareElement = null;
   let currentShareTitle = '';
   let capturedImage = null;
   
-  // Add Bootstrap icons if not already included
-  if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-    const iconLink = document.createElement('link');
-    iconLink.rel = 'stylesheet';
-    iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css';
-    document.head.appendChild(iconLink);
-  }
-  
-  // Share chart button click handler
-  document.querySelectorAll('.share-chart-btn').forEach(btn => {
+  // Share button handlers
+  document.querySelectorAll('.share-chart-btn, .retro-share-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const chartId = this.dataset.chart;
-      currentShareElement = chartElements[chartId] || document.getElementById(chartId);
-      currentShareTitle = this.dataset.title;
+      currentShareTitle = this.dataset.title || 'Tea Analytics';
       
-      // Special handling for Chart.js charts
-      if (chartId === 'categoryChart' && window.categoryChart) {
-        currentShareElement = window.categoryChart.canvas;
-      } else if (chartId === 'priceRankChart' && window.priceRankChart) {
-        currentShareElement = window.priceRankChart.canvas;
-      } else if (chartId === 'vendorPriceChart' && window.vendorPriceChart) {
-        currentShareElement = window.vendorPriceChart.canvas;
+      // Determine what to share
+      if (chartId === 'worldMap') {
+        currentShareElement = document.getElementById('worldMap');
+      } else if (chartId === 'categoryChart') {
+        currentShareElement = document.getElementById('categoryChart');
+      } else if (chartId === 'priceRankChart') {
+        currentShareElement = document.getElementById('priceRankChart');
+      } else if (chartId === 'vendorPriceChart') {
+        currentShareElement = document.getElementById('vendorPriceChart');
+      } else if (chartId === 'rankByCategory') {
+        currentShareElement = document.querySelector('.card-header').closest('.card');
+      } else {
+        currentShareElement = document.querySelector(`.${chartId}`) || document.getElementById(chartId);
       }
       
       console.log(`Sharing ${chartId}:`, currentShareElement);
-      openShareModal();
+      
+      if (currentShareElement) {
+        openShareModal();
+      } else {
+        alert('Unable to find content to share. Please try again.');
+      }
     });
   });
   
-  // Share Dashboard button click handler
+  // Dashboard share button
   document.getElementById('shareDashboardBtn').addEventListener('click', function() {
-    currentShareElement = document.querySelector('.container');
+    currentShareElement = document.querySelector('.container-fluid');
     currentShareTitle = 'Tea Analytics Dashboard';
     openShareModal();
   });
@@ -2135,14 +1608,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      // For  map, special handling
-      if (currentShareElement.id === 'worldMap' || 
-          (currentShareElement.querySelector && currentShareElement.querySelector('#worldMap'))) {
-        // Use html2canvas for OpenLayers map
-        fallbackToHtml2Canvas();
-        return;
-      }
-      
       // For everything else, use html2canvas
       fallbackToHtml2Canvas();
     } catch (err) {
@@ -2160,11 +1625,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Additional style options for better image quality
       const options = {
-        scale: 2, // Increase for higher resolution
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: true, // Enable logging for debugging
+        logging: false,
         onclone: function(clonedDoc) {
           try {
             // Add watermark to cloned element
@@ -2192,7 +1657,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let clonedElement;
             
-            // Try several methods to find the element
             if (currentShareElement.id) {
               clonedElement = clonedDoc.getElementById(currentShareElement.id);
             }
@@ -2205,7 +1669,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (!clonedElement) {
-              // If we can't find by ID or class, try to use a data attribute
               const uniqueId = 'share-target-' + Date.now();
               currentShareElement.setAttribute('data-share-id', uniqueId);
               clonedElement = clonedDoc.querySelector(`[data-share-id="${uniqueId}"]`);
@@ -2322,12 +1785,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       showShareResult('info', 'Generating shareable link...');
       
-      // Convert canvas to blob and upload to a service
-      // This would typically call your backend API to handle storage
-      // For demo purposes, we'll just simulate it with a timeout
-      
       setTimeout(() => {
-        // Replace with your actual API call that returns a shareable link
         const demoShareLink = `${window.location.origin}/share/${Math.random().toString(36).substring(2, 10)}`;
         
         linkInput.value = demoShareLink;
@@ -2372,11 +1830,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Share to social media platforms
   function shareToSocialMedia(platform) {
-    // In a real implementation, you would:
-    // 1. Create a shareable link to your image
-    // 2. Construct the appropriate social media share URL
-    
-    // For demo purposes, we'll check if Web Share API is available
     if (navigator.share && capturedImage) {
       capturedImage.toBlob(async function(blob) {
         const file = new File([blob], `${currentShareTitle.replace(/\s+/g, '_')}.png`, { type: 'image/png' });
@@ -2391,10 +1844,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (err) {
           console.error('Error sharing:', err);
           
-          // Fallback to platform-specific sharing
           let shareUrl = '';
-          
-          // This would be replaced with your actual shareable link in production
           const demoShareLink = `${window.location.origin}/share/${Math.random().toString(36).substring(2, 10)}`;
           
           switch (platform) {
@@ -2418,7 +1868,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     } else {
-      // Fallback for browsers that don't support Web Share API
       showShareResult('info', 'Direct sharing not supported in your browser. Please use the "Generate Shareable Link" option instead.');
     }
   }
@@ -2436,5 +1885,14 @@ document.addEventListener('DOMContentLoaded', function() {
       resultElement.classList.add('d-none');
     }, 5000);
   }
+  
+  // Call all chart rendering functions
+  if (document.getElementById('categoryChart')) renderCategoryChart();
+  if (document.getElementById('priceRankChart')) renderPriceRankChart();
+  if (document.getElementById('vendorPriceChart')) renderVendorPriceChart();
+  renderWorldMap();
+  
+  // Load preferences on page load
+  loadPreferences();
 });
 </script>

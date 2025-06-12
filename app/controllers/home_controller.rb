@@ -97,10 +97,8 @@ class HomeController < ApplicationController
     @popular_ship_from = @teas.group(:ship_from).count
 
     # Pass the Ruby hash to the view
-    @origin_coords = TEA_ORIGIN_COORDS
-    # If you want to use the JSON file instead, uncomment below:
-    # require 'json'
-    # @origin_coords = JSON.parse(File.read(Rails.root.join('config', 'tea_origin_coords.json')))
+    require 'json'
+    @origin_coords = JSON.parse(File.read(Rails.root.join('config', 'tea_origin_coords.json')))
 
     render 'analytics/index'
   end

@@ -21,6 +21,7 @@ class TeasController < ApplicationController
     weight
     total_price
   ]
+    
 
   def index
     @teas = current_user.teas.includes(:entries)
