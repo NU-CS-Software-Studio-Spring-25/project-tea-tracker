@@ -92,6 +92,18 @@
     
     /* Keep the custom font loading but we'll use it for our pixel fonts */
     @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans&display=swap');
+
+    .custom-tooltip {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .custom-tooltip:before {
+      border-top-color: #ccc;
+    }
   </style>
 
   <h1 class="mt-3 mb-4 text-center gradient-text">Tea Collection Analytics</h1>
@@ -299,7 +311,7 @@
         </div>
         <div class="card-body">
           <div class="origins-map" style="height: 400px; position: relative;">
-            <div id="worldMap" style="width:100%;height:100%;"></div>
+            <div id="worldMap" style="width:100%;height:400px;"></div>
             <div id="mapDetails" class="bg-white shadow-sm border rounded p-2" style="position: absolute; bottom: 10px; right: 10px; max-width: 300px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000; font-size: 12px;">
               <h6 class="mb-2">Tea Origins</h6>
               <div id="originsList"></div>
@@ -350,7 +362,446 @@
   </div>
 </div>
 
+<!-- OpenLayers CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Prepare your data
+  const originData = <%= raw @popular_ship_from.to_json %>;
+  const originCoords = <%= raw @origin_coords.to_json %>;
+
+  // Create features for each origin
+  const features = [];
+  Object.entries(originData).forEach(([origin, count]) => {
+    const coords = originCoords[origin];
+    if (!coords) {
+      console.warn(`No coordinates found for ${origin}`);
+      return;
+    }
+    // OpenLayers uses [lon, lat]
+    const feature = new ol.Feature({
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([coords[1], coords[0]])),
+      name: origin,
+      count: count
+    });
+    feature.setStyle(new ol.style.Style({
+      text: new ol.style.Text({
+        text: '📍',
+        font: '24px Arial',
+        offsetY: -12,
+        textAlign: 'center'
+      })
+    }));
+    features.push(feature);
+  });
+
+  // Create vector layer
+  const vectorSource = new ol.source.Vector({ features });
+  const vectorLayer = new ol.layer.Vector({ source: vectorSource });
+
+  // Create the map
+  const map = new ol.Map({
+    target: 'worldMap',
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+      vectorLayer
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([105, 30]), // Center on Asia
+      zoom: 3,
+      minZoom: 2,
+      maxZoom: 10
+    })
+  });
+
+  // Popup overlay
+  const popup = document.createElement('div');
+  popup.className = 'ol-popup';
+  popup.style.background = 'white';
+  popup.style.padding = '8px';
+  popup.style.borderRadius = '6px';
+  popup.style.border = '1px solid #ccc';
+  popup.style.position = 'absolute';
+  popup.style.display = 'none';
+  popup.style.zIndex = 1000;
+  document.body.appendChild(popup);
+
+  map.on('singleclick', function(evt) {
+    const feature = map.forEachFeatureAtPixel(evt.pixel, f => f);
+    if (feature) {
+      const coords = feature.getGeometry().getCoordinates();
+      popup.innerHTML = `
+        <div class="text-center">
+          <h6 class="mb-2">${feature.get('name')}</h6>
+          <span class="badge bg-success">${feature.get('count')} ${feature.get('count') === 1 ? 'tea' : 'teas'}</span>
+        </div>
+      `;
+      popup.style.display = 'block';
+      // Position popup near the clicked point
+      const pixel = map.getPixelFromCoordinate(coords);
+      popup.style.left = (pixel[0] + map.getTargetElement().getBoundingClientRect().left) + 'px';
+      popup.style.top = (pixel[1] + map.getTargetElement().getBoundingClientRect().top - 40) + 'px';
+    } else {
+      popup.style.display = 'none';
+    }
+  });
+
+  // Hide popup when clicking elsewhere
+  map.on('pointermove', function(evt) {
+    if (evt.dragging) {
+      popup.style.display = 'none';
+    }
+  });
+
+  // Populate the details panel
+  const originsList = document.getElementById('originsList');
+  if (originsList) {
+    Object.entries(originData).forEach(([origin, count]) => {
+      const originDiv = document.createElement('div');
+      originDiv.className = 'mb-2';
+      originDiv.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+          <span>📍 ${origin}</span>
+          <span class="badge bg-success">${count} teas</span>
+        </div>
+      `;
+      originsList.appendChild(originDiv);
+    });
+  }
+
+  // Add event listener for the toggle button
+  document.getElementById('toggleMapDetails').addEventListener('click', function() {
+    const detailsPanel = document.getElementById('mapDetails');
+    if (detailsPanel.style.display === 'none') {
+      detailsPanel.style.display = 'block';
+      this.textContent = 'Hide Details';
+    } else {
+      detailsPanel.style.display = 'none';
+      this.textContent = 'Show Details';
+    }
+  });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Get the data from controller
+  const originData = <%= raw @popular_ship_from.to_json %>;
+  const originCoords = <%= raw @origin_coords.to_json %>;
+  
+  // Initialize the map with a delay to ensure container is ready
+  setTimeout(() => {
+    // Initialize the map with proper bounds and no wrapping
+    const map = L.map('worldMap', {
+      center: [30, 100],
+      zoom: 2,
+      worldCopyJump: false,
+      maxBounds: [
+        [-90, -180],  // Southwest coordinates
+        [90, 180]     // Northeast coordinates
+      ],
+      maxBoundsViscosity: 1.0
+    });
+
+    // Add the base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      noWrap: true
+    }).addTo(map);
+
+    // Tea icon style with proper scaling
+    function createTeaIcon(zoomLevel) {
+      const baseSize = 24;
+      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
+      const size = Math.round(baseSize * scale);
+      
+      return L.divIcon({
+        className: 'tea-icon',
+        html: `<div style="font-size: ${size}px;">📍</div>`,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2],
+        popupAnchor: [0, -size/2]
+      });
+    }
+
+    // Create a layer group for all tea markers
+    const teaGroup = L.layerGroup().addTo(map);
+    
+    // Track unmapped origins
+    const unmappedOrigins = [];
+    
+    // Process each origin
+    Object.entries(originData).forEach(([origin, count]) => {
+      if (!origin || origin.trim() === '') return;
+      
+      // Add to the details panel immediately
+      const originsList = document.getElementById('originsList');
+      if (originsList) {
+        const originDiv = document.createElement('div');
+        originDiv.className = 'mb-2';
+        originDiv.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <span>📍 ${origin}</span>
+            <span class="badge bg-success">${count} teas</span>
+          </div>
+        `;
+        originsList.appendChild(originDiv);
+      }
+
+      // Try to get coordinates from our predefined list first
+      let coords = originCoords[origin];
+      
+      if (coords) {
+        // Add marker for this origin using predefined coordinates
+        const marker = L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
+          .bindPopup(`
+            <div class="text-center">
+              <h6 class="mb-2">${origin}</h6>
+              <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
+            </div>
+          `)
+          .bindTooltip(`
+            <div class="text-center">
+              <strong>${origin}</strong><br>
+              ${count} ${count === 1 ? 'tea' : 'teas'}
+            </div>
+          `, {
+            permanent: false,
+            direction: 'top',
+            className: 'custom-tooltip'
+          })
+          .addTo(teaGroup);
+      } else {
+        // If not in predefined list, try geocoding
+        const query = `${origin}, tea region`;
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`, {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'TeaTracker/1.0'
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data && data.length > 0) {
+              const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+              console.log(`Geocoded ${origin} to:`, coords); // Debug log
+              
+              // Add marker for this origin
+              const marker = L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
+                .bindPopup(`
+                  <div class="text-center">
+                    <h6 class="mb-2">${origin}</h6>
+                    <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
+                  </div>
+                `)
+                .bindTooltip(`
+                  <div class="text-center">
+                    <strong>${origin}</strong><br>
+                    ${count} ${count === 1 ? 'tea' : 'teas'}
+                  </div>
+                `, {
+                  permanent: false,
+                  direction: 'top',
+                  className: 'custom-tooltip'
+                })
+                .addTo(teaGroup);
+            } else {
+              console.warn(`Could not geocode location: ${origin}`);
+              unmappedOrigins.push(origin);
+            }
+          })
+          .catch(error => {
+            console.error(`Error geocoding ${origin}:`, error);
+            unmappedOrigins.push(origin);
+          });
+      }
+    });
+
+    // Show unmapped origins warning if any
+    if (unmappedOrigins.length > 0) {
+      const warningDiv = document.createElement('div');
+      warningDiv.className = 'alert alert-warning mt-2';
+      warningDiv.innerHTML = `
+        <small>
+          <strong>Could not map these locations:</strong><br>
+          ${unmappedOrigins.join(', ')}
+        </small>
+      `;
+      document.getElementById('originsList').appendChild(warningDiv);
+    }
+
+    // Add event listener for the toggle button
+    document.getElementById('toggleMapDetails').addEventListener('click', function() {
+      const detailsPanel = document.getElementById('mapDetails');
+      if (detailsPanel.style.display === 'none') {
+        detailsPanel.style.display = 'block';
+        this.textContent = 'Hide Details';
+      } else {
+        detailsPanel.style.display = 'none';
+        this.textContent = 'Show Details';
+      }
+    });
+
+    // Force a map resize to ensure all is displaying properly
+    setTimeout(() => map.invalidateSize(), 100);
+  }, 500); // Delay map initialization
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Get the data from controller
+  const categoryData = <%= raw @tea_type_counts.to_json %>;
+  const originData = <%= raw @popular_ship_from.to_json %>;
+  const teasData = <%= raw @teas.to_json(only: [:id, :name, :price, :grams, :vendor, :category, :ship_from]) %>;
+  
+  console.log('Origin data:', originData); // Debug log
+  
+  // Initialize map after a short delay to ensure DOM is ready
+  setTimeout(() => {
+    const mapElement = document.getElementById('worldMap');
+    if (!mapElement) {
+      console.error('Map element not found');
+      return;
+    }
+    
+    // Initialize the map
+    const map = L.map('worldMap').setView([30, 100], 2);
+    
+    // Add the base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Tea icon style with proper scaling
+    function createTeaIcon(zoomLevel) {
+      const baseSize = 24;
+      const scale = Math.max(0.5, Math.min(2, zoomLevel / 4)); // Scale between 0.5x and 2x based on zoom
+      const size = Math.round(baseSize * scale);
+      
+      return L.divIcon({
+        className: 'tea-icon',
+        html: `<div style="font-size: ${size}px;">📍</div>`,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2],
+        popupAnchor: [0, -size/2]
+      });
+    }
+
+    // Create a layer group for all tea markers
+    const teaGroup = L.layerGroup().addTo(map);
+    
+    // Track unmapped origins
+    const unmappedOrigins = [];
+    
+    // Store markers for updating
+    const markers = [];
+    
+    // Process each origin
+    Object.entries(originData).forEach(([origin, count]) => {
+      if (!origin || origin.trim() === '') return;
+      
+      // Add to the details panel immediately
+      const originsList = document.getElementById('originsList');
+      if (originsList) {
+        const originDiv = document.createElement('div');
+        originDiv.className = 'mb-2';
+        originDiv.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <span>📍 ${origin}</span>
+            <span class="badge bg-success">${count} teas</span>
+          </div>
+        `;
+        originsList.appendChild(originDiv);
+      }
+
+      // Use OpenStreetMap Nominatim for geocoding
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origin)}&limit=1`, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'TeaTracker/1.0'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+            console.log(`Geocoded ${origin} to:`, coords); // Debug log
+            
+            // Add marker for this origin
+            const marker = L.marker(coords, { 
+              icon: createTeaIcon(map.getZoom())
+            })
+              .bindPopup(`
+                <div class="text-center">
+                  <h6 class="mb-2">${origin}</h6>
+                  <span class="badge bg-success">${count} ${count === 1 ? 'tea' : 'teas'}</span>
+                </div>
+              `)
+              .bindTooltip(`
+                <div class="text-center">
+                  <strong>${origin}</strong><br>
+                  ${count} ${count === 1 ? 'tea' : 'teas'}
+                </div>
+              `, {
+                permanent: false,
+                direction: 'top',
+                className: 'custom-tooltip'
+              })
+              .addTo(teaGroup);
+              
+            markers.push(marker);
+          } else {
+            console.warn(`Could not geocode location: ${origin}`);
+            unmappedOrigins.push(origin);
+          }
+        })
+        .catch(error => {
+          console.error(`Error geocoding ${origin}:`, error);
+          unmappedOrigins.push(origin);
+        });
+    });
+
+    // Update marker sizes on zoom
+    map.on('zoomend', () => {
+      const newIcon = createTeaIcon(map.getZoom());
+      markers.forEach(marker => {
+        marker.setIcon(newIcon);
+      });
+    });
+
+    // Show unmapped origins warning if any
+    if (unmappedOrigins.length > 0) {
+      const warningDiv = document.createElement('div');
+      warningDiv.className = 'alert alert-warning mt-2';
+      warningDiv.innerHTML = `
+        <small>
+          <strong>Could not map these locations:</strong><br>
+          ${unmappedOrigins.join(', ')}
+        </small>
+      `;
+      document.getElementById('originsList').appendChild(warningDiv);
+    }
+
+    // Add event listener for the toggle button
+    document.getElementById('toggleMapDetails').addEventListener('click', function() {
+      const detailsPanel = document.getElementById('mapDetails');
+      if (detailsPanel.style.display === 'none') {
+        detailsPanel.style.display = 'block';
+        this.textContent = 'Hide Details';
+      } else {
+        detailsPanel.style.display = 'none';
+        this.textContent = 'Show Details';
+      }
+    });
+
+    // Force a map resize to ensure all is displaying properly
+    setTimeout(() => map.invalidateSize(), 100);
+  }, 500); // Delay map initialization
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Get the data from controller
   const categoryData = <%= raw @tea_type_counts.to_json %>;
@@ -435,66 +886,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderWorldMap() {
     const mapElement = document.getElementById('worldMap');
     if (!mapElement) return;
-    
-    // More comprehensive mapping with cities/regions included
-    const locationCoordinates = {
-      // Countries
-      'China': [35.8617, 104.1954],
-      'Taiwan': [23.6978, 120.9605],
-      'Japan': [36.2048, 138.2529],
-      'India': [20.5937, 78.9629],
-      'Vietnam': [14.0583, 108.2772],
-      'Korea': [35.9078, 127.7669],
-      'South Korea': [35.9078, 127.7669],
-      'Thailand': [15.8700, 100.9925],
-      'Malaysia': [4.2105, 101.9758],
-      'Sri Lanka': [7.8731, 80.7718],
-      'Nepal': [28.3949, 84.1240],
-      'Kenya': [-1.2921, 36.8219],
-      'United Kingdom': [55.3781, -3.4360],
-      'United States': [37.0902, -95.7129],
-      'Indonesia': [-0.7893, 113.9213],
-      'Myanmar': [21.9162, 95.9560],
-      'Laos': [19.8563, 102.4955],
-      
-      // Chinese regions/cities
-      'Yunnan': [25.0453, 102.7097],
-      'Fujian': [26.0789, 117.9874],
-      'Guangdong': [23.3790, 113.7633],
-      'Hangzhou': [30.2741, 120.1551],
-      'Fuding': [27.3260, 120.2000],
-      'Anxi': [25.0563, 118.1868],
-      'Wuyi': [27.7617, 117.8413],
-      'Guangxi': [23.7248, 108.8076],
-      'Sichuan': [30.6570, 104.0650],
-      'Beijing': [39.9042, 116.4074],
-      'Shanghai': [31.2304, 121.4737],
-      'Zhejiang': [29.1416, 119.7889],
-      'Hubei': [30.7378, 112.2384],
-      'Hunan': [27.6253, 111.8569],
-      'Shaanxi': [35.3911, 109.1882],
-      
-      // Taiwan regions
-      'Taipei': [25.0330, 121.5654],
-      'Nantou': [23.9609, 120.9718],
-      'Hualien': [23.9749, 121.6059],
-      
-      // Japan regions
-      'Shizuoka': [34.9756, 138.3827],
-      'Kyoto': [35.0116, 135.7681],
-      'Uji': [34.8811, 135.8009],
-      'Kagoshima': [31.5969, 130.5571],
-      
-      // India regions
-      'Darjeeling': [27.0360, 88.2627],
-      'Assam': [26.2006, 92.9376],
-      'Nilgiri': [11.4916, 76.7399],
-      'Sikkim': [27.5330, 88.5122],
-    };
-    
+
+    // Remove any existing map instance to avoid double initialization
+    if (window.teaMap) {
+      window.teaMap.remove();
+      window.teaMap = null;
+    }
+
     // Initialize the map
     const map = L.map('worldMap').setView([30, 100], 2);
-    
+    window.teaMap = map;
+
     // Add the base map layer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
@@ -539,85 +941,64 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Create a layer group for all tea markers and lines
     const teaGroup = L.layerGroup().addTo(map);
-    
+
     // Track unmapped origins
     const unmappedOrigins = [];
-    
-    // Add markers and lines for each origin
+
+    // Add markers for each origin
+    const origins = Object.keys(originData);
     origins.forEach(origin => {
-      // Skip if origin is empty
       if (!origin || origin.trim() === '') return;
-      
-      // Get count of teas from this origin
       const count = originData[origin];
-      
-      // Try to find coordinates (case-insensitive)
-      let coords;
-      const originLower = origin.toLowerCase();
-      
-      for (const [key, value] of Object.entries(locationCoordinates)) {
-        if (key.toLowerCase() === originLower) {
-          coords = value;
-          break;
-        }
-      }
-      
-      // If origin not found, use approximate coordinates by geocoding
+      const coords = originCoords[origin];
       if (!coords) {
-        console.warn(`No predefined coordinates for: ${origin}, assigning to China as fallback`);
         unmappedOrigins.push(origin);
-        // Fallback to China coordinates
-        coords = [35.8617, 104.1954]; 
+        return;
       }
-      
-      // Add marker for this origin
-      const marker = L.marker(coords, { icon: teaIcon })
+      L.marker(coords, { icon: createTeaIcon(map.getZoom()) })
         .bindPopup(`<strong>${origin}</strong><br>${count} teas`)
+        .bindTooltip(`
+          <div class="text-center">
+            <strong>${origin}</strong><br>
+            ${count} ${count === 1 ? 'tea' : 'teas'}
+          </div>
+        `, {
+          permanent: false,
+          direction: 'top',
+          className: 'custom-tooltip'
+        })
         .addTo(teaGroup);
-      
-      // Add a straight line connecting to home
-      const line = L.polyline([coords, homeLocation], {
-        color: 'rgba(255, 99, 132, 0.6)',
-        weight: Math.max(1, Math.min(Math.floor(count / 10) + 1, 5)),
-        dashArray: '5, 5'
-      }).addTo(teaGroup);
-      
-      // Add arrow to the line
-      const arrowHead = L.polylineDecorator(line, {
-        patterns: [
-          {
-            offset: '60%',
-            repeat: 0,
-            symbol: L.Symbol.arrowHead({
-              pixelSize: 10,
-              headAngle: 30,
-              polygon: true,
-              pathOptions: { color: 'rgba(255, 99, 132, 0.8)', fillOpacity: 0.8 }
-            })
-          }
-        ]
-      }).addTo(teaGroup);
     });
-    
-    // Show unmapped origins warning if any
-    if (unmappedOrigins.length > 0) {
-      const warningDiv = document.createElement('div');
-      warningDiv.className = 'bg-warning text-dark p-2 rounded';
-      warningDiv.style.position = 'absolute';
-      warningDiv.style.bottom = '10px';
-      warningDiv.style.left = '10px';
-      warningDiv.style.zIndex = '1000';
-      warningDiv.style.maxWidth = '250px';
-      warningDiv.style.fontSize = '12px';
-      
-      warningDiv.innerHTML = `
-        <p class="mb-1"><strong>Some origins mapped to China:</strong></p>
-        <p class="mb-0">${unmappedOrigins.join(', ')}</p>
-      `;
-      
-      document.querySelector('.origins-map').appendChild(warningDiv);
+
+    // Populate the details panel
+    const originsList = document.getElementById('originsList');
+    if (originsList) {
+      originsList.innerHTML = origins.map(origin => 
+        `<div class="mb-1">
+           <strong>${origin}</strong>: ${originData[origin]} teas
+         </div>`
+      ).join('');
     }
-    
+
+    // Show unmapped origins warning if any (after a delay to allow geocoding)
+    setTimeout(() => {
+      if (unmappedOrigins.length > 0) {
+        const warningDiv = document.createElement('div');
+        warningDiv.className = 'bg-warning text-dark p-2 rounded';
+        warningDiv.style.position = 'absolute';
+        warningDiv.style.bottom = '10px';
+        warningDiv.style.left = '10px';
+        warningDiv.style.zIndex = '1000';
+        warningDiv.style.maxWidth = '250px';
+        warningDiv.style.fontSize = '12px';
+        warningDiv.innerHTML = `
+          <p class="mb-1"><strong>Could not map these locations:</strong></p>
+          <p class="mb-0">${unmappedOrigins.join(', ')}</p>
+        `;
+        document.querySelector('.origins-map').appendChild(warningDiv);
+      }
+    }, 2000);
+
     // Add event listener for the toggle button
     document.getElementById('toggleMapDetails').addEventListener('click', function() {
       const detailsPanel = document.getElementById('mapDetails');
@@ -629,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = 'Show Details';
       }
     });
-    
+
     // Force a map resize to ensure all is displaying properly
     setTimeout(() => map.invalidateSize(), 100);
   }
@@ -1523,50 +1904,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update map colors
   function updateMapColors(color) {
     // Find all map line elements and update their color
-    const mapLines = document.querySelectorAll('.leaflet-overlay-pane path');
+    const mapLines = document.querySelectorAll('.ol-overlay-container path');
     mapLines.forEach(line => {
-      // Use style property instead of setAttribute for broader browser support
       line.style.stroke = color;
-      
-      // For polyline decorators (arrows)
-      if (line.classList.contains('leaflet-polylineDecorator') || 
-          !line.hasAttribute('stroke-dasharray')) {
-        line.style.fill = color;
-        line.style.fillOpacity = '0.8';
-      }
+      line.style.fill = color;
+      line.style.fillOpacity = '0.8';
     });
-    
-    // Check if we need to recreate the map with new colors for deeper changes
-    if (window.teaMap) {
-      // Store paths before recreating
-      const origins = Object.keys(originData);
-      origins.forEach(origin => {
-        if (!origin || origin.trim() === '') return;
-        
-        // Try to find coordinates
-        let coords;
-        const originLower = origin.toLowerCase();
-        
-        for (const [key, value] of Object.entries(locationCoordinates)) {
-          if (key.toLowerCase() === originLower) {
-            coords = value;
-            break;
-          }
-        }
-        
-        // Use fallback if needed
-        if (!coords) {
-          coords = [35.8617, 104.1954];
-        }
-        
-        // Update line color if it exists
-        const lines = document.querySelectorAll(`.leaflet-overlay-pane path`);
-        lines.forEach(line => {
-          if (!line.hasAttribute('stroke-dasharray')) return;
-          line.style.stroke = color;
-        });
-      });
-    }
   }
   
   // Event Listeners
@@ -1814,34 +2157,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      // For Leaflet map, special handling
+      // For  map, special handling
       if (currentShareElement.id === 'worldMap' || 
           (currentShareElement.querySelector && currentShareElement.querySelector('#worldMap'))) {
-        // Use map screenshot - leaflet has methods for this
-        const mapContainer = document.getElementById('worldMap');
-        if (mapContainer && window.map) {
-          try {
-            // Try to use leaflet-image if available
-            if (window.leafletImage) {
-              leafletImage(window.map, function(err, canvas) {
-                if (err) {
-                  console.error("Error capturing map:", err);
-                  fallbackToHtml2Canvas();
-                } else {
-                  handleCapturedCanvas(canvas);
-                }
-              });
-              return;
-            } else {
-              fallbackToHtml2Canvas();
-            }
-          } catch (err) {
-            console.error("Error capturing map:", err);
-            fallbackToHtml2Canvas();
-          }
-        } else {
-          fallbackToHtml2Canvas();
-        }
+        // Use html2canvas for OpenLayers map
+        fallbackToHtml2Canvas();
         return;
       }
       

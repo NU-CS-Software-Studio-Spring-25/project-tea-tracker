@@ -71,6 +71,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_173822) do
     t.decimal "weight", precision: 10, scale: 2
     t.integer "year", null: false
     t.string "ship_from", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_teas_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -80,6 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_173822) do
     t.string "bio", limit: 500
     t.string "avatar_url", limit: 255
     t.string "password_digest"
+    t.boolean "csv_prompt_seen", default: false
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
@@ -87,4 +90,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_173822) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "entries", "teas"
   add_foreign_key "entries", "users"
+  add_foreign_key "teas", "users"
 end

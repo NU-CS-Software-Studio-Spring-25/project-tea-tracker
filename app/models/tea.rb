@@ -1,4 +1,5 @@
 class Tea < ApplicationRecord
+  belongs_to :user  # Add this line
   has_many :entries
   has_many :users, through: :entries
 
