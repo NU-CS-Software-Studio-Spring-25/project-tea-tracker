@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_secure_password
 
   # Active Storage attachment
-  has_one_attached :avatar
+  has_one_attached :avatar, analyze: false
 
   # Username validations
   validates :username,
