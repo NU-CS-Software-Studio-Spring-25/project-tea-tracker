@@ -6,6 +6,10 @@
 
 
 require 'cucumber/rails'
+require 'capybara/rails'
+require 'capybara/cucumber'
+require 'database_cleaner'
+require 'rspec/expectations'
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
@@ -51,3 +55,43 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+# Capybara configuration
+Capybara.default_driver = :selenium_chrome
+Capybara.javascript_driver = :selenium_chrome
+
+# Add these configurations
+Capybara.default_max_wait_time = 5
+Capybara.server = :puma, { Silent: true }
+
+# Configure Chrome options
+Capybara.register_driver :selenium_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless') # Remove this if you want to see the browser
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :chrome,
+    options: options
+  )
+end
+
+# Database Cleaner configuration
+DatabaseCleaner.strategy = :truncation
+
+Before do
+  DatabaseCleaner.start
+end
+
+After do
+  # Clean up in the correct order
+  Entry.delete_all
+  Tea.delete_all
+  User.delete_all
+  DatabaseCleaner.clean
+end
+
+# Devise test helpers
+World(Devise::Test::IntegrationHelpers)
