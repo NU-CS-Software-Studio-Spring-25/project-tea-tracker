@@ -1,73 +1,549 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body text-center">
-          <h2 class="card-title mb-4">Welcome to Tea Tracker!</h2>
-          <p class="lead mb-4">Let's get started with your tea collection. Choose how you'd like to begin:</p>
+<!-- Add required CSS libraries -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-          <div class="row g-4">
-            <!-- CSV Upload Option -->
-            <div class="col-md-6">
-              <div class="card h-100">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-                    Import from CSV
-                  </h5>
-                  <p class="card-text">Have a spreadsheet of your teas? Upload it here to import your collection.</p>
-                  
-                  <div class="alert alert-info small">
-                    <p class="mb-2">Your CSV must include:</p>
-                    <div class="text-start small">
-                      <code class="d-block">name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price</code>
+<!-- Enhanced Onboarding Styles -->
+<style>
+  :root {
+    --chart-text-color: #333333;
+    --font-pixel: 'Jersey 20', 'VT323', 'Silkscreen', 'Pixelify Sans', 'DotGothic16', 'Press Start 2P', monospace;
+  }
+  
+  /* Custom font loading */
+  @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans&display=swap');
+  
+  /* Theme Styles */
+  body.theme-dark .text-muted {
+    color: #a0aec0 !important;
+  }
+  
+  /* Dark Theme */
+  body.theme-dark {
+    background-color: #1e272e;
+    color: #dcdde1;
+  }
+  
+  body.theme-dark .card {
+    background-color: #2f3640;
+    border-color: #353b48;
+    color: #dcdde1;
+  }
+
+  body.theme-dark .card-header {
+    background-color: #353b48;
+    color: #f5f6fa;
+    border-bottom: 1px solid #444;
+  }
+  
+  body.theme-dark .text-muted {
+    color: #a4b0be !important;
+  }
+  
+  body.theme-dark .alert-info {
+    background-color: #2f3542;
+    border-color: #57606f;
+    color: #dcdde1;
+  }
+  
+  /* Pastel Theme */
+  body.theme-pastel {
+    background-color: #f8f9fa;
+    color: #5a6268;
+  }
+
+  body.theme-pastel .card {
+    background-color: #ffffff;
+    border-color: #e9ecef;
+    color: #4b0082;
+  }
+
+  body.theme-pastel .card-header {
+    background-color: #e6e6fa;
+    color: #4b0082;
+    border-bottom: 1px solid #d8bfd8;
+  }
+  
+  /* Vivid Theme */
+  body.theme-vivid {
+    background-color: #ffffff;
+    color: #212529;
+  }
+  
+  body.theme-vivid .card {
+    background-color: #ffffff;
+    border-color: #dee2e6;
+    color: #212529;
+  }
+  
+  body.theme-vivid .card-header {
+    background-color: #007bff;
+    color: #ffffff;
+    border-bottom: 1px solid #0056b3;
+  }
+  
+  /* Enhanced card styling */
+  .onboarding-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+  
+  .main-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .main-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .welcome-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+    font-family: var(--font-pixel);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-subtitle {
+    color: #6c757d;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Option cards */
+  .option-card {
+    background: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .option-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .option-card:hover {
+    transform: translateY(-8px);
+    border-color: #667eea;
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+  }
+  
+  .option-card:hover::before {
+    transform: scaleX(1);
+  }
+  
+  .option-card .card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .option-card .card-title i {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+  }
+  
+  /* Enhanced buttons */
+  .btn-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: 500;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .btn-gradient:active {
+    transform: translateY(0);
+  }
+  
+  .btn-outline-gradient {
+    background: transparent;
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
+    border-radius: 25px;
+    color: #667eea;
+    font-weight: 500;
+    padding: 10px 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-outline-gradient:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+  
+  /* Enhanced alert styling */
+  .alert-gradient {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 10px;
+    color: #495057;
+  }
+  
+  /* File input styling */
+  .file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+    padding: 1rem;
+    text-align: center;
+    background: #f8f9fa;
+  }
+  
+  .file-input-wrapper:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+  }
+  
+  .file-input-wrapper.has-file {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+  }
+  
+  .file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: -9999px;
+  }
+  
+  .file-input-label {
+    cursor: pointer;
+    color: #6c757d;
+    font-weight: 500;
+  }
+  
+  .file-input-label:hover {
+    color: #667eea;
+  }
+  
+  /* Skip link styling */
+  .skip-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .skip-link:hover {
+    color: #667eea;
+    text-decoration: none;
+    transform: translateX(5px);
+  }
+  
+  /* Code block styling */
+  .code-block {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #495057;
+    overflow-x: auto;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .welcome-title {
+      font-size: 2rem;
+    }
+    
+    .onboarding-container {
+      padding: 1rem 0;
+    }
+    
+    .option-card {
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  /* Animation for page load */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .fade-in-up-delay {
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+  
+  /* Transition effects */
+  body, .card, .card-header {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+</style>
+
+<div class="onboarding-container">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+        <div class="card main-card fade-in-up">
+          <div class="card-body text-center p-5">
+            <h2 class="welcome-title">Welcome to Tea Tracker!</h2>
+            <p class="welcome-subtitle">Let's get started with your tea collection. Choose how you'd like to begin:</p>
+
+            <div class="row g-4 fade-in-up-delay">
+              <!-- CSV Upload Option -->
+              <div class="col-md-6">
+                <div class="option-card">
+                  <div class="card-body p-4">
+                    <h5 class="card-title">
+                      <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+                      Import from CSV
+                    </h5>
+                    <p class="card-text mb-4">Have a spreadsheet of your teas? Upload it here to import your entire collection at once.</p>
+                    
+                    <div class="alert alert-gradient small mb-4">
+                      <p class="mb-2"><strong>Your CSV must include these columns:</strong></p>
+                      <div class="code-block text-start">
+                        name, category, price, vendor, known_for, year, region, ship_from, popularity, shopping_platform, product_url, weight, total_price
+                      </div>
+                    </div>
+
+                    <%= form_with url: upload_csv_teas_path, multipart: true, id: "csvUploadForm" do |form| %>
+                      <div class="mb-4">
+                        <div class="file-input-wrapper" id="fileInputWrapper">
+                          <%= form.file_field :file, 
+                              accept: '.csv',
+                              class: "d-none", 
+                              id: "csvFileInput" %>
+                          <label for="csvFileInput" class="file-input-label">
+                            <i class="bi bi-cloud-upload fs-2 d-block mb-2"></i>
+                            <span id="fileInputText">Click to select CSV file</span>
+                            <small class="d-block text-muted mt-1">or drag and drop here</small>
+                          </label>
+                        </div>
+                        <div id="fileInfo" class="mt-2 small text-muted" style="display: none;"></div>
+                      </div>
+                      
+                      <%= form.submit "Upload CSV", class: "btn btn-gradient", id: "uploadBtn", disabled: true %>
+                    <% end %>
+
+                    <div class="mt-3">
+                      <%= link_to sample_csv_teas_path, class: "btn-outline-gradient" do %>
+                        <i class="bi bi-download"></i>Download Template
+                      <% end %>
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <%= form_with url: upload_csv_teas_path, multipart: true do |form| %>
-                    <div class="mb-3">
-                      <%= form.file_field :file, 
-                          accept: '.csv',
-                          class: "form-control form-control-sm" %>
+              <!-- Manual Entry Option -->
+              <div class="col-md-6">
+                <div class="option-card">
+                  <div class="card-body p-4">
+                    <h5 class="card-title">
+                      <i class="bi bi-plus-circle me-2"></i>
+                      Add Tea Manually
+                    </h5>
+                    <p class="card-text mb-4">Prefer to start small? Add your first tea entry manually with our intuitive form.</p>
+                    
+                    <div class="d-flex flex-column align-items-center" style="min-height: 200px; justify-content: center;">
+                      <div class="mb-4">
+                        <i class="bi bi-cup-hot" style="font-size: 4rem; color: #667eea;"></i>
+                      </div>
+                      <p class="text-muted mb-4">Perfect for getting familiar with the system</p>
+                      <%= link_to new_tea_path, class: "btn btn-gradient" do %>
+                        <i class="bi bi-plus me-2"></i>Add Your First Tea
+                      <% end %>
                     </div>
-                    <%= form.submit "Upload CSV", class: "btn btn-primary" %>
-                  <% end %>
-
-                  <div class="mt-2">
-                    <%= link_to sample_csv_teas_path, class: "btn btn-link btn-sm" do %>
-                      <i class="bi bi-download me-1"></i>Download Template
-                    <% end %>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Manual Entry Option -->
-            <div class="col-md-6">
-              <div class="card h-100">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <i class="bi bi-plus-circle me-2"></i>
-                    Add Tea Manually
-                  </h5>
-                  <p class="card-text">Add your first tea entry manually with our easy-to-use form.</p>
-                  <div class="mt-4">
-                    <%= link_to new_tea_path, class: "btn btn-primary" do %>
-                      <i class="bi bi-plus me-2"></i>Add Your First Tea
-                    <% end %>
-                  </div>
-                </div>
-              </div>
+            <div class="mt-5 fade-in-up-delay">
+              <p class="text-muted mb-3">Not ready to add teas yet?</p>
+              <%= link_to root_path, class: "skip-link" do %>
+                Skip for now <i class="bi bi-arrow-right ms-1"></i>
+              <% end %>
             </div>
-          </div>
-
-          <div class="mt-4">
-            <%= link_to root_path, class: "btn btn-link" do %>
-              Skip for now <i class="bi bi-arrow-right ms-1"></i>
-            <% end %>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('csvFileInput');
+  const fileInputWrapper = document.getElementById('fileInputWrapper');
+  const fileInputText = document.getElementById('fileInputText');
+  const fileInfo = document.getElementById('fileInfo');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const form = document.getElementById('csvUploadForm');
+  
+  // File input handling
+  if (fileInput) {
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop functionality
+    fileInputWrapper.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.style.borderColor = '#667eea';
+      this.style.background = 'rgba(102, 126, 234, 0.1)';
+    });
+    
+    fileInputWrapper.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.style.borderColor = '#dee2e6';
+      this.style.background = '#f8f9fa';
+    });
+    
+    fileInputWrapper.addEventListener('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.style.borderColor = '#dee2e6';
+      this.style.background = '#f8f9fa';
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect();
+      }
+    });
+  }
+  
+  function handleFileSelect() {
+    const file = fileInput.files[0];
+    
+    if (file) {
+      // Validate file type
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        showFileError('Please select a CSV file (.csv extension required).');
+        return;
+      }
+      
+      // Validate file size (1MB limit)
+      if (file.size > 1048576) {
+        showFileError('File size exceeds 1MB limit. Please choose a smaller file.');
+        return;
+      }
+      
+      // Show file info
+      showFileSuccess(file);
+    } else {
+      resetFileInput();
+    }
+  }
+  
+  function showFileSuccess(file) {
+    fileInputWrapper.classList.add('has-file');
+    fileInputText.innerHTML = `<i class="bi bi-check-circle text-success me-2"></i>File selected: ${file.name}`;
+    fileInfo.innerHTML = `
+      <div class="text-success">
+        <i class="bi bi-info-circle me-1"></i>
+        Size: ${(file.size / 1024).toFixed(1)} KB | Ready to upload
+      </div>
+    `;
+    fileInfo.style.display = 'block';
+    uploadBtn.disabled = false;
+  }
+  
+  function showFileError(message) {
+    fileInputWrapper.classList.remove('has-file');
+    fileInputText.innerHTML = `<i class="bi bi-exclamation-triangle text-danger me-2"></i>Click to select CSV file`;
+    fileInfo.innerHTML = `<div class="text-danger"><i class="bi bi-x-circle me-1"></i>${message}</div>`;
+    fileInfo.style.display = 'block';
+    uploadBtn.disabled = true;
+    fileInput.value = '';
+  }
+  
+  function resetFileInput() {
+    fileInputWrapper.classList.remove('has-file');
+    fileInputText.innerHTML = 'Click to select CSV file';
+    fileInfo.style.display = 'none';
+    uploadBtn.disabled = true;
+  }
+  
+  // Form submission with loading state
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      if (!fileInput.files.length) {
+        e.preventDefault();
+        showFileError('Please select a CSV file before uploading.');
+        return;
+      }
+      
+      // Show loading state
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Uploading...';
+      
+      // Add a subtle loading animation to the button
+      uploadBtn.style.opacity = '0.8';
+    });
+  }
+  
+  // Add smooth scroll behavior for skip link
+  const skipLink = document.querySelector('.skip-link');
+  if (skipLink) {
+    skipLink.addEventListener('click', function(e) {
+      // Add a subtle animation before navigation
+      this.style.transform = 'translateX(10px)';
+      setTimeout(() => {
+        window.location.href = this.href;
+      }, 150);
+    });
+  }
+});
+</script>
